@@ -200,7 +200,6 @@ export function Outbound() {
     setQuantitySum(totalItems);
   };
 
-
   // ฟังก์ชันปิด Modal สินค้าปกติ
   const closeModal = (data) => {
     updateQuantitySum(); // อัปเดตจำนวนรายการ
@@ -1018,7 +1017,7 @@ export function Outbound() {
             <div className="row-span-1 items-center justify-end grid grid-cols-3 text-white mt-5 w-full ml-auto">
               <span className="col-span-1 flex justify-center">
                 <button
-                  className={`bg-[#133E87] w-1/2 p-2 rounded-md hover:bg-[#172c4f] transition duration-300 flex justify-center items-center ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+                  className={`bg-blue-500 w-1/2 p-2 rounded-md hover:bg-blue-700 transition duration-300 flex justify-center items-center ${isLoading ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   onClick={confirm_order}
                   disabled={isLoading} // ปิดปุ่มเมื่อกำลังโหลด
@@ -1038,7 +1037,7 @@ export function Outbound() {
 
               <span className="col-span-1 flex justify-center">
                 <button
-                  className="bg-[#A62628] w-1/2 p-2 rounded-md hover:bg-[#762324] transition duration-300"
+                  className="bg-red-500 w-1/2 p-2 rounded-md hover:bg-red-700 transition duration-300"
                   onClick={resetForm}
                 >
                   <i className="fa-solid fa-x mr-2"></i>ยกเลิก
@@ -1047,7 +1046,7 @@ export function Outbound() {
 
               <span className="col-span-1 flex justify-center">
                 <button
-                  className="bg-[#828485] w-1/2 p-2 rounded-md hover:bg-[#6f7071] transition duration-300"
+                  className="bg-gray-500 w-1/2 p-2 rounded-md hover:bg-gray-700 transition duration-300"
                   onClick={handlePreview}
                 >
                   <i className="fa-solid fa-file-export mr-2"></i>preview
