@@ -315,6 +315,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [payMent, setPayment] = useState(0);
   const [showAlertShipping, setShowAlertShipping] = useState(false);
   const [vat, setVat] = useState(false);
+  const [assemble, setAssemble] = useState(false);
 
   const formatDateModal = (dateString) => {
     const date = new Date(dateString);
@@ -342,6 +343,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
           if (response.data.code === 200) {
             setModalProductDetails(response.data.data);
+            setAssemble(response.data.data.quotation_type);
             if (response.data.data.vat === "vat") {
               setVat(true);
             } else if (response.data.data.vat === "nvat") {
@@ -633,7 +635,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                           </tr>
                         </thead>
                         <tbody className="overflow-y-auto max-h-64">
-                          {modalProductDetails.products.map((product) => (
+                          {modalProductDetails.products.map((product, index) => (
                             <tr
                               key={product.product_id}
                               className="hover:bg-gray-50 transition duration-200"
@@ -642,7 +644,14 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                                 {product.quantity} {product.unit}
                               </td>
                               <td className="border p-2 text-center">
-                                {product.name}
+                                {assemble === "with_assembled" &&
+                                  (
+                                    <div key={index}>
+                                      {product.name && product.assemble_name
+                                        ? `${product.name} (${product.assemble_name})`
+                                        : product.name || product.assemble_name}
+                                    </div>
+                                  )}
                               </td>
                               <td className="border p-2 text-center">
                                 {product.size}

@@ -17,6 +17,7 @@ export default function Quotation() {
   const [lessorName, setLessorName] = useState('');
   const [lesseeNameOne, setLesseeNameOne] = useState('');
   const [lessorNameTwo, setLessorNameTwo] = useState('');
+  const [assemble, setAssemble] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -34,8 +35,8 @@ export default function Quotation() {
       .then((res) => {
         if (res.status === 200) {
           setData(res.data.data);
-          setProducts(res.data.data.products)
-
+          setProducts(res.data.data.products);
+          setAssemble(res.data.data.quotation);
           const createDate = new Date(res.data.data.reserve_out);
           const expiryDate = new Date(createDate);
           expiryDate.setDate(createDate.getDate() + 7);
@@ -170,11 +171,11 @@ export default function Quotation() {
     worksheet.getRow(7).font = { size: 13, bold: true, name: 'Angsana New' };
     worksheet.getRow(8).font = { size: 13, bold: true, name: 'Angsana New' };
 
-    worksheet.mergeCells('K5:M8');
+    worksheet.mergeCells('K5:M7');
     const cell = worksheet.getCell('K5');
-    cell.value = "ใบส่งสัญญาเช่า";
+    cell.value = "ใบสัญญาเช่า";
     cell.alignment = { vertical: 'middle', horizontal: 'center' };
-    cell.font = { size: 36, bold: true, name: 'Angsana New' };
+    cell.font = { size: 30, bold: true, name: 'Angsana New' };
     cell.fill = {
       type: 'pattern',
       pattern: 'solid',
@@ -186,18 +187,18 @@ export default function Quotation() {
       bottom: { style: 'medium' },
       right: { style: 'medium' }
     };
+    
+    worksheet.mergeCells('K8:M8');
+    const branch = worksheet.getCell('K8');
+    branch.value = `สาขา : ${data.branch_name === 'สมุทรสาคร ( โคกขาม )' ? 'โคกขาม' : data.branch_name === 'ชลบุรี ( บ้านเก่า )' ? 'ชลบุรี' : data.branch_name === 'ปทุมธานี ( นพวงศ์ )' ? 'เเยกนพวงศ์' : data.branch_name}`;
+    branch.font = { size: 16, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true  };
+    branch.alignment = { vertical: 'middle', horizontal: 'center' };
 
     worksheet.mergeCells('E3:J3');
     const customer_Pattarachai = worksheet.getCell('E3');
     customer_Pattarachai.value = 'ร้านภัทรชัย เเบบเหล็ก';
     customer_Pattarachai.font = { size: 28, bold: true, name: 'Angsana New' };
     customer_Pattarachai.alignment = { vertical: 'middle', horizontal: 'left' };
-
-    worksheet.mergeCells('K3:M4');
-    const branch = worksheet.getCell('K3');
-    branch.value = `สาขา : ${data.branch_name === 'สมุทรสาคร ( โคกขาม )' ? 'โคกขาม' : data.branch_name === 'ชลบุรี ( บ้านเก่า )' ? 'ชลบุรี' : data.branch_name === 'ปทุมธานี ( นพวงศ์ )' ? 'เเยกนพวงศ์' : data.branch_name}`;
-    branch.font = { size: 24, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true  };
-    branch.alignment = { vertical: 'middle', horizontal: 'center' };
 
     worksheet.mergeCells('A11:B13');
     const customer_name = worksheet.getCell('A11');
@@ -258,13 +259,16 @@ export default function Quotation() {
 
     worksheet.mergeCells('K10:L13');
     const taxNumber = worksheet.getCell('K10');
-    taxNumber.value = '  เลขที่สัญญาเช่า :';
+    taxNumber.value = '  เลขที่ :';
     taxNumber.font = { size: 13, bold: true, name: 'Angsana New' };
     taxNumber.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('M10:M13');
     const taxNumberValue = worksheet.getCell('M10');
-    taxNumberValue.value = `${data.export_number}`;
+    taxNumberValue.value = `${data.branch_name === 'สมุทรสาคร ( โคกขาม )' ? 'K' + data.export_number :
+      data.branch_name === 'ชลบุรี ( บ้านเก่า )' ? 'C' + data.export_number :
+        data.branch_name === 'ปทุมธานี ( นพวงศ์ )' ? 'N' + data.export_number :
+          data.branch_name}`;
     taxNumberValue.font = { size: 13, name: 'Angsana New' };
     taxNumberValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -370,7 +374,13 @@ export default function Quotation() {
       const rowNumber = 30 + index;
       worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
       const productCell = worksheet.getCell(`B${rowNumber}`);
-      productCell.value = ` ${product.name}`;
+      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+        productCell.value = `${product.name} (${product.assemble_name})`;
+      } else if (product.name) {
+        productCell.value = product.name;
+      } else if (product.assemble_name) {
+        productCell.value = product.assemble_name;
+      }
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
     });
@@ -379,7 +389,7 @@ export default function Quotation() {
       const rowNumber = 30 + index;
       worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
       const productCell = worksheet.getCell(`D${rowNumber}`);
-      productCell.value = `${product.size}`;
+      productCell.value = `${product.size ? product.size : "-"}`;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
     });
@@ -388,7 +398,7 @@ export default function Quotation() {
       const rowNumber = 30 + index;
       worksheet.mergeCells(`F${rowNumber}`);
       const productCell = worksheet.getCell(`F${rowNumber}`);
-      productCell.value = `${product.unit}`;
+      productCell.value = `${product.unit ? product.unit : "-"}`;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
     });
@@ -403,7 +413,7 @@ export default function Quotation() {
       const rowNumber = 30 + index;
       worksheet.mergeCells(`H${rowNumber}:I${rowNumber}`);
       const productCell = worksheet.getCell(`H${rowNumber}`);
-      productCell.value = `${product.quantity}   ${product.unit}`;
+      productCell.value = `${product.quantity}   ${product.unit ? product.unit : ""}`;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
     });
@@ -417,7 +427,7 @@ export default function Quotation() {
       const rowNumber = 30 + index;
       worksheet.mergeCells(`J${rowNumber}`);
       const productCell = worksheet.getCell(`J${rowNumber}`);
-      productCell.value = `${formatNumber(product.price)} `;
+      productCell.value = `${formatNumber(product.price ? product.price : "-")} `;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
     });
@@ -445,7 +455,7 @@ export default function Quotation() {
       const rowNumber = 30 + index;
       worksheet.mergeCells(`L${rowNumber}`);
       const productCell = worksheet.getCell(`L${rowNumber}`);
-      productCell.value = `${formatNumber(product.price_damage)} `;
+      productCell.value = `${(product.price_damage ? formatNumber(product.price_damage) : "-")} `;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
     });
@@ -500,7 +510,7 @@ export default function Quotation() {
     guaranteePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const guaranteePriceValue = worksheet.getCell('M59');
-    guaranteePriceValue.value = `${formatNumber(data.guarantee_price ? data.guarantee_price : "-")} `;
+    guaranteePriceValue.value = `${(data.guarantee_price ? formatNumber(data.guarantee_price) : "-")} `;
     guaranteePriceValue.font = { size: 13, name: 'Angsana New' };
     guaranteePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -520,7 +530,7 @@ export default function Quotation() {
     discount.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const discountValue = worksheet.getCell('M57');
-    discountValue.value = `${formatNumber(data.discount ? data.discount : "-")} `;
+    discountValue.value = `${(data.discount ? formatNumber(data.discount) : "-")} `;
     discountValue.font = { size: 13, name: 'Angsana New' };
     discountValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -530,7 +540,7 @@ export default function Quotation() {
     movePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const movePriceValue = worksheet.getCell('M56');
-    movePriceValue.value = `${formatNumber(data.move_price ? data.move_price : "-")} `;
+    movePriceValue.value = `${(data.move_price ? formatNumber(data.move_price) : "-")} `;
     movePriceValue.font = { size: 13, name: 'Angsana New' };
     movePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -540,7 +550,7 @@ export default function Quotation() {
     shippingCost.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const shippingCostValue = worksheet.getCell('M55');
-    shippingCostValue.value = `${formatNumber(data.shipping_cost ? data.shipping_cost : "-")} `;
+    shippingCostValue.value = `${(data.shipping_cost ? formatNumber(data.shipping_cost) : "-")} `;
     shippingCostValue.font = { size: 13, bold: true, name: 'Angsana New' };
     shippingCostValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -673,6 +683,11 @@ export default function Quotation() {
     nameCustomer.font = { size: 13, bold: true, name: 'Angsana New' };
     nameCustomer.alignment = { vertical: 'bottom', horizontal: 'right' };
 
+    const nameCustomer1 = worksheet.getCell('C63');
+    nameCustomer1.value = `${data.customer_name}`;
+    nameCustomer1.font = { size: 13, bold: true, name: 'Angsana New' };
+    nameCustomer1.alignment = { vertical: 'bottom', horizontal: 'center' };
+
     const nameCustomerDate = worksheet.getCell('G63');
     nameCustomerDate.value = ' ผู้เช่า';
     nameCustomerDate.font = { size: 13, bold: true, name: 'Angsana New' };
@@ -695,8 +710,8 @@ export default function Quotation() {
     namePleDate.alignment = { vertical: 'bottom', horizontal: 'left' };
 
     const namePleDate1 = worksheet.getCell('J64');
-    namePleDate1.value = `${data.reserve_out
-      ? new Date(data.reserve_out).toLocaleDateString('th-TH', {
+    namePleDate1.value = `${data.actual_out
+      ? new Date(data.actual_out).toLocaleDateString('th-TH', {
         day: '2-digit',
         month: 'short',
         year: '2-digit'
@@ -704,6 +719,17 @@ export default function Quotation() {
       : ''}`;
     namePleDate1.font = { size: 13, bold: true, name: 'Angsana New' };
     namePleDate1.alignment = { vertical: 'bottom', horizontal: 'center' };
+
+    const nameCustomerDate1 = worksheet.getCell('C64');
+    nameCustomerDate1.value = `${data.actual_out
+      ? new Date(data.actual_out).toLocaleDateString('th-TH', {
+        day: '2-digit',
+        month: 'short',
+        year: '2-digit'
+      })
+      : ''}`;
+    nameCustomerDate1.font = { size: 13, bold: true, name: 'Angsana New' };
+    nameCustomerDate1.alignment = { vertical: 'bottom', horizontal: 'center' };
 
     worksheet.mergeCells('C63:F63');
     worksheet.mergeCells('C64:F64');
@@ -837,6 +863,12 @@ export default function Quotation() {
     lefPastValue.border = {
       bottom: { style: 'medium' },
       right: { style: 'medium' }
+    };
+    branch.border = {
+      left: { style: 'medium' },
+      top: { style: 'medium' },
+      right: { style: 'medium' },
+      bottom: { style: 'medium' }
     };
 
     for (let col = 1; col <= 13; col++) {
