@@ -80,7 +80,7 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
 
         {/* Search */}
         <div className="flex items-center justify-around w-3/4">
-          <span className="text-black font-bold">รหัสสินค้า : </span>
+          <span className="text-black font-bold">รหัสสินค้า :</span>
           <div className="p-4 w-2/4">
             <input
               type="text"
@@ -89,7 +89,7 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
               onChange={(e) => setkeysearchItem(e.target.value)}
             />
           </div>
-          <button className="bg-blue-900 w-1/4 p-2 rounded-md text-white" onClick={filteritem_Search}>
+          <button className="bg-blue-900 hover:bg-blue-800 w-1/4 p-2 rounded-md text-white" onClick={filteritem_Search}>
             ค้นหา
           </button>
         </div>
@@ -158,7 +158,7 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
 
         {/* Footer */}
         <div className="flex justify-center p-4 border-t w-3/4">
-          <button className="px-4 py-2 bg-[#31AB31] text-white rounded-md mr-2 w-1/4 text-center" onClick={confirm_item}>
+          <button className="px-4 py-2 bg-[#31AB31] hover:bg-green-700 text-white rounded-md mr-2 w-1/4 text-center" onClick={confirm_item}>
             ยืนยัน
           </button>
         </div>

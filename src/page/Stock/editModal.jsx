@@ -60,8 +60,8 @@ function EditModal({ isModalOpen, handleClose, id }) {
   const { product_samutsakhon, product_chonburi, product_pathumthani } = productDetails;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-start z-50">
-      <div className="bg-white p-8 rounded-md w-4/5 mt-32 mx-auto shadow-lg max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-8 rounded-md w-4/5 mx-auto shadow-lg max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-semibold mb-6 text-center text-blue-600">เปรียบเทียบสินค้า</h2>
 
         <table className="border-collapse w-full text-sm table-auto">
@@ -103,6 +103,7 @@ function EditModal({ isModalOpen, handleClose, id }) {
         </div>
       </div>
     </div>
+
   );
 }
 

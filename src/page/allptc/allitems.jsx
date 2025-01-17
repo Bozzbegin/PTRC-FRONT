@@ -5,6 +5,7 @@ export function TableItem({
   selectedBranch,
   onSelectAction, // เปลี่ยนชื่อให้เหมาะสม
 }) {
+  
   const [listAction, setListAction] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -144,12 +145,12 @@ export function TableItem({
             ) : (
               listAction.map((action, index) => (
                 <tr key={`${action.id}-${index}`}>
-                  <td className="border p-2">{index + 1}</td>
+                  <td className="border p-2 text-center">{index + 1}</td>
                   <td className="border p-2">{action.branch_name}</td>
-                  <td className="border p-2">{action.action || "-"}</td>
+                  <td className="border p-2">{action.action === 'return' ? 'ส่งคืนสินค้า' : action.action === 'update' ? 'อัพเดทสินค้า' : "-"}</td>
                   <td className="border p-2">{action.date_action || "-"}</td>
                   <td className="border p-2">{action.description || "-"}</td>
-                  <td className="border p-2">{action.first_name || "-"}</td>
+                  <td className="border p-2 text-center">{action.first_name || "-"}</td>
                   <td className="flex justify-center items-center border p-1">
                     <button
                       className="bg-green-500 text-white px-2 py-1 rounded-md hover:bg-green-600"
