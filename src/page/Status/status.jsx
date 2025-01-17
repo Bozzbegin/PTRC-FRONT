@@ -283,9 +283,9 @@ const StatusProduct = () => {
                     <td className="text-center border-l-2 px-4 py-2">
                       <button
                         onClick={() => openModal(item.id, item.reserve_id)}
-                        className="text-blue-500 w-[100px] bg-[#FFFFFF] h-8 rounded-md border border-[#133E87] items-center justify-between px-2"
+                        className="bg-green-500 text-white w-[100px] bg-[#FFFFFF] h-8 rounded-md border hover:bg-green-700 transition items-center justify-between px-2"
                       >
-                        ดูข้อมูล<i className="fa-solid fa-angle-right mr-2"></i>
+                        ดูข้อมูล <i className="fa-solid fa-angle-right mr-2 relative top-0.5"></i>
                       </button>
                     </td>
                   </tr>
