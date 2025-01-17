@@ -148,7 +148,7 @@ export function Modal_EditAssemble({ id, close }) {
                                     <th className="px-2">สินค้า</th>
                                     <th className="px-2">รหัสสินค้า</th>
                                     <th className="px-2">ขนาด</th>
-                                    <th className="px-2">จำนวนที่ใช้</th>
+                                    <th className="px-2">จำนวน</th>
 
                                 </tr>
                             </thead>
@@ -171,7 +171,7 @@ export function Modal_EditAssemble({ id, close }) {
                                                         product: updatedItems,
                                                     });
                                                 }}
-                                                className="w-20 border border-gray-300 rounded-md p-2 text-center"
+                                                className="w-20 h-9 border border-gray-300 rounded-md p-2 text-center mt-2 mb-2"
                                             />
                                         </td>
                                     </tr>

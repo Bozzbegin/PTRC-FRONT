@@ -294,18 +294,34 @@ export function Outbound() {
     }
   };
 
-
-  const handlePriceChange = (index, value) => {
-    const updatedConfirmItem = [...confirmitem];
-    updatedConfirmItem[index].price = value;
-    setConfirmitem(updatedConfirmItem);
-  };
-
-  const handlePrice3DChange = (index, value) => {
-    const updatedConfirmItem = [...confirmitem];
-    updatedConfirmItem[index].price3D = value === '' ? "" : value.toString();
-    console.log(value);
-    setConfirmitem(updatedConfirmItem);
+  const handlePriceAPI = (id, value, isAssemble = false) => {
+    const parsedValue = parseFloat(value) || 0; // แปลงค่า input เป็นจำนวนเต็ม
+    if (isAssemble) {
+      const index = confirmitemASM.findIndex((item) => item.id_asm === id);
+      if (index !== -1) {
+        const updatedConfirmItemASM = [...confirmitemASM];
+        updatedConfirmItemASM[index] = {
+          ...updatedConfirmItemASM[index],
+          assemble_price: parsedValue, // อัปเดตราคา
+        };
+        setConfirmitemASM(updatedConfirmItemASM);
+      } else {
+        console.error("Invalid id_asm:", id);
+      }
+    } else {
+      // สำหรับสินค้าปกติ
+      const index = confirmitem.findIndex((item) => item.id === id);
+      if (index !== -1) {
+        const updatedConfirmItem = [...confirmitem];
+        updatedConfirmItem[index] = {
+          ...updatedConfirmItem[index],
+          price: parsedValue, // อัปเดตราคา
+        };
+        setConfirmitem(updatedConfirmItem);
+      } else {
+        console.error("Invalid id:", id);
+      }
+    }
   };
 
   // ฟังก์ชันลบสินค้า
@@ -322,10 +338,9 @@ export function Outbound() {
     updateQuantitySum();
   };
 
-
-
-
   const confirm_order = async () => {
+
+    resetForm();
 
     if (!name || !workside || !address || !day_length || confirmitem.length === 0 || confirmitem.some((item) => !item.price && !item.price3D)) {
 
@@ -378,8 +393,6 @@ export function Outbound() {
       ),
     ];
 
-
-
     const newOrder = {
       customer_name: name,
       company_name: comName,
@@ -398,7 +411,6 @@ export function Outbound() {
     };
 
     const token = localStorage.getItem("token");
-
 
     try {
       await axios.post(
@@ -586,11 +598,14 @@ export function Outbound() {
     localStorage.setItem("outboundFormData", JSON.stringify(formDataToSave));
     console.log("Auto-saved to localStorage:", formDataToSave);
   };
+
   useEffect(() => {
+
     if (name || comName || address || confirmitem.length > 0) {
       console.log("Auto-saving data...");
       saveToLocalStorage();
     }
+
   }, [
     branch,
     products,
@@ -902,9 +917,6 @@ export function Outbound() {
                                 className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
                                 value={item.isAssemble ? item.amountASM || 0 : item.amount || 0} // ค่าเริ่มต้น
                                 onChange={(e) => {
-                                  console.log("Item Data:", item);
-                                  console.log("AmountASM:", item.amountASM);
-
                                   handleAmountChange(
                                     item.isAssemble ? item.id_asm : item.id,
                                     e.target.value,
@@ -914,14 +926,25 @@ export function Outbound() {
                               />
                             </td>
                             <td className="px-4 py-2">
-                              {/* เลือกใช้ราคาที่เหมาะสมสำหรับสินค้าปกติและ assemble */}
-                              {item.isAssemble
-                                ? formatNumber(item.assemble_price || 0)// ราคาสำหรับสินค้าประกอบ
-                                : formatNumber(
-                                  day_length >= 30
-                                    ? item.price30D || item.price || 0 // ใช้ price30D หาก > 30 วัน
-                                    : item.price || item.price3D || 0 // ใช้ price หรือ price3D ในกรณีปกติ
-                                )}
+                              {item.type === 'เช่า' ? (
+                                <input
+                                  type="number"
+                                  className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
+                                  value={item.isAssemble ? formatNumber(item.assemble_price || 0)
+                                    : formatNumber(
+                                      day_length >= 30
+                                        ? item.price30D || item.price || 0
+                                        : item.price || item.price3D || 0
+                                    )}
+                                  onChange={(e) => {
+                                    handlePriceAPI(item.isAssemble ? item.id_asm : item.id, e.target.value, item.isAssemble);
+                                  }}
+                                />
+                              ) : item.isAssemble ? formatNumber(item.assemble_price || 0) : formatNumber(
+                                day_length >= 30
+                                  ? item.price30D || item.price || 0
+                                  : item.price || item.price3D || 0
+                              )}
                             </td>
                             <td className="px-4 py-2">
                               {/* คำนวณรวมราคาต่อรายการ */}

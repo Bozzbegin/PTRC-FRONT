@@ -19,10 +19,12 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
   const toggleCreateASM = () => {
     setShowCreateASM(!showCreateASM);
   };
+
   const toggleEditASM = (id) => {
     setSelectedASMId(id);
     setShowEditASM(!showEditASM);
   };
+
   const handleDelete = (id) => {
     console.log(`กำลังลบรายการที่มี ID: ${id}`);
     const token = localStorage.getItem("token");
@@ -39,7 +41,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
         if (res.status === 200) {
           Swal.fire({
             icon: "success",
-            text: "สร้างสินค้าประกอบสำเร็จ",
+            text: "ลบสินค้าประกอบสำเร็จ",
             confirmButtonText: "ตกลง",
           }).then(() => {
             // ปิด modal และรีเฟรชหน้าหลังจากการลบสำเร็จ
@@ -194,7 +196,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
   return (
 
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-20 z-50">
-      <div className="bg-white w-[900px] h-[800px] rounded-lg shadow-xl flex flex-col items-center">
+      <div className="bg-white w-[900px] max-h-[600px] rounded-lg shadow-xl flex flex-col items-center">
         <div className="w-full flex justify-between items-center p-4">
           <h2 className="text-2xl font-semibold">สินค้าประกอบ</h2>
           <button className="text-gray-500 hover:text-gray-700 text-[24px]" onClick={() => close(0)}>
@@ -214,7 +216,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
             />
 
           </div>
-          <button className="bg-blue-900 w-1/4 p-2 rounded-md text-white" onClick={filteritem_Search}>
+          <button className="bg-blue-900 hover:bg-blue-800 w-1/4 p-2 rounded-md text-white" onClick={filteritem_Search}>
             ค้นหา
           </button>
         </div>
@@ -240,20 +242,27 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
                     </div>
                   </td>
                 </tr>
+              ) : (products_search.length > 0 ? products_search : ASMproducts).length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="text-center py-4">
+                    ไม่พบสินค้าสั่งประกอบ
+                  </td>
+                </tr>
               ) : (products_search.length > 0 ? products_search : ASMproducts).map((item, key) => (
                 <tr key={key} className="border-t border-blue-500">
                   <td className="px-4 py-2">{item.assemble_name}</td>
-                  <td className="px-4 py-2">{item.description}</td>
+                  <td className="px-4 py-2">{item.description ? item.description : "-"}</td>
                   <td className="px-4 py-2 text-red-500">{item.assemble_price}</td>
                   <td className="px-4 py-2">
                     <input
                       type="number"
-                      min={0}
+                      min={1}
                       className="w-[100px] p-2 text-center border border-black rounded-md"
                       onChange={(e) => select_Item(item, e.target.value)}
                       defaultValue={
                         confirm_itemsASM.find((i) => i.id_asm === item.id)?.amountASM ||
-                        ititialDataASM.find((i) => i.id_asm === item.id)?.amountASM || ""
+                        ititialDataASM.find((i) => i.id_asm === item.id)?.amountASM ||
+                        0
                       }
                     />
                   </td>
@@ -279,17 +288,18 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
           </table>
         </div>
 
-        <div className="flex justify-center p-4 border-t w-3/4">
-          <button className="me-4 px-4 py-2 bg-green-500 text-white rounded-md w-1/4 hover:bg-green-400 transaction durantion-150 " onClick={confirm_itemASM}>
+        <div className="flex justify-center p-4 border-t w-3/4 ">
+          <button className="me-4 px-4 py-2 bg-green-500 text-white rounded-md w-1/4 hover:bg-green-700 transaction durantion-150 " onClick={confirm_itemASM}>
             ยืนยัน
           </button>
           <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-400 transaction durantion-150"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transaction durantion-150"
             onClick={toggleCreateASM}
           >
             สร้างสินค้าประกอบใหม่
           </button>
         </div>
+        
       </div>
       {showCreateASM && <CreateASM close={toggleCreateASM} />}
       {showEditASM && (

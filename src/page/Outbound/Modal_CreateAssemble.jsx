@@ -224,7 +224,7 @@ export function CreateASM({ close }) {
                                 </thead>
                                 <tbody>
                                     {products.map((product, index) => (
-                                        <tr key={index} className={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"} `}>
+                                        <tr key={index} className={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"}`}>
                                             <td className="p-4">{product.id}</td> {/* เพิ่ม padding ในแต่ละเซลล์ */}
                                             <td className="p-4">{product.name}</td>
                                             <td className="p-4">{product.code}</td>
@@ -247,7 +247,7 @@ export function CreateASM({ close }) {
                 </div>
                                 
                 {/* Right Panel */}
-                <div className="w-1/3 p-4 flex flex-col justify-between mt-16">
+                <div className="w-1/3 p-4 flex flex-col justify-between mt-14">
                     <div>
                         <h3 className="text-xl font-semibold">รายการที่เลือก</h3>
                         <div className="[calc(100%-150px)] border border-gray-300 rounded-md mt-4">
@@ -319,7 +319,7 @@ export function CreateASM({ close }) {
                     </div>
 
                     {/* Buttons */}
-                    <div className="flex justify-center space-x-4 mt-4">
+                    <div className="flex justify-end space-x-4 alert-danger mb-4 mr-4">
                         <button
                             className="bg-green-500 text-white py-2 px-6 rounded-md hover:bg-green-400 transaction duration-150"
                             onClick={handleCreateASM}
