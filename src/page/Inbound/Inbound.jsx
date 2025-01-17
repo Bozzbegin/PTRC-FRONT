@@ -267,7 +267,7 @@ export function Inbound() {
                         <div className=" row-span-1  items-center justify-center grid grid-cols-2 text-white">
                             <span className='col-span-1 flex  justify-end pr-16 '>
                                 <button
-                                    className={`bg-[#133E87] w-2/6 p-2 rounded-md ${count > 0 && allQuantitiesValid ? "hover:bg-[#172c4f]" : "cursor-not-allowed opacity-50"
+                                    className={`bg-blue-500 w-2/6 p-2 rounded-md ${count > 0 && allQuantitiesValid ? "hover:bg-blue-700" : "cursor-not-allowed opacity-50"
                                         }`}
                                     onClick={handlePostData}
                                     disabled={count <= 0 || !allQuantitiesValid } // ปุ่มจะถูก disable ถ้า count <= 0
@@ -276,7 +276,7 @@ export function Inbound() {
                                 </button>                                
                             </span>
                             <span className='col-span-1 flex  justify-start pl-16 '>
-                                <button className="bg-[#A62628]  w-2/6 p-2 rounded-md hover:bg-[#762324]" onClick={reset}><i className="fa-solid fa-x mr-2"></i>ยกเลิก</button>
+                                <button className="bg-red-500  w-2/6 p-2 rounded-md hover:bg-red-700" onClick={reset}><i className="fa-solid fa-x mr-2"></i>ยกเลิก</button>
                             </span>
 
                         </div>
