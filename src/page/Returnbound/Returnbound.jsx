@@ -155,7 +155,7 @@ export function ReturnItem() {
                     value={filterDate}
                     onChange={(e) => setFilterDate(e.target.value)}
                 /></span>
-                <span className='pr-2 pl-5 font-bold text-xl text-white'>
+                <span className='pr-2 pl-5 font-bold text-lg text-white'>
                     <button className='bg-blue-500 h-10 w-28 rounded-md hover:bg-blue-600'>ค้นหา</button>
                 </span>
 
