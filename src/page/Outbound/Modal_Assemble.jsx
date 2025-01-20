@@ -187,8 +187,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
       alert("กรุณาเลือกสินค้าประกอบก่อนยืนยัน");
       return;
     }
-
-    console.log("confirm modal = ", filteredItemsASM);
+    
     confirm(filteredItemsASM);
     close(filteredItemsASM.length);
   };

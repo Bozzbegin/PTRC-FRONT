@@ -52,10 +52,8 @@ export function Outbound() {
   ];
 
   useEffect(() => {
-    console.log("Loading data from localStorage...");
     const savedData = JSON.parse(localStorage.getItem("outboundFormData"));
     if (savedData) {
-      console.log("Loaded Data:", savedData);
       setBranch(savedData.branch || "");
       setProducts(savedData.products || []);
       setName(savedData.name || "");
@@ -78,8 +76,6 @@ export function Outbound() {
       setAlldata_default(savedData.alldata_default || [{}]);
       setFormData(savedData.formData || {});
       setQuantitySum(savedData.quantitySum || 0);
-    } else {
-      console.log("No data found in localStorage.");
     }
   }, []);
 
@@ -100,10 +96,6 @@ export function Outbound() {
 
   const handleVatChange = (e) => {
     setHasVat(e.target.value === "true");
-  };
-
-  const handleWithHolDingChange = (e) => {
-    setWithHolDing(e.target.value === "true");
   };
 
   useEffect(() => {
@@ -129,11 +121,11 @@ export function Outbound() {
   const handleConfirmASM = (items) => {
     const updatedItemsASM = items.map((item) => ({
       ...item,
-      type: item.type || "เช่า", // ค่าเริ่มต้น
-      price: 0,                 // ค่าเริ่มต้น
-      isAssemble: true,         // เพิ่ม isAssemble: true
+      type: item.type || "เช่า", 
+      price: 0,                
+      isAssemble: true,        
     }));
-    setConfirmitemASM(updatedItemsASM); // ต้องเรียก setConfirmitemASM แทน
+    setConfirmitemASM(updatedItemsASM); 
     updateQuantitySum();
   };
 
@@ -194,8 +186,6 @@ export function Outbound() {
 
   const updateQuantitySum = () => {
     const totalItems = confirmitem.length + confirmitemASM.length;
-    console.log(confirmitemASM.length);
-    console.log(confirmitem.length);
     // รวมจำนวนรายการสินค้าธรรมดาและ Assemble
     setQuantitySum(totalItems);
   };
@@ -266,9 +256,7 @@ export function Outbound() {
           amountASM: parsedValue, // อัปเดตจำนวนสินค้า
         };
         setConfirmitemASM(updatedConfirmItemASM);
-      } else {
-        console.error("Invalid id_asm:", id);
-      }
+      } 
     } else {
       // สำหรับสินค้าปกติ
       const index = confirmitem.findIndex((item) => item.id === id);
@@ -288,8 +276,6 @@ export function Outbound() {
         };
 
         setConfirmitem(updatedConfirmItem);
-      } else {
-        console.error("Invalid id:", id);
       }
     }
   };
@@ -305,9 +291,7 @@ export function Outbound() {
           assemble_price: parsedValue, // อัปเดตราคา
         };
         setConfirmitemASM(updatedConfirmItemASM);
-      } else {
-        console.error("Invalid id_asm:", id);
-      }
+      } 
     } else {
       // สำหรับสินค้าปกติ
       const index = confirmitem.findIndex((item) => item.id === id);
@@ -318,9 +302,7 @@ export function Outbound() {
           price: parsedValue, // อัปเดตราคา
         };
         setConfirmitem(updatedConfirmItem);
-      } else {
-        console.error("Invalid id:", id);
-      }
+      } 
     }
   };
 
@@ -353,9 +335,8 @@ export function Outbound() {
 
     }
 
-    console.log(confirmitem.price);
-
     const reserve = [
+
       combinedItems.reduce(
         (acc, item) => {
           if (item.isAssemble) {
@@ -388,9 +369,10 @@ export function Outbound() {
           assemble_price: [],
           assemble_service_price: [],
           type: [],
-          typeASM: [],
+          // typeASM: [],
         }
-      ),
+      )
+
     ];
 
     const newOrder = {
@@ -431,7 +413,6 @@ export function Outbound() {
       }).then(() => {
         navigate("/status");
       });
-      console.log("send success");
     } catch (err) {
       console.error("Error sending order:", err);
       Swal.fire({
@@ -552,6 +533,10 @@ export function Outbound() {
       discount: formData.discount || 0,
       move_price: formData.move_price || 0,
       guarantee_price: formData.guarantee_price || 0,
+      taxid: formData.taxid || "",
+      remark1: formData.remark1 || "",
+      remark2: formData.remark2 || "",
+      remark3: formData.remark3 || "",
       company_name: comName,
       phone,
       customer_tel,
@@ -596,13 +581,11 @@ export function Outbound() {
     };
 
     localStorage.setItem("outboundFormData", JSON.stringify(formDataToSave));
-    console.log("Auto-saved to localStorage:", formDataToSave);
   };
 
   useEffect(() => {
 
     if (name || comName || address || confirmitem.length > 0) {
-      console.log("Auto-saving data...");
       saveToLocalStorage();
     }
 

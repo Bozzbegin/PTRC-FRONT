@@ -250,10 +250,9 @@ export default function Quotation() {
 
     worksheet.mergeCells('D23:G25');
     const taxIdValue = worksheet.getCell('D23:G25');
-    taxIdValue.value = '-';
+    taxIdValue.value = `${data.tax_id}`;
     taxIdValue.font = { size: 13, name: 'Angsana New' };
     taxIdValue.alignment = { vertical: 'middle', horizontal: 'left' };
-
 
     worksheet.mergeCells('K8:L10');
     const taxNumber = worksheet.getCell('K8');
@@ -594,9 +593,22 @@ export default function Quotation() {
     note.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('C55:J55');
-    worksheet.mergeCells('C56:J56');
-    worksheet.mergeCells('C57:J57');
+    const remark1 = worksheet.getCell('C55');
+    remark1.value = `${data.remark1}`;
+    remark1.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark1.alignment = { vertical: 'middle', horizontal: 'left' };
 
+    worksheet.mergeCells('C56:J56');
+    const remark2 = worksheet.getCell('C56');
+    remark2.value = `${data.remark2}`;
+    remark2.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark2.alignment = { vertical: 'middle', horizontal: 'left' };
+
+    worksheet.mergeCells('C57:J57');
+    const remark3 = worksheet.getCell('C57');
+    remark3.value = `${data.remark3}`;
+    remark3.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark3.alignment = { vertical: 'middle', horizontal: 'left' };
     worksheet.mergeCells('A44:J44');
     const noteif = worksheet.getCell('A44');
     noteif.value = ' เงื่อนไขการเช่าสินค้า/โปรดอ่านเงื่อนไขก่อนทำการเช่า';
@@ -869,7 +881,7 @@ export default function Quotation() {
       : ''}`;;
     namePleDate1.font = { size: 13, bold: true, name: 'Angsana New' };
     namePleDate1.alignment = { vertical: 'bottom', horizontal: 'center' };
-    
+
     const namePleDateValue = worksheet.getCell('C62');
     namePleDateValue.value = `${data.actual_out
       ? new Date(data.actual_out).toLocaleDateString('th-TH', {

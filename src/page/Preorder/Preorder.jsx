@@ -245,6 +245,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('D23:G25');
     const taxIdValue = worksheet.getCell('D23:G25');
+    taxIdValue.value = `${data.tax_id}`;
     taxIdValue.font = { size: 13, name: 'Angsana New' };
     taxIdValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -535,8 +536,22 @@ export default function Quotation() {
     note.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('C55:J55');
+    const remark1 = worksheet.getCell('C55');
+    remark1.value = `${data.remark1}`;
+    remark1.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark1.alignment = { vertical: 'middle', horizontal: 'left' };
+
     worksheet.mergeCells('C56:J56');
+    const remark2 = worksheet.getCell('C56');
+    remark2.value = `${data.remark2}`;
+    remark2.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark2.alignment = { vertical: 'middle', horizontal: 'left' };
+
     worksheet.mergeCells('C57:J57');
+    const remark3 = worksheet.getCell('C57');
+    remark3.value = `${data.remark3}`;
+    remark3.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark3.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('A44:J44');
     const noteif = worksheet.getCell('A44');
