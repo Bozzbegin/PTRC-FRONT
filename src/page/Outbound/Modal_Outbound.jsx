@@ -60,7 +60,6 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
       return;
     }
   
-    console.log('confirm modal = ', confirm_items);
     const itemsToConfirm = confirm_items.length > 0 ? confirm_items : ititialData;
   
     confirm(confirm_items);

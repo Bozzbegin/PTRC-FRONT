@@ -527,10 +527,24 @@ export default function Quotation() {
     note.value = ' หมายเหตุ :';
     note.font = { size: 14, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true };
     note.alignment = { vertical: 'middle', horizontal: 'left' };
-
+    
     worksheet.mergeCells('C57:J57');
+    const remark1 = worksheet.getCell('C57');
+    remark1.value = `${data.remark1}`;
+    remark1.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark1.alignment = { vertical: 'middle', horizontal: 'left' };
+
     worksheet.mergeCells('C58:J58');
+    const remark2 = worksheet.getCell('C58');
+    remark2.value = `${data.remark2}`;
+    remark2.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark2.alignment = { vertical: 'middle', horizontal: 'left' };
+
     worksheet.mergeCells('C59:J59');
+    const remark3 = worksheet.getCell('C59');
+    remark3.value = `${data.remark3}`;
+    remark3.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark3.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('A46:J46');
     const noteif = worksheet.getCell('A46');

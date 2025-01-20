@@ -187,11 +187,11 @@ export default function Quotation() {
       bottom: { style: 'medium' },
       right: { style: 'medium' }
     };
-    
+
     worksheet.mergeCells('K8:M8');
     const branch = worksheet.getCell('K8');
     branch.value = `สาขา : ${data.branch_name === 'สมุทรสาคร ( โคกขาม )' ? 'โคกขาม' : data.branch_name === 'ชลบุรี ( บ้านเก่า )' ? 'ชลบุรี' : data.branch_name === 'ปทุมธานี ( นพวงศ์ )' ? 'เเยกนพวงศ์' : data.branch_name}`;
-    branch.font = { size: 16, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true  };
+    branch.font = { size: 16, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true };
     branch.alignment = { vertical: 'middle', horizontal: 'center' };
 
     worksheet.mergeCells('E3:J3');
@@ -575,8 +575,22 @@ export default function Quotation() {
     note.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('C57:J57');
+    const remark1 = worksheet.getCell('C57');
+    remark1.value = `${data.remark1}`;
+    remark1.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark1.alignment = { vertical: 'middle', horizontal: 'left' };
+
     worksheet.mergeCells('C58:J58');
+    const remark2 = worksheet.getCell('C58');
+    remark2.value = `${data.remark2}`;
+    remark2.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark2.alignment = { vertical: 'middle', horizontal: 'left' };
+
     worksheet.mergeCells('C59:J59');
+    const remark3 = worksheet.getCell('C59');
+    remark3.value = `${data.remark3}`;
+    remark3.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    remark3.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('A46:J46');
     const noteif = worksheet.getCell('A46');
