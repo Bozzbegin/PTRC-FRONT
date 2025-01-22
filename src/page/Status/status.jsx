@@ -376,7 +376,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token not found");
 
-      const url = `http://192.168.195.75:5000/v1/product/outbound/reserve/${reserveId}`;
+      const url = `http://192.168.195.75:5000/v1/product/outbound/reserve-item/${reserveId}`;
       const response = await axios.get(url, {
         headers: {
           Authorization: token,
@@ -388,15 +388,12 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
       if (response.data.code === 200) {
         const productData = response.data.data;
         const dataProduct = response.data.data.product;
-        const assemble = response.data.data.product.assemble_product;
 
-        let assemble_status = false;
 
-        if (Array.isArray(assemble) && assemble.length > 0) {
-          assemble_status = true;
-        }
+        console.log(dataProduct);
 
         const newOutbound = {
+
           customer_name: productData?.customer_name || "",
           place_name: productData?.place_name || "",
           address: productData?.address || "",
@@ -405,17 +402,21 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           total_price: productData?.total_price_out?.toString() || "0",
           reserve_id: reserveId || "",
           payment: payMent || 0,
-          assemble_status: assemble_status,
           outbound: [
             {
-              code: dataProduct?.code || [],
-              product_id: dataProduct?.product_id || [],
-              price: dataProduct?.price || [],
-              quantity: dataProduct?.quantity || [],
-              type: dataProduct?.type || [],
-              size: dataProduct?.size || [],
-              meter: dataProduct?.meter || [],
-              centimeter: dataProduct?.centimeter || [],
+              code: Array.isArray(dataProduct?.code) ? dataProduct.code : [],
+              product_id: Array.isArray(dataProduct?.product_id) ? dataProduct.product_id : [],
+              price: Array.isArray(dataProduct?.price) ? dataProduct.price : [],
+              quantity: Array.isArray(dataProduct?.quantity) ? dataProduct.quantity : [],
+              type: Array.isArray(dataProduct?.type) ? dataProduct.type : [],
+              size: Array.isArray(dataProduct?.size) ? dataProduct.size : [],
+              meter: Array.isArray(dataProduct?.meter) ? dataProduct.meter : [],
+              centimeter: Array.isArray(dataProduct?.centimeter) ? dataProduct.centimeter : [],
+
+              assemble: Array.isArray(dataProduct?.assemble) ? dataProduct.assemble : [],
+              assemble_price: Array.isArray(dataProduct?.assemble_price) ? dataProduct.assemble_price : [],
+              assemble_quantity: Array.isArray(dataProduct?.assemble_quantity) ? dataProduct.assemble_quantity : [],
+
             },
           ],
         };
@@ -429,13 +430,16 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           },
         });
 
+
         if (outboundResponse.data.code === 201) {
           Swal.fire({
             icon: "success",
             title: "สำเร็จ",
             text: "ส่งออกสินค้าเรียบร้อย!",
+          }).then(() => {
+            onClose();
+            window.location.reload();
           });
-          onClose();
         } else {
           throw new Error(outboundResponse.data.message);
         }
@@ -451,7 +455,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
       });
     }
   };
-
+  
   const handleShowAlert = () => {
     setShowAlert(true);
     setPayment(1);
