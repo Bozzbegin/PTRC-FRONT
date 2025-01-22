@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 export function ModalDiscount({ close, confirm }) {
 
@@ -37,7 +37,7 @@ export function ModalDiscount({ close, confirm }) {
             className="text-lg hover:text-red-300 transition"
             onClick={close}
           >
-            ✖
+            X
           </button>
         </div>
 

@@ -366,14 +366,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   if (!isModalOpen) return null;
 
   const handleExportClick = async () => {
-    if (!showAlert) {
-      Swal.fire({
-        icon: "warning",
-        title: "กรุณาจ่ายเงินก่อน",
-        text: "กรุณากดปุ่ม 'จ่ายเงินแล้ว' ก่อนส่งออกสินค้า",
-      });
-      return;
-    }
 
     if (!modalProductDetails || !modalProductDetails.products) {
       console.error("ไม่พบข้อมูลสินค้า");
@@ -428,7 +420,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           ],
         };
 
-        const outboundUrl = `http://192.168.195.75:5000/v1/product/outbound/outbound`;
+        const outboundUrl = `http://192.168.195.75:5000/v1/product/outbound/create-outbound`;
         const outboundResponse = await axios.post(outboundUrl, newOutbound, {
           headers: {
             Authorization: token,
@@ -486,14 +478,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   };
 
   const handleExportToExcelShippingCost = (id) => {
-    if (!showAlertShipping) {
-      Swal.fire({
-        icon: "warning",
-        title: "กรุณาส่งสินค้าก่อน",
-        text: "กรุณากดปุ่ม 'ส่งสินค้าแล้ว' ก่อนพิมพ์ใบสัญญาเช่า",
-      });
-      return;
-    }
 
     if (vat === true) {
       navigate("/rentalcontract-vat", { state: { id } });
@@ -666,40 +650,10 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
               </div>
 
             </div>
-            {currentStatus === "reserve" && (
-              <div className="mt-4">
-                <input
-                  type="radio"
-                  name="payment"
-                  value="true"
-                  className="mr-2"
-                  checked={showAlert}
-                  onChange={handleShowAlert}
-                />
-                <label htmlFor="vat" className="text-gray-700">
-                  จ่ายเงินแล้ว
-                </label>
-              </div>
-            )}
+           
           </div>
         ) : (
           <p className="mt-6 text-center text-gray-600">ไม่พบข้อมูลสินค้า</p>
-        )}
-
-        {currentStatus === "hire" && (
-          <div className="mt-4">
-            <input
-              type="radio"
-              name="shipping"
-              value="true"
-              className="mr-2"
-              checked={showAlertShipping}
-              onChange={handleShowAlertShipping}
-            />
-            <label htmlFor="vat" className="text-gray-700">
-              ส่งสินค้าเเล้ว
-            </label>
-          </div>
         )}
 
         {currentStatus === "reserve" && (

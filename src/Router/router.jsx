@@ -8,8 +8,8 @@ import { ReturnItem } from "../page/Returnbound/Returnbound";
 import { Home } from "../page/Home/Home";
 import Preorder from "../page/Preorder/Preorder";
 import PreorderNvat from "../page/Preorder/PreorderNvat";
-import PreOutboundNvat from "../page/Preoutbound/PreOutboundNvat";
-import PreOutboundVat from "../page/Preoutbound/PreOutboundVat";
+// import PreOutboundNvat from "../page/Preoutbound/PreOutboundNvat";
+// import PreOutboundVat from "../page/Preoutbound/PreOutboundVat";
 import { Modal_Outbound } from "../page/Outbound/Modal_Outbound";
 import { Modal_Create_Products } from "../page/Outbound/Modal_Create_Products";
 import StatusProduct from "../page/status/status";
@@ -41,8 +41,8 @@ const router = createBrowserRouter([
       },
       { path: "preorder", element: <Preorder /> },
       { path: "preorder-nvat", element: <PreorderNvat /> },
-      { path: "preoutbound-nvat", element: <PreOutboundNvat /> },
-      { path: "preoutbound-vat", element: <PreOutboundVat /> },
+      // { path: "preoutbound-nvat", element: <PreOutboundNvat /> },
+      // { path: "preoutbound-vat", element: <PreOutboundVat /> },
       { path: "shipping-vat", element: <ShippingVat /> },
       { path: "shipping-nvat", element: <ShippingNVat /> },
       { path: "rentalcontract-vat", element: <RentalcontractVat /> },
