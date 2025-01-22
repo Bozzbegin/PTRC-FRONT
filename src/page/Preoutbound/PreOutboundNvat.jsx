@@ -91,7 +91,6 @@ export default function Quotation() {
 
       </div>
 
-      {/* Customer Info */}
       <div className="mb-2 grid grid-cols-3">
         <div className="col-span-2 border-2 border-black print:col-span-2 print:text-[12px] text-md p-2 print:p-2 flex flex-col justify-around">
           <p>
@@ -160,9 +159,7 @@ export default function Quotation() {
 
       </div>
 
-      {/* Table */}
       <div className="h-[240px] text-sm grid grid-cols-10 grid-rows-11 print:text-[9px] ">
-        {/* หัวตาราง */}
         <div className=" h-full w-full row-span-11 border-r-2 border-l-2 border-black flex flex-col text-center">
           <span className=" border-b-2 border-t-2 border-black font-bold font-sarabun">ลำดับ</span>
           {products.map((product, index) => (
@@ -203,7 +200,6 @@ export default function Quotation() {
             <span className='mr-2 text-end print:text-[10px] font-sarabun'>{formatNumber((product.quantity * product.price) * data.date)}</span>
           ))}
         </div>
-        {/* ข้อมูลในตาราง */}
 
       </div>
 
