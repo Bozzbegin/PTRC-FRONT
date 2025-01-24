@@ -455,7 +455,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
       });
     }
   };
-  
+
   const handleShowAlert = () => {
     setShowAlert(true);
     setPayment(1);
@@ -635,16 +635,20 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                                 {assemble === "with_assembled" &&
                                   (
                                     <div key={index}>
-                                      {product.name && product.assemble_name
-                                        ? `${product.name} (${product.assemble_name})`
-                                        : product.name || product.assemble_name}
+                                      {product.name && product.assemble_name ? `${product.name} (${product.assemble_name})` : product.name || product.assemble_name}
+                                    </div>
+                                  )}
+                                {assemble === "standard" &&
+                                  (
+                                    <div key={index}>
+                                      {product.name && product.assemble_name ? `${product.name} (${product.assemble_name})` : product.name || product.assemble_name}
                                     </div>
                                   )}
                               </td>
                               <td className="border p-2 text-center">
                                 {product.size}
                                 {assemble === "with_assembled" && (
-                                  product.description
+                                  product.description ? ` ${product.description}` : ""
                                 )}
                               </td>
                             </tr>
@@ -657,7 +661,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
               </div>
 
             </div>
-           
+
           </div>
         ) : (
           <p className="mt-6 text-center text-gray-600">ไม่พบข้อมูลสินค้า</p>
