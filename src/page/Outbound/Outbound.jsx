@@ -317,7 +317,7 @@ export function Outbound() {
           assemble_price: [],
           assemble_service_price: [],
           type: [],
-          // typeASM: [],
+          unit_asm: [],
         }
       )
 
@@ -335,7 +335,6 @@ export function Outbound() {
       assemble_status: confirmitem_create.assemble_status || false,
       vat: hasVat ? "vat" : "nvat",
       ...formData,
-      proponent_name: "bossinwza007",
       average_price: 0,
     };
 

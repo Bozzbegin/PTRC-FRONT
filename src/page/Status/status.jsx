@@ -643,6 +643,9 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                               </td>
                               <td className="border p-2 text-center">
                                 {product.size}
+                                {assemble === "with_assembled" && (
+                                  product.description
+                                )}
                               </td>
                             </tr>
                           ))}
