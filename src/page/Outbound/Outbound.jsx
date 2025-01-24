@@ -291,6 +291,7 @@ export function Outbound() {
             acc.assemble_quantity.push(String(item.amountASM || 0));
             acc.assemble_price.push(String(item.assemble_price || 0));
             acc.assemble_service_price.push(String(item.assemble_service_price || 0));
+            acc.unit_asm.push(String(item.unit_asm || 0));
           } else {
             acc.code.push(item.code || "");
             acc.product_id.push(String(item.id));
@@ -412,7 +413,6 @@ export function Outbound() {
       product_id: [],
       price: [],
       price_damage: [],
-      unit: [],
       quantity: [],
       size: [],
       centimeter: [],
@@ -423,6 +423,7 @@ export function Outbound() {
       assemble_quantity: [],
       assemble_price: [],
       description: [],
+      unit_asm: [],
       assemble_service_price: [],
     };
 
@@ -433,6 +434,7 @@ export function Outbound() {
         reserveData.assemble_quantity.push(String(item.amountASM || 0));
         reserveData.assemble_price.push(String(item.assemble_price || 0));
         reserveData.description.push(String(item.description || ""));
+        reserveData.unit_asm.push(String(item.unit_asm || ""));
         reserveData.assemble_service_price.push(String(item.assemble_service_price || 0));
       } else {
         reserveData.code.push(item.code || "");
@@ -635,6 +637,7 @@ export function Outbound() {
           const incrementedNumber = (parseInt(number, 10) + 1).toString().padStart(3, '0');
           const newReceiptNumber = `${prefix}-${incrementedNumber}`;
           setReceiptNumber(newReceiptNumber);
+          setData(res.data.data.receip_number);
         }
       });
 
@@ -880,14 +883,34 @@ export function Outbound() {
     indexNumber.alignment = { vertical: 'middle', horizontal: 'center' };
 
     const ListProductAll = outboundData.reserve[0];
+    const Indexplus = 28;
+
+    let currentIndex = 1;
 
     ListProductAll.product_name.forEach((product, index) => {
-      const rowNumber = 28 + index;
+      const rowNumber = Indexplus + index;
       const productCell = worksheet.getCell(`A${rowNumber}`);
-      productCell.value = `${index + 1}`;
+
+      productCell.value = `${currentIndex}`;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+      currentIndex++;
     });
+
+    if (ListProductAll.assemble) {
+      ListProductAll.assemble.forEach((assembleItem, index) => {
+        const rowNumber = Indexplus + ListProductAll.product_name.length + index;
+        const assembleCell = worksheet.getCell(`A${rowNumber}`);
+
+        assembleCell.value = `${currentIndex}`;
+        assembleCell.font = { size: 13, name: 'Angsana New' };
+        assembleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        currentIndex++;
+      });
+    }
+
 
     worksheet.mergeCells('B27:G27');
     const listName = worksheet.getCell('B27');
@@ -896,21 +919,47 @@ export function Outbound() {
     listName.alignment = { vertical: 'middle', horizontal: 'center' };
 
     ListProductAll.product_name.forEach((product, index) => {
-      const rowNumber = 28 + index;
+      let rowNumber = 28 + index;
       worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
       const productCell = worksheet.getCell(`B${rowNumber}`);
       productCell.value = product;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+      if (ListProductAll.assemble_name) {
+        ListProductAll.assemble_name.forEach((assemble, index) => {
+          rowNumber++;
+
+          const assembleCell = worksheet.getCell(`B${rowNumber}`);
+          assembleCell.value = assemble;
+          assembleCell.font = { size: 13, name: 'Angsana New' };
+          assembleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+        });
+      }
+
     });
 
     ListProductAll.size.forEach((product, index) => {
-      const rowNumber = 28 + index;
+      let rowNumber = 28 + index;
       worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
       const productCell = worksheet.getCell(`D${rowNumber}`);
       productCell.value = product;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+      if (ListProductAll.description) {
+        ListProductAll.description.forEach((description, index) => {
+          rowNumber++;
+
+          const assembleCell = worksheet.getCell(`D${rowNumber}`);
+          assembleCell.value = description;
+          assembleCell.font = { size: 13, name: 'Angsana New' };
+          assembleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+        });
+      }
+
     });
 
     worksheet.mergeCells('H27:I27');
@@ -920,13 +969,37 @@ export function Outbound() {
     amout.alignment = { vertical: 'middle', horizontal: 'center' };
 
     ListProductAll.quantity.forEach((product, index) => {
-      const rowNumber = 28 + index;
-      worksheet.mergeCells(`H${rowNumber}:I${rowNumber}`);
+      let rowNumber = 28 + index;
+
+      const mergeRange = `H${rowNumber}:I${rowNumber}`;
+      if (!worksheet.getCell(`H${rowNumber}`).isMerged) {
+        worksheet.mergeCells(mergeRange);
+      }
+
       const productCell = worksheet.getCell(`H${rowNumber}`);
       const productCellValue = combinedItems[index].unit || 0;
+
       productCell.value = `${product + " " + productCellValue}`;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+      if (ListProductAll.description) {
+        ListProductAll.description.forEach((description, index) => {
+          rowNumber++;
+
+          const descriptionMergeRange = `H${rowNumber}:I${rowNumber}`;
+          if (!worksheet.getCell(`H${rowNumber}`).isMerged) {
+            worksheet.mergeCells(descriptionMergeRange);
+          }
+
+          const assembleCell = worksheet.getCell(`H${rowNumber}`);
+          assembleCell.value = ListProductAll.quantity[index] + " " + ListProductAll.unit_asm[index];
+          assembleCell.font = { size: 13, name: 'Angsana New' };
+          assembleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        });
+      }
+
     });
 
     const pricePerDay = worksheet.getCell('J27');
@@ -935,12 +1008,27 @@ export function Outbound() {
     pricePerDay.alignment = { vertical: 'middle', horizontal: 'center' };
 
     ListProductAll.price.forEach((product, index) => {
-      const rowNumber = 28 + index;
+      let rowNumber = 28 + index;
+
       worksheet.mergeCells(`J${rowNumber}`);
       const productCell = worksheet.getCell(`J${rowNumber}`);
+
       productCell.value = `${formatNumber(product)} `;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
+
+      if (ListProductAll.assemble_price) {
+        ListProductAll.assemble_price.forEach((assemblePrice, index) => {
+          rowNumber++;
+
+          const assembleCell = worksheet.getCell(`J${rowNumber}`);
+          assembleCell.value = `${formatNumber(assemblePrice)} `;
+          assembleCell.font = { size: 13, name: 'Angsana New' };
+          assembleCell.alignment = { vertical: 'middle', horizontal: 'right' };
+
+        });
+      }
+
     });
 
     const numberDay = worksheet.getCell('K27');
@@ -949,12 +1037,27 @@ export function Outbound() {
     numberDay.alignment = { vertical: 'middle', horizontal: 'center' };
 
     ListProductAll.price.forEach((product, index) => {
-      const rowNumber = 28 + index;
+      let rowNumber = 28 + index;
+
       worksheet.mergeCells(`K${rowNumber}`);
       const productCell = worksheet.getCell(`K${rowNumber}`);
+
       productCell.value = outboundData.date;
       productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+      if (ListProductAll.assemble_price) {
+        ListProductAll.assemble_price.forEach((assemblePrice, index) => {
+          rowNumber++;
+
+          const assembleCell = worksheet.getCell(`K${rowNumber}`);
+          assembleCell.value = outboundData.date;
+          assembleCell.font = { size: 13, name: 'Angsana New' };
+          assembleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        });
+      }
+
     });
 
     const priceDamage = worksheet.getCell('L27');
@@ -963,13 +1066,28 @@ export function Outbound() {
     priceDamage.alignment = { vertical: 'middle', horizontal: 'center' };
 
     ListProductAll.price.forEach((product, index) => {
-      const rowNumber = 28 + index;
+      let rowNumber = 28 + index;
+
       worksheet.mergeCells(`L${rowNumber}`);
       const productCell = worksheet.getCell(`L${rowNumber}`);
       const productCellValue = combinedItems[index].price_damage || 0;
+
       productCell.value = `${formatNumber(productCellValue ? productCellValue : "-")} `;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
+
+      if (ListProductAll.assemble_price) {
+        ListProductAll.assemble_price.forEach((assemblePrice, index) => {
+          rowNumber++;
+
+          const assembleCell = worksheet.getCell(`L${rowNumber} `);
+          assembleCell.value = "-";
+          assembleCell.font = { size: 13, name: 'Angsana New' };
+          assembleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        });
+      }
+
     });
 
     const finalPrice = worksheet.getCell('M27');
@@ -977,15 +1095,18 @@ export function Outbound() {
     finalPrice.font = { size: 14, bold: true, name: 'Angsana New' };
     finalPrice.alignment = { vertical: 'middle', horizontal: 'center' };
 
-    let totalFinalPrice1 = 0; // กำหนดค่าเริ่มต้น
+    let totalFinalPrice1 = 0;
+    let totalFinalPrice2 = 0;
 
     ListProductAll.price.forEach((product, index) => {
+
       const price = parseFloat(product);
       const quantity = parseFloat(ListProductAll.quantity[index]);
       const date = parseFloat(outboundData.date);
 
       if (!isNaN(price) && !isNaN(quantity) && !isNaN(date)) {
-        const rowNumber = 28 + index;
+        let rowNumber = 28 + index;
+
         worksheet.mergeCells(`M${rowNumber}`);
         const productCell = worksheet.getCell(`M${rowNumber}`);
         const finalPrice = price * date * quantity;
@@ -994,18 +1115,52 @@ export function Outbound() {
         productCell.value = `${formatNumber(finalPrice)} `;
         productCell.font = { size: 13, name: 'Angsana New' };
         productCell.alignment = { vertical: 'middle', horizontal: 'right' };
-      } else {
-        console.warn(`Invalid data at index ${index}:`, { price, quantity, date });
+
+        if (ListProductAll.assemble && ListProductAll.assemble_price.length === ListProductAll.assemble_quantity.length) {
+          ListProductAll.assemble_price.forEach((assemblePrice, assembleIndex) => {
+
+            rowNumber++;
+            const assembleQuantity = parseFloat(ListProductAll.assemble_quantity[assembleIndex]);
+            const finalPriceAssemble = assemblePrice * date * assembleQuantity;
+
+            const assembleCell = worksheet.getCell(`M${rowNumber}`);
+            assembleCell.value = `${formatNumber(finalPriceAssemble)} `;
+            assembleCell.font = { size: 13, name: 'Angsana New' };
+            assembleCell.alignment = { vertical: 'middle', horizontal: 'right' };
+
+          });
+        }
+
       }
     });
+
+    if (ListProductAll.assemble) {
+
+      ListProductAll.assemble_price.forEach((assemblePrice, index) => {
+        const date = parseFloat(outboundData.date);
+        const assembleQuantity = parseFloat(ListProductAll.assemble_quantity[index])
+
+        const finalPriceAssemble = assemblePrice * date * assembleQuantity;
+        totalFinalPrice2 += finalPriceAssemble;
+      });
+    }
 
     const movePriceTotal = parseFloat(outboundData.move_price) || 0;
     const shippingCostTotal = parseFloat(outboundData.shipping_cost) || 0;
     const discountTotal = parseFloat(outboundData.discount) || 0;
     const guaranteePriceTotal = parseFloat(outboundData.guarantee_price) || 0;
 
-    const total_Price_Discount = (Number(totalFinalPrice1) + movePriceTotal + shippingCostTotal) - discountTotal;
+    const total_Price_Discount = (Number(totalFinalPrice1 + totalFinalPrice2) + movePriceTotal + shippingCostTotal) - discountTotal;
     const finalTotalPrice = (total_Price_Discount * 0.07) + (guaranteePriceTotal ? guaranteePriceTotal : 0) + total_Price_Discount;
+
+    products.forEach((product, index) => {
+      const rowNumber = 28 + index;
+      worksheet.mergeCells(`M${rowNumber}`);
+      const productCell = worksheet.getCell(`M${rowNumber}`);
+      productCell.value = `${formatNumber(parseFloat((product.quantity * product.price) * data.date))} `;
+      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.alignment = { vertical: 'middle', horizontal: 'right' };
+    });
 
     worksheet.mergeCells('A58:J59');
     const priceThb = worksheet.getCell('A58');
@@ -1064,7 +1219,7 @@ export function Outbound() {
     discount.value = ' ส่วนลด';
     discount.font = { size: 13, name: 'Angsana New' };
     discount.alignment = { vertical: 'middle', horizontal: 'left' };
-    console.log(combinedItems.map((item) => item.price_damage));
+
     const discountValue = worksheet.getCell('M54');
     discountValue.value = `${(outboundData.discount ? formatNumber(outboundData.discount) : "-")} `;
     discountValue.font = { size: 13, name: 'Angsana New' };
@@ -1090,17 +1245,13 @@ export function Outbound() {
     shippingCostValue.font = { size: 13, bold: true, name: 'Angsana New' };
     shippingCostValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
-    const totalPrice = products.reduce((sum, product) => {
-      return sum + (product.quantity * product.price * data.date);
-    }, 0);
-    
     const totalPriceOut = worksheet.getCell('K51');
     totalPriceOut.value = ' รวมเงิน';
     totalPriceOut.font = { size: 13, name: 'Angsana New' };
     totalPriceOut.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const totalPriceOutValue = worksheet.getCell('M51');
-    totalPriceOutValue.value = `${formatNumber(totalFinalPrice1)} `;
+    totalPriceOutValue.value = `${formatNumber(totalFinalPrice1 + totalFinalPrice2)} `;
     totalPriceOutValue.font = { size: 13, bold: true, name: 'Angsana New' };
     totalPriceOutValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -1112,19 +1263,19 @@ export function Outbound() {
 
     worksheet.mergeCells('C55:J55');
     const remark1 = worksheet.getCell('C55');
-    remark1.value = `${data.remark1}`;
+    remark1.value = `${outboundData.remark1 ? outboundData.remark1 : ""}`;
     remark1.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     remark1.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('C56:J56');
     const remark2 = worksheet.getCell('C56');
-    remark2.value = `${data.remark2}`;
+    remark2.value = `${outboundData.remark2 ? outboundData.remark2 : ""}`;
     remark2.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     remark2.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('C57:J57');
     const remark3 = worksheet.getCell('C57');
-    remark3.value = `${data.remark3}`;
+    remark3.value = `${outboundData.remark3 ? outboundData.remark3 : ""}`;
     remark3.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     remark3.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -1229,11 +1380,11 @@ export function Outbound() {
     payment5.alignment = { vertical: 'middle', horizontal: 'left' };
     payment5.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
-    const newPrice = (totalPrice - (discountTotal ? discountTotal : 0)) * 0.05;
-    const totalNewPrice = (totalPrice - (discountTotal ? discountTotal : 0)) - newPrice;
+    const newPrice = ((totalFinalPrice1 + totalFinalPrice2) - (discountTotal ? discountTotal : 0)) * 0.05;
+    const totalNewPrice = ((totalFinalPrice1 + totalFinalPrice2) - (discountTotal ? discountTotal : 0)) - newPrice;
 
     const payment51 = worksheet.getCell('F39');
-    payment51.value = formatNumber(totalPrice - (data.discount ? data.discount : 0));
+    payment51.value = formatNumber((totalFinalPrice1 + totalFinalPrice2) - (discountTotal ? discountTotal : 0));
     payment51.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment51.alignment = { vertical: 'middle', horizontal: 'right' };
     payment51.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
@@ -1250,8 +1401,8 @@ export function Outbound() {
     payment53.alignment = { vertical: 'middle', horizontal: 'right' };
     payment53.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
-    const newShippingCostPrice = ((data.shipping_cost ? data.shipping_cost : 0) + (data.move_price ? data.move_price : 0)) * 0.03;
-    const totalShippingCost = ((data.shipping_cost ? data.shipping_cost : 0) + (data.move_price ? data.move_price : 0)) - newShippingCostPrice;
+    const newShippingCostPrice = ((shippingCostTotal ? shippingCostTotal : 0) + (movePriceTotal ? movePriceTotal : 0)) * 0.03;
+    const totalShippingCost = ((shippingCostTotal ? shippingCostTotal : 0) + (movePriceTotal ? movePriceTotal : 0)) - newShippingCostPrice;
 
     worksheet.mergeCells('D40:E40');
     const payment6 = worksheet.getCell('D40');
@@ -1261,7 +1412,7 @@ export function Outbound() {
     payment6.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
     const payment61 = worksheet.getCell('F40');
-    payment61.value = formatNumber((data.shipping_cost ? data.shipping_cost : 0) + (data.move_price ? data.move_price : 0));
+    payment61.value = formatNumber((shippingCostTotal ? shippingCostTotal : 0) + (movePriceTotal ? movePriceTotal : 0));
     payment61.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment61.alignment = { vertical: 'middle', horizontal: 'right' };
     payment61.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
@@ -1299,7 +1450,7 @@ export function Outbound() {
     payment72.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
     const payment73 = worksheet.getCell('H41');
-    payment73.value = formatNumber(total_Price_Discount * 0.07);
+    payment73.value = formatNumber((totalNewPrice + totalShippingCost) * 0.07);
     payment73.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment73.alignment = { vertical: 'middle', horizontal: 'right' };
     payment73.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
@@ -1324,7 +1475,7 @@ export function Outbound() {
     payment82.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
     const payment83 = worksheet.getCell('H42');
-    payment83.value = formatNumber(data.guarantee_price ? data.guarantee_price : 0);
+    payment83.value = formatNumber(guaranteePriceTotal ? guaranteePriceTotal : 0);
     payment83.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment83.alignment = { vertical: 'middle', horizontal: 'right' };
     payment83.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
@@ -1348,7 +1499,7 @@ export function Outbound() {
     payment92.alignment = { vertical: 'middle', horizontal: 'right' };
     payment92.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
-    const newFinalPrice = totalNewPrice + (total_Price_Discount * 0.07) + totalShippingCost + data.guarantee_price;
+    const newFinalPrice = totalNewPrice + ((totalNewPrice + totalShippingCost) * 0.07) + totalShippingCost + guaranteePriceTotal;
 
     const payment93 = worksheet.getCell('H43');
     payment93.value = formatNumber(newFinalPrice);
@@ -1363,7 +1514,7 @@ export function Outbound() {
     nameCustomer.alignment = { vertical: 'bottom', horizontal: 'right' };
 
     const nameCompany = worksheet.getCell('C61');
-    nameCompany.value = `${data.company_name}`;
+    nameCompany.value = `${name}`;
     nameCompany.font = { size: 13, bold: true, name: 'Angsana New' };
     nameCompany.alignment = { vertical: 'bottom', horizontal: 'center' };
 
@@ -1391,24 +1542,20 @@ export function Outbound() {
     namePleDate.alignment = { vertical: 'bottom', horizontal: 'right' };
 
     const namePleDate1 = worksheet.getCell('J62');
-    namePleDate1.value = `${data.reserve_out
-      ? new Date(data.reserve_out).toLocaleDateString('th-TH', {
-        day: '2-digit',
-        month: 'short',
-        year: '2-digit'
-      })
-      : ''}`;;
+    namePleDate1.value = new Date().toLocaleDateString('th-TH', {
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit'
+    });
     namePleDate1.font = { size: 13, bold: true, name: 'Angsana New' };
     namePleDate1.alignment = { vertical: 'bottom', horizontal: 'center' };
 
     const nameComDate = worksheet.getCell('C62');
-    nameComDate.value = `${data.reserve_out
-      ? new Date(data.reserve_out).toLocaleDateString('th-TH', {
-        day: '2-digit',
-        month: 'short',
-        year: '2-digit'
-      })
-      : ''}`;;
+    nameComDate.value = new Date().toLocaleDateString('th-TH', {
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit'
+    });
     nameComDate.font = { size: 13, bold: true, name: 'Angsana New' };
     nameComDate.alignment = { vertical: 'bottom', horizontal: 'center' };
 
@@ -2016,17 +2163,12 @@ export function Outbound() {
             ext: { width: 185, height: 156 }
           });
 
-          // productData.forEach((row, index) => {
-          //   const rowIndex = index + 100;
-          //   worksheet.getRow(rowIndex).font = { size: 10, name: 'Angsana New' };
-          // });
-
           workbook.xlsx.writeBuffer().then((buffer) => {
             const blob = new Blob([buffer], { type: 'application/octet-stream' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ใบเสนอราคา-เลขที่-${data.export_number}.xlsx`;
+            a.download = `ใบเสนอราคา-เลขที่-${receiptNumber}.xlsx`;
             a.click();
             URL.revokeObjectURL(url);
           }).catch((error) => {

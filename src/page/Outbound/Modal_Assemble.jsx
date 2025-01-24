@@ -15,7 +15,6 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
   const [showEditASM, setShowEditASM] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
 
-
   const toggleCreateASM = () => {
     setShowCreateASM(!showCreateASM);
   };
@@ -26,7 +25,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
   };
 
   const handleDelete = (id) => {
-    console.log(`กำลังลบรายการที่มี ID: ${id}`);
+
     const token = localStorage.getItem("token");
 
     axios
@@ -44,7 +43,6 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
             text: "ลบสินค้าประกอบสำเร็จ",
             confirmButtonText: "ตกลง",
           }).then(() => {
-            // ปิด modal และรีเฟรชหน้าหลังจากการลบสำเร็จ
             close();
             window.location.reload();
           });
@@ -65,8 +63,6 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
         });
       });
   };
-
-
 
   useEffect(() => {
     const fetchASMProducts = async () => {
@@ -89,7 +85,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
       } catch (error) {
         console.error("Error fetching ASM products:", error);
       } finally {
-        setIsLoading(false); // สิ้นสุดสถานะกำลังโหลด
+        setIsLoading(false); 
       }
     };
 
@@ -107,7 +103,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
     setkeysearchItem(assemble_name);
 
     if (assemble_name.trim() === "") {
-      // ถ้าช่องค้นหาว่างเปล่า แสดงข้อมูลสินค้าเดิมทั้งหมด
+     
       const token = localStorage.getItem("token");
       axios
         .get("http://192.168.195.75:5000/v1/product/outbound/assemble", {
@@ -119,7 +115,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
         })
         .then((res) => {
           if (res.status === 200) {
-            setProducts_search(res.data.data); // โหลดข้อมูลสินค้าเดิม
+            setProducts_search(res.data.data); 
           }
         })
         .catch((error) => {
@@ -136,7 +132,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
           const bIndex = b.assemble_name.toLowerCase().indexOf(assemble_name.toLowerCase());
           return aIndex - bIndex;
         });
-      setProducts_search(filtered); // อัปเดตข้อมูลที่กรอง
+      setProducts_search(filtered); 
     }
   };
 
@@ -158,6 +154,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
           assemble_price: item.assemble_price,
           assemble_service_price: item.assemble_service_price,
           description: item.description,
+          unit_asm: item.unit_asm,
           amountASM: parsedAmountASM,
           isAssemble: true,
           id_asm: item.id,
@@ -171,6 +168,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
             assemble_price: item.assemble_price,
             assemble_service_price: item.assemble_service_price,
             description: item.description,
+            unit_asm: item.unit_asm,
             amountASM: parsedAmountASM,
             isAssemble: true,
             id_asm: item.id,
@@ -225,7 +223,8 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
             <thead className="sticky top-0 bg-white z-10 text-[#133E87] font-bold">
               <tr className="border-b border-blue-500">
                 <th className="px-4 py-2">ชื่อสินค้า</th>
-                <th className="px-4 py-2">รายละเอียด</th>
+                <th className="px-4 py-2">ขนาด</th>
+                <th className="px-4 py-2">หน่วย</th>
                 <th className="px-4 py-2">ราคา</th>
                 <th className="px-4 py-2">เลือก</th>
                 <th className="px-4 py-2">จัดการ</th>
@@ -251,6 +250,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
                 <tr key={key} className="border-t border-blue-500">
                   <td className="px-4 py-2">{item.assemble_name}</td>
                   <td className="px-4 py-2">{item.description ? item.description : "-"}</td>
+                  <td className="px-4 py-2">{item.unit_asm ? item.unit_asm : "-"}</td>
                   <td className="px-4 py-2 text-red-500">{item.assemble_price}</td>
                   <td className="px-4 py-2">
                     <input

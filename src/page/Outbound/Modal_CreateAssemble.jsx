@@ -8,14 +8,19 @@ export function CreateASM({ close }) {
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [description, setDescription] = useState("");
     const [assemblePrice, setAssemblePrice] = useState(0);
+    const [assembleUnit, setAssembleUnit] = useState("");
     const [assembleServicePrice, setAssembleServicePrice] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
-    const [searchCode, setSearchCode] = useState(""); // สำหรับค้นหารหัสสินค้า
+    const [searchCode, setSearchCode] = useState(""); 
 
     useEffect(() => {
+
         const fetchProducts = async () => {
-            setIsLoading(true); // เริ่มโหลด
+
+            setIsLoading(true);
+
             const token = localStorage.getItem("token");
+
             try {
                 const res = await axios.get("http://192.168.195.75:5000/v1/product/outbound/products", {
                     headers: {
@@ -24,13 +29,16 @@ export function CreateASM({ close }) {
                         "x-api-key": "1234567890abcdef",
                     },
                 });
+
                 if (res.status === 200) {
                     setProducts(res.data.data);
                 }
+
             } catch (error) {
                 console.error("Error fetching products:", error);
+                
             } finally {
-                setIsLoading(false); // จบการโหลด
+                setIsLoading(false); 
             }
         };
         fetchProducts();
@@ -40,8 +48,9 @@ export function CreateASM({ close }) {
         setSearchCode(code);
 
         if (code.trim() === "") {
-            // ถ้าช่องค้นหาว่างเปล่า แสดงข้อมูลสินค้าเดิมทั้งหมด
+          
             const token = localStorage.getItem("token");
+
             axios
                 .get("http://192.168.195.75:5000/v1/product/outbound/products", {
                     headers: {
@@ -59,13 +68,13 @@ export function CreateASM({ close }) {
                     console.error("Error fetching products:", error);
                 });
         } else {
-            // กรองข้อมูลตามรหัสสินค้า
+           
             const filtered = products
                 .filter((product) => {
                     const searchText = code.toLowerCase();
                     return (
-                        product.code.toLowerCase().includes(searchText) || // ค้นหาใน code
-                        product.name.toLowerCase().includes(searchText)   // ค้นหาใน name
+                        product.code.toLowerCase().includes(searchText) || 
+                        product.name.toLowerCase().includes(searchText)  
                     );
                 })
                 .sort((a, b) => {
@@ -75,7 +84,6 @@ export function CreateASM({ close }) {
                     const aNameIndex = a.name.toLowerCase().indexOf(searchText);
                     const bNameIndex = b.name.toLowerCase().indexOf(searchText);
 
-                    // จัดเรียงตาม code ก่อน หากไม่พบใน code ให้เรียงตาม name
                     if (aCodeIndex !== -1 && bCodeIndex !== -1) {
                         return aCodeIndex - bCodeIndex;
                     } else if (aCodeIndex !== -1) {
@@ -91,7 +99,6 @@ export function CreateASM({ close }) {
 
         }
     };
-
 
     const handleAddProduct = (product) => {
         if (!selectedProducts.find((p) => p.id === product.id)) {
@@ -125,6 +132,7 @@ export function CreateASM({ close }) {
             assemble_service_price: assembleServicePrice,
             status: "rent",
             description: description,
+            unit_asm: assembleUnit,
             products: selectedProducts.map((p) => ({
                 product_id: p.id,
                 quantity: p.quantity,
@@ -182,8 +190,8 @@ export function CreateASM({ close }) {
                         />
                     </div>
 
-                    <div className="flex flex-col">
-                        <label htmlFor="assemblePrice" className="mb-2 text-lg font-bold text-gray-700">
+                    <div className="flex flex-col-2">
+                        <label htmlFor="assemblePrice" className="mb-2 text-lg font-bold text-gray-700 mr-2 mt-2">
                             ราคา :
                         </label>
                         <input
@@ -191,7 +199,17 @@ export function CreateASM({ close }) {
                             type="number"
                             value={assemblePrice}
                             onChange={(e) => setAssemblePrice(parseFloat(e.target.value) || 0)}
-                            className="border border-gray-300 rounded-md p-2"
+                            className="border border-gray-300 rounded-md p-2 w-2/2 mr-2"
+                        />
+                        <label htmlFor="assemblePrice" className="mb-2 text-lg font-bold text-gray-700 mr-2 mt-2">
+                            หน่วย :
+                        </label>
+                        <input
+                            id="assembleUnit"
+                            type="text"
+                            value={assembleUnit}
+                            onChange={(e) => setAssembleUnit(e.target.value) || ""}
+                            className="border border-gray-300 rounded-md p-2 w-2/2"
                         />
                     </div>
                     <div className="flex flex-col">
@@ -245,7 +263,7 @@ export function CreateASM({ close }) {
                         </div>
                     )}
                 </div>
-                                
+
                 {/* Right Panel */}
                 <div className="w-1/3 p-4 flex flex-col justify-between mt-14">
                     <div>
