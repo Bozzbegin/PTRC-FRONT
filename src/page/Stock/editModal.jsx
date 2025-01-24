@@ -45,9 +45,7 @@ function EditModal({ isModalOpen, handleClose, id }) {
 
   if (!isModalOpen) return null;
 
-  if (isLoading) {
-    return <div className="text-center text-blue-500 p-6">กำลังโหลดข้อมูล...</div>;
-  }
+  
 
   if (error) {
     return <div className="text-center text-red-500 p-6">เกิดข้อผิดพลาด: {error}</div>;

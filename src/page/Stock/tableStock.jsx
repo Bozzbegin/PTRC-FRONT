@@ -1,3 +1,4 @@
+// src/components/tableStock.jsx
 import { useState, useEffect } from "react";
 import axios from "axios";
 import EditModal from "./EditModal"; // Import Modal
@@ -6,6 +7,7 @@ import EditModall from "./editModal_copy"; // Import Modal
 export function TableItem({
   selectedBranch,
   onSelectProduct,
+  searchQuery, // รับค่าจาก NavStock
 }) {
   const [productDetails, setProductDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,7 +74,6 @@ export function TableItem({
     setSelectedBranchId(branchId)
     setIsModalOpen1(true);
     console.log(productId, branchId);
-    
   };
 
   const closeModal = () => {
@@ -81,8 +82,15 @@ export function TableItem({
     setSelectedProductId(null);
   };
 
-  if (isLoading)
-    return <div className="text-center text-gray-600">กำลังโหลดข้อมูล...</div>;
+  // ฟังก์ชันกรองสินค้าตามคำค้นหา
+  const filteredProducts = productDetails.filter((product) => {
+    return (
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      product.code.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
+
+
   if (error)
     return (
       <div className="text-center text-red-600">เกิดข้อผิดพลาด: {error}</div>
@@ -95,7 +103,7 @@ export function TableItem({
         <table className="w-full table-auto border-collapse border shadow-sm">
           <thead className="bg-blue-200 text-blue-900 w-96 h-14">
             <tr>
-              <th className="border p-2 text-center ">ลำดับที่</th>
+              <th className="border p-2 text-center">ลำดับที่</th>
               <th className="border p-2 text-center">สาขา</th>
               <th className="border p-2 text-center">รหัสสินค้า</th>
               <th className="border p-2 text-center">ชื่อสินค้า</th>
@@ -107,14 +115,14 @@ export function TableItem({
             </tr>
           </thead>
           <tbody>
-            {productDetails.length === 0 ? (
+            {filteredProducts.length === 0 ? (
               <tr>
                 <td colSpan="9" className="text-center text-gray-600">
                   ไม่มีข้อมูลสินค้าที่จะแสดง
                 </td>
               </tr>
             ) : (
-              productDetails.map((product, index) => (
+              filteredProducts.map((product, index) => (
                 <tr key={`${product.id}-${index}`}>
                   <td className="border p-2 text-center">{index + 1}</td>
                   <td className="border p-2 text-center">{getBranchName(product.branch_id)}</td>
@@ -139,11 +147,8 @@ export function TableItem({
                       onClick={() => openModal(product.id, product.branch_id)} // ส่ง branch_id ไปพร้อม productId
                     >
                       เพิ่ม <i className="fa-solid fa-prescription-bottle-medical"></i>
-                      
                     </button>
-                    
                   </td>
-
                 </tr>
               ))
             )}
