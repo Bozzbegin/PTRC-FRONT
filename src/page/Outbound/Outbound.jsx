@@ -2745,7 +2745,7 @@ export function Outbound() {
     const guaranteePriceTotal = parseFloat(outboundData.guarantee_price) || 0;
 
     const total_Price_Discount = (Number(totalFinalPrice1 + totalFinalPrice2) + movePriceTotal + shippingCostTotal) - discountTotal;
-    const finalTotalPrice =  (guaranteePriceTotal ? guaranteePriceTotal : 0) + total_Price_Discount;
+    const finalTotalPrice = (guaranteePriceTotal ? guaranteePriceTotal : 0) + total_Price_Discount;
 
     products.forEach((product, index) => {
       const rowNumber = 30 + index;
@@ -3750,13 +3750,11 @@ export function Outbound() {
           <div className="row-span-4 items-center text-base ">
             <div className="grid justify-end items-center grid-cols-4 ">
               <span className="col-span-1 grid justify-end pr-2">สาขา : </span>
-              <select
-                name="branch"
-                id="branch"
+              <input
                 className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500"
-              >
-                <option>{branch}</option>
-              </select>
+                value={"  " + branch}
+                onChange={''}
+              />
             </div>
 
             {menu.map((item, index) => (
