@@ -2377,7 +2377,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C17:J19');
     const addressValue = worksheet.getCell('C17');
-    addressValue.value = address ? address : "-";
+    addressValue.value = outboundData.address ? outboundData.address : "-";
     addressValue.font = { size: 13, name: 'Angsana New' };
     addressValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -2398,7 +2398,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C23:E25');
     const phoneValue = worksheet.getCell('C23:E25');
-    phoneValue.value = `${data.customer_tel ? data.customer_tel : "-"}`;
+    phoneValue.value = `${customer_tel ? customer_tel : "-"}`;
     phoneValue.font = { size: 13, name: 'Angsana New' };
     phoneValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -2410,7 +2410,7 @@ export function Outbound() {
 
     worksheet.mergeCells('M10:M14');
     const taxNumberValue = worksheet.getCell('M10');
-    taxNumberValue.value = `${data.export_number}`;
+    taxNumberValue.value = `${receiptNumber}`;
     taxNumberValue.font = { size: 13, name: 'Angsana New' };
     taxNumberValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -2422,13 +2422,7 @@ export function Outbound() {
 
     worksheet.mergeCells('M15:M18');
     const dateValue = worksheet.getCell('M15');
-    dateValue.value = `${data.reserve_out
-      ? new Date(data.reserve_out).toLocaleDateString('th-TH', {
-        day: '2-digit',
-        month: 'short',
-        year: '2-digit'
-      })
-      : ''}`;
+    dateValue.value = sell_date;
     dateValue.font = { size: 13, name: 'Angsana New' };
     dateValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -2665,19 +2659,93 @@ export function Outbound() {
     priceDamage.font = { size: 14, bold: true, name: 'Angsana New' };
     priceDamage.alignment = { vertical: 'middle', horizontal: 'center' };
 
-    products.forEach((product, index) => {
-      const rowNumber = 30 + index;
+    ListProductAll.price.forEach((product, index) => {
+      let rowNumber = 30 + index;
+
       worksheet.mergeCells(`L${rowNumber}`);
       const productCell = worksheet.getCell(`L${rowNumber}`);
-      productCell.value = `${(product.price_damage ? formatNumber(product.price_damage) : "-")} `;
+      const productCellValue = combinedItems[index].price_damage;
+
+      productCell.value = `${formatNumber(productCellValue ? productCellValue : "-")} `;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
+
+      if (ListProductAll.assemble_price) {
+        ListProductAll.assemble_price.forEach((assemblePrice, index) => {
+          rowNumber++;
+
+          const assembleCell = worksheet.getCell(`L${rowNumber} `);
+          assembleCell.value = "-";
+          assembleCell.font = { size: 13, name: 'Angsana New' };
+          assembleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        });
+      }
+
     });
 
     const finalPrice = worksheet.getCell('M29');
     finalPrice.value = 'จำนวนเงินรวม';
     finalPrice.font = { size: 14, bold: true, name: 'Angsana New' };
     finalPrice.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    let totalFinalPrice1 = 0;
+    let totalFinalPrice2 = 0;
+
+    ListProductAll.price.forEach((product, index) => {
+
+      const price = parseFloat(product);
+      const quantity = parseFloat(ListProductAll.quantity[index]);
+      const date = parseFloat(outboundData.date);
+
+      if (!isNaN(price) && !isNaN(quantity) && !isNaN(date)) {
+        let rowNumber = 30 + index;
+
+        worksheet.mergeCells(`M${rowNumber}`);
+        const productCell = worksheet.getCell(`M${rowNumber}`);
+        const finalPrice = price * date * quantity;
+        totalFinalPrice1 += finalPrice;
+
+        productCell.value = `${formatNumber(finalPrice)} `;
+        productCell.font = { size: 13, name: 'Angsana New' };
+        productCell.alignment = { vertical: 'middle', horizontal: 'right' };
+
+        if (ListProductAll.assemble && ListProductAll.assemble_price.length === ListProductAll.assemble_quantity.length) {
+          ListProductAll.assemble_price.forEach((assemblePrice, assembleIndex) => {
+
+            rowNumber++;
+            const assembleQuantity = parseFloat(ListProductAll.assemble_quantity[assembleIndex]);
+            const finalPriceAssemble = assemblePrice * date * assembleQuantity;
+
+            const assembleCell = worksheet.getCell(`M${rowNumber}`);
+            assembleCell.value = `${formatNumber(finalPriceAssemble)} `;
+            assembleCell.font = { size: 13, name: 'Angsana New' };
+            assembleCell.alignment = { vertical: 'middle', horizontal: 'right' };
+
+          });
+        }
+
+      }
+    });
+
+    if (ListProductAll.assemble) {
+
+      ListProductAll.assemble_price.forEach((assemblePrice, index) => {
+        const date = parseFloat(outboundData.date);
+        const assembleQuantity = parseFloat(ListProductAll.assemble_quantity[index])
+
+        const finalPriceAssemble = assemblePrice * date * assembleQuantity;
+        totalFinalPrice2 += finalPriceAssemble;
+      });
+    }
+
+    const movePriceTotal = parseFloat(outboundData.move_price) || 0;
+    const shippingCostTotal = parseFloat(outboundData.shipping_cost) || 0;
+    const discountTotal = parseFloat(outboundData.discount) || 0;
+    const guaranteePriceTotal = parseFloat(outboundData.guarantee_price) || 0;
+
+    const total_Price_Discount = (Number(totalFinalPrice1 + totalFinalPrice2) + movePriceTotal + shippingCostTotal) - discountTotal;
+    const finalTotalPrice =  (guaranteePriceTotal ? guaranteePriceTotal : 0) + total_Price_Discount;
 
     products.forEach((product, index) => {
       const rowNumber = 30 + index;
@@ -2687,13 +2755,6 @@ export function Outbound() {
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
     });
-
-    const total_Price_Out = products.reduce((sum, product) => {
-      return sum + (product.quantity * product.price * data.date);
-    }, 0);
-
-    const total_Price_Discount = total_Price_Out + (data.move_price ? data.move_price : 0) + (data.shipping_cost ? data.shipping_cost : 0) - (data.discount ? data.discount : 0);
-    const finalTotalPrice = (data.guarantee_price ? data.guarantee_price : 0) + total_Price_Discount;
 
     worksheet.mergeCells('A60:J61');
     const priceThb = worksheet.getCell('A60');
@@ -2724,7 +2785,7 @@ export function Outbound() {
     guaranteePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const guaranteePriceValue = worksheet.getCell('M59');
-    guaranteePriceValue.value = `${(data.guarantee_price ? formatNumber(data.guarantee_price) : "-")} `;
+    guaranteePriceValue.value = `${(outboundData.guarantee_price ? formatNumber(outboundData.guarantee_price) : "-")} `;
     guaranteePriceValue.font = { size: 13, name: 'Angsana New' };
     guaranteePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -2744,7 +2805,7 @@ export function Outbound() {
     discount.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const discountValue = worksheet.getCell('M57');
-    discountValue.value = `${(data.discount ? formatNumber(data.discount) : "-")} `;
+    discountValue.value = `${(outboundData.discount ? formatNumber(outboundData.discount) : "-")} `;
     discountValue.font = { size: 13, name: 'Angsana New' };
     discountValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -2754,7 +2815,7 @@ export function Outbound() {
     movePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const movePriceValue = worksheet.getCell('M56');
-    movePriceValue.value = `${(data.move_price ? formatNumber(data.move_price) : "-")} `;
+    movePriceValue.value = `${(outboundData.move_price ? formatNumber(outboundData.move_price) : "-")} `;
     movePriceValue.font = { size: 13, name: 'Angsana New' };
     movePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -2764,13 +2825,9 @@ export function Outbound() {
     shippingCost.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const shippingCostValue = worksheet.getCell('M55');
-    shippingCostValue.value = `${(data.shipping_cost ? formatNumber(data.shipping_cost) : "-")} `;
+    shippingCostValue.value = `${(outboundData.shipping_cost ? formatNumber(outboundData.shipping_cost) : "-")} `;
     shippingCostValue.font = { size: 13, bold: true, name: 'Angsana New' };
     shippingCostValue.alignment = { vertical: 'middle', horizontal: 'right' };
-
-    const totalPrice = products.reduce((sum, product) => {
-      return sum + (product.quantity * product.price * data.date);
-    }, 0);
 
     const totalPriceOut = worksheet.getCell('K54');
     totalPriceOut.value = ' รวมเงิน';
@@ -2778,7 +2835,7 @@ export function Outbound() {
     totalPriceOut.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const totalPriceOutValue = worksheet.getCell('M54');
-    totalPriceOutValue.value = `${formatNumber(totalPrice)} `;
+    totalPriceOutValue.value = `${formatNumber(totalFinalPrice1 + totalFinalPrice2)} `;
     totalPriceOutValue.font = { size: 13, bold: true, name: 'Angsana New' };
     totalPriceOutValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -2790,19 +2847,19 @@ export function Outbound() {
 
     worksheet.mergeCells('C57:J57');
     const remark1 = worksheet.getCell('C57');
-    remark1.value = `${data.remark1}`;
+    remark1.value = `${outboundData.remark1 ? outboundData.remark1 : ""}`;
     remark1.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     remark1.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('C58:J58');
     const remark2 = worksheet.getCell('C58');
-    remark2.value = `${data.remark2}`;
+    remark2.value = `${outboundData.remark2 ? outboundData.remark2 : ""}`;
     remark2.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     remark2.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('C59:J59');
     const remark3 = worksheet.getCell('C59');
-    remark3.value = `${data.remark3}`;
+    remark3.value = `${outboundData.remark3 ? outboundData.remark3 : ""}`;
     remark3.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     remark3.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -2891,7 +2948,7 @@ export function Outbound() {
     payment3.alignment = { vertical: 'middle', horizontal: 'left' };
     payment3.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCC00' } };
 
-    const average = (totalPrice - (data.discount ? data.discount : 0)) / data.date;
+    const average = ((totalFinalPrice1 + totalFinalPrice2) - (outboundData.discount ? outboundData.discount : 0)) / outboundData.date;
 
     const payment3Value = worksheet.getCell('E45');
     payment3Value.value = formatNumber(average);
@@ -2912,7 +2969,7 @@ export function Outbound() {
     nameCustomer.alignment = { vertical: 'bottom', horizontal: 'right' };
 
     const nameCustomer1 = worksheet.getCell('C63');
-    nameCustomer1.value = `${data.customer_name}`;
+    nameCustomer1.value = `${outboundData.customer_name}`;
     nameCustomer1.font = { size: 13, bold: true, name: 'Angsana New' };
     nameCustomer1.alignment = { vertical: 'bottom', horizontal: 'center' };
 
@@ -2940,26 +2997,22 @@ export function Outbound() {
     namePleDate.alignment = { vertical: 'bottom', horizontal: 'right' };
 
     const namePleDate1 = worksheet.getCell('J64');
-    namePleDate1.value = `${data.reserve_out
-      ? new Date(data.reserve_out).toLocaleDateString('th-TH', {
-        day: '2-digit',
-        month: 'short',
-        year: '2-digit'
-      })
-      : ''}`;
+    namePleDate1.value = new Date().toLocaleDateString('th-TH', {
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit'
+    });
     namePleDate1.font = { size: 13, bold: true, name: 'Angsana New' };
     namePleDate1.alignment = { vertical: 'bottom', horizontal: 'center' };
 
-    const nameCustomerDate1 = worksheet.getCell('C64');
-    nameCustomerDate1.value = `${data.reserve_out
-      ? new Date(data.reserve_out).toLocaleDateString('th-TH', {
-        day: '2-digit',
-        month: 'short',
-        year: '2-digit'
-      })
-      : ''}`;
-    nameCustomerDate1.font = { size: 13, bold: true, name: 'Angsana New' };
-    nameCustomerDate1.alignment = { vertical: 'bottom', horizontal: 'center' };
+    const nameComDate = worksheet.getCell('C64');
+    nameComDate.value = new Date().toLocaleDateString('th-TH', {
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit'
+    });
+    nameComDate.font = { size: 13, bold: true, name: 'Angsana New' };
+    nameComDate.alignment = { vertical: 'bottom', horizontal: 'center' };
 
     worksheet.mergeCells('C63:F63');
     worksheet.mergeCells('C64:F64');
