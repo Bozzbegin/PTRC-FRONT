@@ -40,6 +40,7 @@ export function Outbound() {
   const [quantitySum, setQuantitySum] = useState(0);
   const navigate = useNavigate();
   const [receiptNumber, setReceiptNumber] = useState('');
+  const [rawSellDate, setRawSellDate] = useState("");
 
   const combinedItems = [
     ...confirmitem.map((item) => ({
@@ -108,6 +109,7 @@ export function Outbound() {
   };
 
   const handleDateChange = (dateValue) => {
+    setRawSellDate(dateValue);
     const date = new Date(dateValue);
     const options = { day: "numeric", month: "short", year: "numeric" };
     const formattedDate = date.toLocaleDateString("th-TH", options);
@@ -608,6 +610,33 @@ export function Outbound() {
     }
     return Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
+
+  useEffect(() => {
+    const savedFormData = localStorage.getItem("outboundFormData");
+    if (savedFormData) {
+      const parsedData = JSON.parse(savedFormData);
+      setProducts(parsedData.products || []);
+      setName(parsedData.name || "");
+      setComName(parsedData.comName || "");
+      setAddress(parsedData.address || "");
+      setcustomer_tel(parsedData.customer_tel || "");
+      setWorkside(parsedData.workside || "");
+      setSell_date(parsedData.sell_date || "");
+      setDay_Length(parsedData.day_length || "");
+      setItems(parsedData.items || []);
+      setNetPrice(parsedData.netPrice || 0);
+      setConfirmitem(parsedData.confirmitem || []);
+      setConfirmitemASM(parsedData.confirmitemASM || []);
+      setConfirmItem_Create(parsedData.confirmitem_create || []);
+      setHasVat(parsedData.hasVat || true);
+      setWithHolDing(parsedData.withHolDing || true);
+      setItem_sendto_database(parsedData.Item_sendto_database || []);
+      setValidateModalInput(parsedData.validateModalInput || false);
+      setAlldata_default(parsedData.alldata_default || [{}]);
+      setFormData(parsedData.formData || {});
+      setQuantitySum(parsedData.quantitySum || 0);
+    }
+  }, []);
 
   const exportToExcelVat = () => {
 
@@ -3683,11 +3712,6 @@ export function Outbound() {
             ext: { width: 185, height: 162.5 }
           });
 
-          // productData.forEach((row, index) => {
-          //   const rowIndex = index + 100;
-          //   worksheet.getRow(rowIndex).font = { size: 10, name: 'Angsana New' };
-          // });
-
           workbook.xlsx.writeBuffer().then((buffer) => {
             const blob = new Blob([buffer], { type: 'application/octet-stream' });
             const url = URL.createObjectURL(blob);
@@ -3781,7 +3805,7 @@ export function Outbound() {
                       : item.title === "ชื่อบริษัท :" ? comName
                         : item.title === "ที่อยู่ลูกค้า :" ? address
                           : item.title === "ชื่อไซต์งาน :" ? workside
-                            : item.title === "วันที่เสนอ :" ? sell_date
+                            : item.title === "วันที่เสนอ :" ? rawSellDate
                               : item.title === "เบอร์โทรศัพท์ :" ? customer_tel
                                 : ""
                   }
