@@ -57,6 +57,7 @@ export function ReturnItem() {
     const [selectedReceipt, setSelectedReceipt] = useState(null);
     const closeModalGreen = () => {
         setShowmodalGreen(false);
+        window.location.reload();
     };
     const [showmodalRed, setShowmodalRed] = useState(false);
     const closeModalRed = () => {
