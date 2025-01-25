@@ -75,6 +75,22 @@ export function TableItem({
       <div className="text-center text-red-600">เกิดข้อผิดพลาด: {error}</div>
     );
 
+  // ฟังก์ชันในการแปลงวันที่ให้เป็นรูปแบบ YYYY-MM-DD
+  const formatDate = (date) => {
+    if (!date) return null;
+    const d = new Date(date);
+    return d.toISOString().split("T")[0]; // คืนค่าวันที่ในรูปแบบ YYYY-MM-DD
+  };
+
+  // กรองข้อมูลให้ตรงกับวันที่เลือก
+  const filteredListAction = listAction.filter((action) => {
+    const actionDate = formatDate(action.date_action);
+    if (dateFilter) {
+      return actionDate === dateFilter; // เปรียบเทียบวันที่
+    }
+    return true; // ถ้าไม่มีวันที่เลือกจะไม่กรอง
+  });
+
   return (
     <div className="space-y-4">
       {/* กล่องเลือกสาขา, ประเภทการดำเนินการ และวันที่ */}
@@ -136,14 +152,14 @@ export function TableItem({
             </tr>
           </thead>
           <tbody>
-            {listAction.length === 0 ? (
+            {filteredListAction.length === 0 ? (
               <tr>
                 <td colSpan="7" className="text-center text-gray-600 ">
                   ไม่มีข้อมูลที่จะแสดง
                 </td>
               </tr>
             ) : (
-              listAction.map((action, index) => (
+              filteredListAction.map((action, index) => (
                 <tr key={`${action.id}-${index}`}>
                   <td className="border p-2 text-center">{index + 1}</td>
                   <td className="border p-2">{action.branch_name}</td>

@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import EditModal from "./editModal"; // นำเข้า EditModal
 import TableItem from "./tableStock"; // นำเข้า TableItem
 
-
 export function NavStock() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState(""); // สถานะของสาขาที่เลือก
   const [productId, setProductId] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(""); // สถานะสำหรับเก็บคำค้นหาจากช่องค้นหา
 
-  // Define the onSelectProduct function
+  // ฟังก์ชันเมื่อเลือกสินค้าจาก TableItem
   const onSelectProduct = (productId) => {
     console.log(productId);
     setProductId(productId);
@@ -22,6 +22,10 @@ export function NavStock() {
 
   const handleBranchChange = (branchId) => {
     setSelectedBranch(branchId); // เปลี่ยนสาขาที่เลือก
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value); // อัปเดตค่าคำค้นหาทุกครั้งที่ผู้ใช้กรอก
   };
 
   return (
@@ -44,6 +48,8 @@ export function NavStock() {
             className="border p-2 rounded-md w-full shadow-md"
             placeholder="ค้นหาประเภทสินค้า"
             type="text"
+            value={searchQuery} // ผูกค่าของช่องค้นหากับ searchQuery
+            onChange={handleSearchChange} // อัปเดตค่าของ searchQuery
           />
         </div>
       </div>
@@ -61,6 +67,7 @@ export function NavStock() {
         <TableItem
           selectedBranch={selectedBranch}
           onSelectProduct={onSelectProduct}
+          searchQuery={searchQuery} // ส่ง searchQuery ไปยัง TableItem
         />
       </div>
     </div>
