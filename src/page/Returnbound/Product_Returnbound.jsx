@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2"; // เพิ่ม SweetAlert
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default function ProductReturn({ id }) {
   const [productData, setProductData] = useState([]);
@@ -8,11 +8,12 @@ export default function ProductReturn({ id }) {
   const [error, setError] = useState(null);
   const [returnData, setReturnData] = useState({});
   const [outboundId, setOutboundId] = useState(null);
+  const [hasFetched, setHasFetched] = useState(false);
+  const [expandedRows, setExpandedRows] = useState({});
 
-  // ดึงข้อมูลสินค้า
   useEffect(() => {
     const fetchData = async () => {
-      if (!id) return;
+      if (!id || hasFetched) return;
 
       try {
         const token = localStorage.getItem("token");
@@ -31,13 +32,64 @@ export default function ProductReturn({ id }) {
 
         if (data.status) {
           setOutboundId(data.option.outbound_id);
-          setProductData(data.option.products);
-          setReturnData(
-            data.option.products.reduce((acc, product) => {
-              acc[product.product_id] = { return_quantity: 0, return_all: false };
-              return acc;
-            }, {})
-          );
+
+          const normalProducts = data.option.return_logs.map((log) => ({
+            id: log.product_id,
+            type: "normal",
+            product_name: log.product_name || "สินค้า",
+            code: log.code,
+            borrowed_quantity: log.borrowed_quantity,
+            remaining_quantity: log.borrowed_quantity - log.return_quantity,
+            unit: log.unit
+          }));
+
+          const assembledProducts = data.option.return_assemble_logs.map((log) => ({
+            id: log.assemble_id,
+            type: "assemble",
+            assemble_name: log.assemble_name || `สินค้าประกอบ ID: ${log.assemble_id}`,
+            borrowed_quantity: log.assemble_quantity_borrow,
+            remaining_quantity: log.assemble_quantity_borrow - log.assemble_quantity_return,
+            descriptionASM: log.description || "ไม่มีคำอธิบาย", // เพิ่มส่วนนี้เพื่อเก็บคำอธิบาย
+            unit_asm: log.unit_asm,
+            product_details: log.product_id.split(",").map((id, index) => ({
+              product_id: id,
+              product_names: log.product_names.split(",")[index],
+              borrowed_quantity: parseInt(log.product_quantity_borrow.split(",")[index]),
+              return_quantity: parseInt(log.product_quantity_return.split(",")[index]),
+              remaining_quantityASM:
+                parseInt(log.product_quantity_borrow.split(",")[index]) -
+                parseInt(log.product_quantity_return.split(",")[index]),
+
+            })),
+          }));
+
+
+          const combinedData = [...normalProducts, ...assembledProducts];
+          setProductData(combinedData);
+
+          const initialReturnData = {};
+          combinedData.forEach((item) => {
+            if (item.type === "assemble") {
+              item.product_details.forEach((detail) => {
+                const key = `assemble_${item.id}_${detail.product_id}`;
+                initialReturnData[key] = {
+                  return_quantity: 0,
+                  damage_quantity: 0,
+                  description: "",
+                };
+              });
+            } else {
+              const key = `normal_${item.id}`;
+              initialReturnData[key] = {
+                return_quantity: 0,
+                damage_quantity: 0,
+                description: "",
+              };
+            }
+          });
+
+          setReturnData(initialReturnData);
+          setHasFetched(true);
         } else {
           setError("ไม่พบข้อมูลสินค้า");
         }
@@ -50,38 +102,244 @@ export default function ProductReturn({ id }) {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, hasFetched]);
 
-  // อัปเดตค่า return_quantity หรือ return_all
-  const handleInputChange = (productId, field, value) => {
+  const handleInputChange = (productId, field, value, assembleId = null) => {
+    const key = assembleId ? `assemble_${assembleId}_${productId}` : `normal_${productId}`;
     setReturnData((prev) => ({
       ...prev,
-      [productId]: { ...prev[productId], [field]: value },
+      [key]: { ...prev[key], [field]: value },
     }));
   };
 
-  // Function to check if any product has been selected for return
-  const isAnyProductSelected = () => {
-    return Object.values(returnData).some(
-      (product) => product.return_quantity > 0 || product.return_all
-    );
+  const toggleRow = (rowId) => {
+    setExpandedRows((prev) => ({
+      ...prev,
+      [rowId]: !prev[rowId],
+    }));
   };
+  const handleReturnAllForNormalProduct = (productId, isChecked) => {
+    setReturnData((prev) => {
+      const updatedData = { ...prev };
+      const key = `normal_${productId}`;
 
-  // ส่งข้อมูลคืนสินค้าไปยัง API
-  const handleReturnSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const payload = {
-        outbound_id: outboundId,
-        // branch_id: 1,
-        returns: Object.keys(returnData).map((productId) => ({
-          product_id: parseInt(productId),
-          return_quantity: parseInt(returnData[productId].return_quantity),
-          return_all: returnData[productId].return_all,
-        }))
+      updatedData[key] = {
+        ...updatedData[key],
+        return_all: isChecked,
+        return_quantity: isChecked
+          ? productData.find((item) => item.id === productId)?.remaining_quantity || 0
+          : 0,
+        damage_quantity: isChecked ? 0 : updatedData[key]?.damage_quantity || 0,
+        description: isChecked ? "คืนสินค้าทั้งหมด" : "",
       };
 
+      return updatedData;
+    });
+  };
+
+  const handleReturnAllForProductDetail = (assembleId, productId, isChecked) => {
+    setReturnData((prev) => {
+      const updatedData = { ...prev };
+
+      const key = `assemble_${assembleId}_${productId}`;
+      updatedData[key] = {
+        ...updatedData[key],
+        return_all: isChecked,
+        return_quantity: isChecked
+          ? productData
+            .find((item) => item.id === assembleId)
+            ?.product_details.find((detail) => detail.product_id === productId)
+            ?.remaining_quantityASM || 0
+          : 0,
+        damage_quantity: isChecked ? 0 : updatedData[key]?.damage_quantity || 0,
+        description: isChecked ? "คืนทั้งหมดในสินค้าประกอบ" : "",
+      };
+
+      return updatedData;
+    });
+  };
+
+  const renderNormalProducts = (item) => (
+    <tr key={item.id}>
+      <td className="text-center py-4  align-middle">{item.product_name}</td>
+      <td className="text-center py-4  align-middle">{item.code}</td>
+      <td className="text-center py-4  align-middle">{item.borrowed_quantity}</td>
+      <td className="text-center py-4  align-middle">{item.remaining_quantity}</td>
+      <td className="text-center py-4  align-middle">
+        <input
+          type="checkbox"
+          checked={returnData[`normal_${item.id}`]?.return_all || false}
+          onChange={(e) => handleReturnAllForNormalProduct(item.id, e.target.checked)}
+          className="w-5 h-5"
+        />
+      </td>
+      <td className="text-center align-middle ">
+        <input
+          type="number"
+          value={returnData[`normal_${item.id}`]?.return_quantity || 0}
+          onChange={(e) => handleInputChange(item.id, "return_quantity", e.target.value)}
+          className="w-20 border rounded px-1 py-1"
+        />
+      </td>
+      <td className="text-center align-middle">
+        <input
+          type="number"
+          value={returnData[`normal_${item.id}`]?.damage_quantity || 0}
+          onChange={(e) => handleInputChange(item.id, "damage_quantity", e.target.value)}
+          className="w-20 border rounded px-1 py-1"
+        />
+      </td>
+      <td className="text-center align-middle">
+        <input
+          type="text"
+          value={returnData[`normal_${item.id}`]?.description || ""}
+          onChange={(e) => handleInputChange(item.id, "description", e.target.value)}
+          className="w-36 border rounded px-1 py-1"
+        />
+      </td>
+    </tr>
+  );
+
+
+  const renderAssembledProducts = (item) => (
+    <React.Fragment key={item.id}>
+      <tr>
+        {/* เพิ่มปุ่มแสดง/ซ่อนในคอลัมน์ "รายละเอียด/รหัส" */}
+        <td className="text-center align-middle">{item.assemble_name}</td>
+        <td className="text-center align-middle">
+          <button
+            className="text-blue-500 underline"
+            onClick={() => toggleRow(item.id)}
+          >
+            {expandedRows[item.id] ? (
+              <i className="fa-solid fa-caret-up"></i>
+            ) : (
+              <i className="fa-solid fa-caret-down"></i>
+            )}
+          </button>
+        </td>
+        <td colSpan="6"></td>
+      </tr>
+      {expandedRows[item.id] &&
+        item.product_details.map((detail) => (
+          <tr key={detail.product_id}>
+            <td className="text-center align-middle">{detail.product_names}</td>
+            <td className="text-center align-middle">-</td>
+            <td className="text-center align-middle">{detail.borrowed_quantity}</td>
+            <td className="text-center align-middle">{detail.remaining_quantityASM}</td>
+            <td className="text-center align-middle">
+              <input
+                type="checkbox"
+                checked={
+                  returnData[`assemble_${item.id}_${detail.product_id}`]?.return_all || false
+                }
+                onChange={(e) =>
+                  handleReturnAllForProductDetail(item.id, detail.product_id, e.target.checked)
+                }
+                className="w-5 h-5"
+              />
+            </td>
+            <td className="text-center align-middle">
+              <input
+                type="number"
+                value={
+                  returnData[`assemble_${item.id}_${detail.product_id}`]?.return_quantity || 0
+                }
+                onChange={(e) =>
+                  handleInputChange(detail.product_id, "return_quantity", e.target.value, item.id)
+                }
+                disabled={
+                  returnData[`assemble_${item.id}_${detail.product_id}`]?.return_all || false
+                }
+                className="w-20 border rounded px-1 py-1"
+              />
+            </td>
+            <td className="text-center align-middle">
+              <input
+                type="number"
+                value={
+                  returnData[`assemble_${item.id}_${detail.product_id}`]?.damage_quantity || 0
+                }
+                onChange={(e) =>
+                  handleInputChange(detail.product_id, "damage_quantity", e.target.value, item.id)
+                }
+                className="w-20 border rounded px-1 py-1"
+              />
+            </td>
+            <td className="text-center align-middle">
+              <input
+                type="text"
+                value={
+                  returnData[`assemble_${item.id}_${detail.product_id}`]?.description || ""
+                }
+                onChange={(e) =>
+                  handleInputChange(detail.product_id, "description", e.target.value, item.id)
+                }
+                className="w-36 border rounded px-1 py-1"
+              />
+            </td>
+          </tr>
+        ))}
+    </React.Fragment>
+  );
+  
+
+
+ 
+
+  const handleReturnSubmit = async () => {
+    try {
+      const payload = {
+        outbound_id: outboundId,
+        returns: productData.flatMap((item) => {
+          if (item.type === "assemble") {
+            const productReturns = item.product_details.map((detail) => {
+              const returnEntry = {
+                product_id: parseInt(detail.product_id),
+                return_quantity: parseInt(
+                  returnData[`assemble_${item.id}_${detail.product_id}`]?.return_quantity || 0
+                ),
+                ...(returnData[`assemble_${item.id}_${detail.product_id}`]?.damage_quantity
+                  ? {
+                      damage_quantity: parseInt(
+                        returnData[`assemble_${item.id}_${detail.product_id}`]?.damage_quantity
+                      ),
+                    }
+                  : {}),
+                description:
+                  returnData[`assemble_${item.id}_${detail.product_id}`]?.description || "",
+              };
+  
+              return returnEntry;
+            });
+  
+            return {
+              assemble_id: item.id,
+              product_returns: productReturns,
+              return_all: false,
+              description: "คืนสินค้าประกอบบางส่วน",
+            };
+          } else {
+            const returnEntry = {
+              product_id: item.id,
+              return_quantity: parseInt(returnData[`normal_${item.id}`]?.return_quantity || 0),
+              ...(returnData[`normal_${item.id}`]?.damage_quantity
+                ? {
+                    damage_quantity: parseInt(returnData[`normal_${item.id}`]?.damage_quantity),
+                  }
+                : {}),
+              description: returnData[`normal_${item.id}`]?.description || "",
+              return_all: false,
+            };
+  
+            return returnEntry;
+          }
+        }),
+      };
+  
+      console.log("Payload ที่ส่งไปยัง API:", payload);
+      const token = localStorage.getItem("token");
+  
       const response = await axios.post(
         "http://192.168.195.75:5000/v1/product/return/return-product",
         payload,
@@ -93,36 +351,40 @@ export default function ProductReturn({ id }) {
           },
         }
       );
-
-      const data = response.data;
-
-      if (data.status) {
+  
+      if (response.status === 200) {
         // แสดง SweetAlert เมื่อคืนสินค้าสำเร็จ
         Swal.fire({
-          title: "สำเร็จ!",
-          text: "คืนสินค้าสำเร็จแล้ว",
           icon: "success",
+          title: "สำเร็จ",
+          text: "การคืนสินค้าสำเร็จ",
           confirmButtonText: "ตกลง",
         }).then(() => {
-          window.location.reload(); // รีโหลด modal
+          // ปิด Modal (ปรับการปิด Modal ตามที่ใช้งาน เช่น setModalOpen(false))
+          // setModalOpen(false); // หากใช้ React State สำหรับ Modal
+  
+          // รีเฟรชหน้า
+          window.location.reload();
         });
-      } else {
-        throw new Error(data.msg || "เกิดข้อผิดพลาด");
       }
-    } catch (err) {
-      console.error("Error submitting return data:", err);
+    } catch (error) {
       // แสดง SweetAlert เมื่อเกิดข้อผิดพลาด
       Swal.fire({
-        title: "ข้อผิดพลาด!",
-        text: "เกิดข้อผิดพลาดในการคืนสินค้า",
         icon: "error",
-        confirmButtonText: "ลองใหม่อีกครั้ง",
+        title: "เกิดข้อผิดพลาด",
+        text: error.response?.data?.msg || "ไม่สามารถคืนสินค้าได้",
+        confirmButtonText: "ตกลง",
       });
+      console.error("เกิดข้อผิดพลาดในการคืนสินค้า:", error);
     }
   };
-
+  
+  
+  
+  
+  
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>กำลังโหลดข้อมูล...</div>;
   }
 
   if (error) {
@@ -130,61 +392,36 @@ export default function ProductReturn({ id }) {
   }
 
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-xl font-semibold text-center mb-6">รายละเอียดสินค้า</h1>
-      <table className="min-w-full table-auto border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="px-4 py-2">ชื่อสินค้า</th>
-            <th className="px-4 py-2">รหัสสินค้า</th>
-            <th className="px-4 py-2">ยืมไป</th>
-            <th className="px-4 py-2">เหลือคืน</th>
-            <th className="px-4 py-2">คืนทั้งหมด</th>
-            <th className="px-4 py-2">จำนวนที่คืน</th>
-          </tr>
-        </thead>
-        <tbody>
-          {productData.map((product) => (
-            <tr key={product.product_id}>
-              <td className="px-4 py-2">{product.product_name}</td>
-              <td className="px-4 py-2">{product.code}</td>
-              <td className="px-4 py-2">{product.borrowed_quantity}</td>
-              <td className="px-4 py-2">{product.remaining_quantity}</td>
-              <td className="px-4 py-2 text-center">
-                <input
-                  type="checkbox"
-                  checked={returnData[product.product_id]?.return_all || false}
-                  onChange={(e) =>
-                    handleInputChange(product.product_id, "return_all", e.target.checked)
-                  }
-                />
-              </td>
-              <td className="px-4 py-2">
-                <input
-                  type="number"
-                  value={returnData[product.product_id]?.return_quantity || 0}
-                  min="0"
-                  max={product.remaining_quantity}
-                  disabled={returnData[product.product_id]?.return_all}
-                  onChange={(e) =>
-                    handleInputChange(product.product_id, "return_quantity", e.target.value)
-                  }
-                  className="border rounded px-2 py-1"
-                />
-              </td>
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-semibold mb-6 text-center">รายละเอียดสินค้า</h1>
+      <div className="overflow-x-auto bg-white">
+        <table className="min-w-full table-auto border-collapse border border-gray-300">
+          <thead className="bg-blue-300 border-xl">
+            <tr>
+              <th className="px-4 py-2  text-center align-middle">ชื่อสินค้า</th>
+              <th className="px-4 py-2 text-center align-middle">รายละเอียด/รหัส</th>
+              <th className="px-4 py-2 text-center align-middle">ยืมไป</th>
+              <th className="px-4 py-2 text-center align-middle">เหลือคืน</th>
+              <th className="px-4 py-2 text-center align-middle">คืนทั้งหมด</th>
+              <th className="px-2 py-2 text-center align-middle">จำนวนที่คืน</th>
+              <th className="px-4 py-2 text-center align-middle">จำนวนที่เสียหาย</th>
+              <th className="px-4 py-2 text-center align-middle">คำอธิบาย</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="mt-6 text-center">
-        <button
-          onClick={handleReturnSubmit}
-          className={`px-6 py-2 text-white rounded-lg transition-all ${
-            isAnyProductSelected() ? "bg-blue-500 hover:bg-blue-700" : "bg-gray-500 cursor-not-allowed"
-          }`}
-          disabled={!isAnyProductSelected()}
-        >
+          </thead>
+
+          <tbody className="bg-white">
+            {productData.map((item) =>
+              item.type === "normal"
+                ? renderNormalProducts(item)
+                : renderAssembledProducts(item)
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div className="flex justify-center mt-4">
+        <button onClick={handleReturnSubmit} className="bg-blue-500 text-white px-6 py-2 rounded shadow">
           คืนสินค้า
+          
         </button>
       </div>
     </div>
