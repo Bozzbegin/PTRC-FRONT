@@ -274,7 +274,7 @@ export function Outbound() {
 
     resetForm();
 
-    if (!name || !workside || !address || !day_length || confirmitem.length === 0 || confirmitem.some((item) => !item.price && !item.price3D)) {
+    if (!name || !day_length || confirmitem.length === 0 || confirmitem.some((item) => !item.price && !item.price3D)) {
 
       Swal.fire({
         icon: "warning",
@@ -295,6 +295,7 @@ export function Outbound() {
             acc.assemble_price.push(String(item.assemble_price || 0));
             acc.assemble_service_price.push(String(item.assemble_service_price || 0));
             acc.unit_asm.push(String(item.unit_asm || 0));
+            acc.assemble_price_damage.push(String(item.assemble_price_damage || 0));
           } else {
             acc.code.push(item.code || "");
             acc.product_id.push(String(item.id));
@@ -321,6 +322,7 @@ export function Outbound() {
           assemble_service_price: [],
           type: [],
           unit_asm: [],
+          assemble_price_damage: [],
         }
       )
 
