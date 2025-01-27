@@ -85,7 +85,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
       } catch (error) {
         console.error("Error fetching ASM products:", error);
       } finally {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     };
 
@@ -103,7 +103,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
     setkeysearchItem(assemble_name);
 
     if (assemble_name.trim() === "") {
-     
+
       const token = localStorage.getItem("token");
       axios
         .get("http://192.168.195.75:5000/v1/product/outbound/assemble", {
@@ -115,7 +115,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
         })
         .then((res) => {
           if (res.status === 200) {
-            setProducts_search(res.data.data); 
+            setProducts_search(res.data.data);
           }
         })
         .catch((error) => {
@@ -132,7 +132,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
           const bIndex = b.assemble_name.toLowerCase().indexOf(assemble_name.toLowerCase());
           return aIndex - bIndex;
         });
-      setProducts_search(filtered); 
+      setProducts_search(filtered);
     }
   };
 
@@ -146,7 +146,6 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
       }
 
       const existingItemIndex = prevItems.findIndex((i) => i.id_asm === item.id);
-
       if (existingItemIndex !== -1) {
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex] = {
@@ -154,6 +153,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
           assemble_price: item.assemble_price,
           assemble_service_price: item.assemble_service_price,
           description: item.description,
+          assemble_price_damage: item.assemble_price_damage,
           unit_asm: item.unit_asm,
           amountASM: parsedAmountASM,
           isAssemble: true,
@@ -168,6 +168,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
             assemble_price: item.assemble_price,
             assemble_service_price: item.assemble_service_price,
             description: item.description,
+            assemble_price_damage: item.assemble_price_damage,
             unit_asm: item.unit_asm,
             amountASM: parsedAmountASM,
             isAssemble: true,
@@ -185,7 +186,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
       alert("กรุณาเลือกสินค้าประกอบก่อนยืนยัน");
       return;
     }
-    
+
     confirm(filteredItemsASM);
     close(filteredItemsASM.length);
   };
@@ -300,7 +301,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
             สร้างสินค้าประกอบใหม่
           </button>
         </div>
-        
+
       </div>
       {showCreateASM && <CreateASM close={toggleCreateASM} />}
       {showEditASM && (
