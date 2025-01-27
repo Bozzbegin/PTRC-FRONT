@@ -52,9 +52,9 @@ export function Outbound() {
       ...item,
       id_asm: item.id_asm,
       isAssemble: true,
-    }))
+    })) 
   ];
-
+  console.log(combinedItems);
   const menu = [
     { title: "ชื่อผู้มาติดต่อ :", type: "text" },
     { title: "ชื่อบริษัท :", type: "text" },
@@ -428,7 +428,7 @@ export function Outbound() {
       assemble_price: [],
       description: [],
       unit_asm: [],
-      price_damage_asm: [],
+      assemble_price_damage: [],
       assemble_service_price: [],
     };
 
@@ -440,7 +440,7 @@ export function Outbound() {
         reserveData.assemble_price.push(String(item.assemble_price || 0));
         reserveData.description.push(String(item.description || ""));
         reserveData.unit_asm.push(String(item.unit_asm || ""));
-        reserveData.price_damage_asm.push(String(item.price_damage_asm || 0));
+        reserveData.assemble_price_damage.push(String(item.assemble_price_damage || 0));
         reserveData.assemble_service_price.push(String(item.assemble_service_price || 0));
       } else {
         reserveData.code.push(item.code || "");
@@ -1125,14 +1125,14 @@ export function Outbound() {
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
 
-      if (ListProductAll.assemble_price) {
-        ListProductAll.assemble_price.forEach((assemblePrice, index) => {
+      if (ListProductAll.assemble_price_damage) {
+        ListProductAll.assemble_price_damage.forEach((assemblePrice, index) => {
           rowNumber++;
-
+          
           const assembleCell = worksheet.getCell(`L${rowNumber} `);
-          assembleCell.value = "-";
+          assembleCell.value = `${(formatNumber(assemblePrice)) ? (formatNumber(assemblePrice)) : "-"} `;
           assembleCell.font = { size: 13, name: 'Angsana New' };
-          assembleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+          assembleCell.alignment = { vertical: 'middle', horizontal: 'right' };
 
         });
       }
@@ -2722,14 +2722,14 @@ export function Outbound() {
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
 
-      if (ListProductAll.assemble_price) {
-        ListProductAll.assemble_price.forEach((assemblePrice, index) => {
+      if (ListProductAll.assemble_price_damage) {
+        ListProductAll.assemble_price_damage.forEach((assemblePrice, index) => {
           rowNumber++;
 
           const assembleCell = worksheet.getCell(`L${rowNumber} `);
-          assembleCell.value = "-";
+          assembleCell.value =  `${(formatNumber(assemblePrice)) ? (formatNumber(assemblePrice)) : "-"} `;
           assembleCell.font = { size: 13, name: 'Angsana New' };
-          assembleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+          assembleCell.alignment = { vertical: 'middle', horizontal: 'right' };
 
         });
       }

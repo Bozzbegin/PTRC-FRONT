@@ -68,7 +68,7 @@ export function CreateASM({ close }) {
                 .catch((error) => {
                     console.error("Error fetching products:", error);
                 });
-                
+
         } else {
 
             const filtered = products
@@ -127,7 +127,7 @@ export function CreateASM({ close }) {
             });
             return;
         }
-
+      
         const newASM = {
             assemble_name: asmName,
             assemble_price: assemblePrice,
