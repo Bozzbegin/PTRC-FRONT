@@ -68,6 +68,7 @@ export function CreateASM({ close }) {
                 .catch((error) => {
                     console.error("Error fetching products:", error);
                 });
+                
         } else {
 
             const filtered = products
@@ -134,7 +135,7 @@ export function CreateASM({ close }) {
             status: "rent",
             description: description,
             unit_asm: assembleUnit,
-            price_damage: assemblePriceDamage,
+            price_damage_asm: assemblePriceDamage,
             products: selectedProducts.map((p) => ({
                 product_id: p.id,
                 quantity: p.quantity,
