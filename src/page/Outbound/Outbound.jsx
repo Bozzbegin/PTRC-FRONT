@@ -117,33 +117,33 @@ export function Outbound() {
     setSell_date(formattedDate);
   };
 
-  const parseThaiDate = (thaiDate) => {
+  // const parseThaiDate = (thaiDate) => {
 
-    const thaiMonths = [
-      "ม.ค.",
-      "ก.พ.",
-      "มี.ค.",
-      "เม.ย.",
-      "พ.ค.",
-      "มิ.ย.",
-      "ก.ค.",
-      "ส.ค.",
-      "ก.ย.",
-      "ต.ค.",
-      "พ.ย.",
-      "ธ.ค.",
-    ];
+  //   const thaiMonths = [
+  //     "ม.ค.",
+  //     "ก.พ.",
+  //     "มี.ค.",
+  //     "เม.ย.",
+  //     "พ.ค.",
+  //     "มิ.ย.",
+  //     "ก.ค.",
+  //     "ส.ค.",
+  //     "ก.ย.",
+  //     "ต.ค.",
+  //     "พ.ย.",
+  //     "ธ.ค.",
+  //   ];
 
-    const [day, month, year] = thaiDate.split(" ");
-    const monthIndex = thaiMonths.indexOf(month);
+  //   const [day, month, year] = thaiDate.split(" ");
+  //   const monthIndex = thaiMonths.indexOf(month);
 
-    if (monthIndex === -1) return null;
+  //   if (monthIndex === -1) return null;
 
-    const fullYear = parseInt(year, 10) + 2500 - 543;
-    return `${fullYear}-${String(monthIndex + 1).padStart(2, "0")}-${String(
-      day
-    ).padStart(2, "0")}`;
-  };
+  //   const fullYear = parseInt(year, 10) + 2500 - 543;
+  //   return `${fullYear}-${String(monthIndex + 1).padStart(2, "0")}-${String(
+  //     day
+  //   ).padStart(2, "0")}`;
+  // };
 
   const updateQuantitySum = () => {
     const totalItems = confirmitem.length + confirmitemASM.length;
@@ -426,6 +426,7 @@ export function Outbound() {
       assemble_price: [],
       description: [],
       unit_asm: [],
+      price_damage_asm: [],
       assemble_service_price: [],
     };
 
@@ -437,6 +438,7 @@ export function Outbound() {
         reserveData.assemble_price.push(String(item.assemble_price || 0));
         reserveData.description.push(String(item.description || ""));
         reserveData.unit_asm.push(String(item.unit_asm || ""));
+        reserveData.price_damage_asm.push(String(item.price_damage_asm || 0));
         reserveData.assemble_service_price.push(String(item.assemble_service_price || 0));
       } else {
         reserveData.code.push(item.code || "");
