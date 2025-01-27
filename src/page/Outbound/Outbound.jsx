@@ -615,31 +615,43 @@ export function Outbound() {
   };
 
   useEffect(() => {
-    const savedFormData = localStorage.getItem("outboundFormData");
+    const savedFormData = localStorage.getItem("outboundData");
     if (savedFormData) {
       const parsedData = JSON.parse(savedFormData);
+
       setProducts(parsedData.products || []);
-      setName(parsedData.name || "");
-      setComName(parsedData.comName || "");
+      setName(parsedData.customer_name || "");
+      setComName(parsedData.company_name || "");
       setAddress(parsedData.address || "");
       setcustomer_tel(parsedData.customer_tel || "");
-      setWorkside(parsedData.workside || "");
+      setWorkside(parsedData.place_name || "");
       setSell_date(parsedData.sell_date || "");
-      setDay_Length(parsedData.day_length || "");
-      setItems(parsedData.items || []);
+      setDay_Length(parsedData.date || "");
+      setNetPrice(parsedData.net_price || 0);
+      setHasVat(parsedData.vat === "vat");
+      setFormData(parsedData.formData || {});
       setNetPrice(parsedData.netPrice || 0);
-      setConfirmitem(parsedData.confirmitem || []);
-      setConfirmitemASM(parsedData.confirmitemASM || []);
+      setItems(parsedData.items || []);
       setConfirmItem_Create(parsedData.confirmitem_create || []);
       setHasVat(parsedData.hasVat || true);
-      setWithHolDing(parsedData.withHolDing || true);
       setItem_sendto_database(parsedData.Item_sendto_database || []);
-      setValidateModalInput(parsedData.validateModalInput || false);
       setAlldata_default(parsedData.alldata_default || [{}]);
-      setFormData(parsedData.formData || {});
+
+
+      setShowmodal(parsedData.showModal || false);
+      setShowModalDiscount(parsedData.showModalDiscount || false);
+      setShowmodal_create_product(parsedData.showModalCreateProduct || false);
+      setConfirmitem(parsedData.confirmitem || []);
+      setConfirmitemASM(parsedData.confirmitemASM || []);
+      setConfirmItem_Create(parsedData.confirmItemCreate || []);
+      setWithHolDing(parsedData.withHolDing || true);
+      setItem_sendto_database(parsedData.itemSendToDatabase || []);
+      setValidateModalInput(parsedData.validateModalInput || false);
+      setAlldata_default(parsedData.alldataDefault || [{}]);
       setQuantitySum(parsedData.quantitySum || 0);
     }
   }, []);
+
 
   const exportToExcelVat = () => {
 
@@ -670,6 +682,11 @@ export function Outbound() {
           setReceiptNumber(newReceiptNumber);
           setData(res.data.data.receip_number);
         }
+      }).catch(() => {
+        const currentYear = (new Date().getFullYear() + 543).toString().slice(-2);
+        const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, "0");
+        const fallbackReceiptNumber = `${currentYear}${currentMonth}-001`;
+        setReceiptNumber(fallbackReceiptNumber);
       });
 
     const formatThaiBahtText = (value) => {
@@ -1481,7 +1498,7 @@ export function Outbound() {
     payment72.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
     const payment73 = worksheet.getCell('H41');
-    payment73.value =  `${formatNumber(total_Price_Discount * 0.07) ? formatNumber(total_Price_Discount * 0.07) : "-"} `;
+    payment73.value = `${formatNumber(total_Price_Discount * 0.07) ? formatNumber(total_Price_Discount * 0.07) : "-"} `;
     payment73.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment73.alignment = { vertical: 'middle', horizontal: 'right' };
     payment73.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };

@@ -99,9 +99,9 @@ export function Modal_EditAssemble({ id, close }) {
                     <ReactLoading type="spin" color="#3498db" height={50} width={50} />
                 </div>
             ) : (
-                <div className="bg-white w-[700px] h-[600px] rounded-lg shadow-lg p-6 flex flex-col justify-between">
+                <div className="bg-white w-[1000px] h-[850px] rounded-lg shadow-lg p-6 flex flex-col justify-between">
                     <div className="flex justify-between">
-                        <h2 className="text-xl font-bold mb-4">แก้ไขข้อมูลสินค้า</h2>
+                        <h2 className="text-xl font-bold mb-2">แก้ไขข้อมูลสินค้า</h2>
                         <button
                             className="px-4 py-2 rounded-md hover:bg-gray-300 transition duration-200"
                             onClick={close}
@@ -109,8 +109,8 @@ export function Modal_EditAssemble({ id, close }) {
                             X
                         </button>
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700">ชื่อสินค้า:</label>
+                    <div className="mb-2">
+                        <label className="block text-gray-700">ชื่อสินค้า :</label>
                         <input
                             type="text"
                             value={product?.assemble_name || ""}
@@ -120,8 +120,8 @@ export function Modal_EditAssemble({ id, close }) {
                             className="w-full border border-gray-300 rounded-md p-2"
                         />
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700">ราคา:</label>
+                    <div className="mb-2" >
+                        <label className="block text-gray-700">ราคา :</label>
                         <input
                             type="number"
                             value={product?.assemble_price || 0}
@@ -131,9 +131,10 @@ export function Modal_EditAssemble({ id, close }) {
                             className="w-full border border-gray-300 rounded-md p-2"
                         />
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700">รายละเอียด:</label>
-                        <textarea
+                    <div className="mb-2">
+                        <label className="block text-gray-700">ขนาด :</label>
+                        <input
+                            type="text"
                             value={product?.description || ""}
                             onChange={(e) =>
                                 setProduct({ ...product, description: e.target.value })
@@ -141,11 +142,34 @@ export function Modal_EditAssemble({ id, close }) {
                             className="w-full border border-gray-300 rounded-md p-2"
                         />
                     </div>
-                    <div className="overflow-y-auto max-h-[300px] w-full border-2 border-blue-500 rounded-md mb-4">
+                    <div className="mb-2">
+                        <label className="block text-gray-700">หน่วย :</label>
+                        <input
+                            type="text"
+                            value={product?.unit_asm || ""}
+                            onChange={(e) =>
+                                setProduct({ ...product, unit_asm: e.target.value })
+                            }
+                            className="w-full border border-gray-300 rounded-md p-2"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700">ค่าปรับสินค้า :</label>
+                        <input
+                            type="number"
+                            value={product?.assemble_price_damage || 0}
+                            onChange={(e) =>
+                                setProduct({ ...product, assemble_price_damage: e.target.value })
+                            }
+                            className="w-full border border-gray-300 rounded-md p-2"
+                        />
+                    </div>
+                    <h2 className="text-lg font-bold mb-2">สินค้าภายในสินค้าประกอบ</h2>
+                    <div className="overflow-y-auto max-h-[400px] w-full border-2 border-blue-500 rounded-md mb-4">
                         <table className="w-full text-center">
-                            <thead className="sticky top-0 bg-white z-10 text-[#133E87] font-bold">
+                            <thead className="sticky top-0 bg-white z-10 text-[#133E87] font-bold h-[40px]">
                                 <tr className="bg-blue-300">
-                                    <th className="px-2">สินค้า</th>
+                                    <th className="px-2">ชื่อสินค้า</th>
                                     <th className="px-2">รหัสสินค้า</th>
                                     <th className="px-2">ขนาด</th>
                                     <th className="px-2">จำนวน</th>

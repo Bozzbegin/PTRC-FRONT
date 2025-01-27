@@ -225,6 +225,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
                 <th className="px-4 py-2">ชื่อสินค้า</th>
                 <th className="px-4 py-2">ขนาด</th>
                 <th className="px-4 py-2">หน่วย</th>
+                <th className="px-4 py-2">ค่าปรับสินค้า</th>
                 <th className="px-4 py-2">ราคา</th>
                 <th className="px-4 py-2">เลือก</th>
                 <th className="px-4 py-2">จัดการ</th>
@@ -251,6 +252,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
                   <td className="px-4 py-2">{item.assemble_name}</td>
                   <td className="px-4 py-2">{item.description ? item.description : "-"}</td>
                   <td className="px-4 py-2">{item.unit_asm ? item.unit_asm : "-"}</td>
+                  <td className="px-4 py-2">{item.assemble_price_damage ? item.assemble_price_damage : 0}</td>
                   <td className="px-4 py-2 text-red-500">{item.assemble_price}</td>
                   <td className="px-4 py-2">
                     <input

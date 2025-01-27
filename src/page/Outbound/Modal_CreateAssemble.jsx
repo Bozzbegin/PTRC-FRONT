@@ -135,7 +135,7 @@ export function CreateASM({ close }) {
             status: "rent",
             description: description,
             unit_asm: assembleUnit,
-            price_damage_asm: assemblePriceDamage,
+            assemble_price_damage: assemblePriceDamage,
             products: selectedProducts.map((p) => ({
                 product_id: p.id,
                 quantity: p.quantity,
