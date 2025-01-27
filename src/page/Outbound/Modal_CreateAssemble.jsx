@@ -9,9 +9,10 @@ export function CreateASM({ close }) {
     const [description, setDescription] = useState("");
     const [assemblePrice, setAssemblePrice] = useState(0);
     const [assembleUnit, setAssembleUnit] = useState("");
+    const [assemblePriceDamage, setAssemblePriceDamage] = useState(0);
     const [assembleServicePrice, setAssembleServicePrice] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
-    const [searchCode, setSearchCode] = useState(""); 
+    const [searchCode, setSearchCode] = useState("");
 
     useEffect(() => {
 
@@ -36,9 +37,9 @@ export function CreateASM({ close }) {
 
             } catch (error) {
                 console.error("Error fetching products:", error);
-                
+
             } finally {
-                setIsLoading(false); 
+                setIsLoading(false);
             }
         };
         fetchProducts();
@@ -48,7 +49,7 @@ export function CreateASM({ close }) {
         setSearchCode(code);
 
         if (code.trim() === "") {
-          
+
             const token = localStorage.getItem("token");
 
             axios
@@ -68,13 +69,13 @@ export function CreateASM({ close }) {
                     console.error("Error fetching products:", error);
                 });
         } else {
-           
+
             const filtered = products
                 .filter((product) => {
                     const searchText = code.toLowerCase();
                     return (
-                        product.code.toLowerCase().includes(searchText) || 
-                        product.name.toLowerCase().includes(searchText)  
+                        product.code.toLowerCase().includes(searchText) ||
+                        product.name.toLowerCase().includes(searchText)
                     );
                 })
                 .sort((a, b) => {
@@ -133,6 +134,7 @@ export function CreateASM({ close }) {
             status: "rent",
             description: description,
             unit_asm: assembleUnit,
+            price_damage: assemblePriceDamage,
             products: selectedProducts.map((p) => ({
                 product_id: p.id,
                 quantity: p.quantity,
@@ -199,9 +201,19 @@ export function CreateASM({ close }) {
                             type="number"
                             value={assemblePrice}
                             onChange={(e) => setAssemblePrice(parseFloat(e.target.value) || 0)}
-                            className="border border-gray-300 rounded-md p-2 w-2/2 mr-2"
+                            className="border border-gray-300 rounded-md p-2 w-1/6 mr-2"
                         />
                         <label htmlFor="assemblePrice" className="mb-2 text-lg font-bold text-gray-700 mr-2 mt-2">
+                            ขนาด :
+                        </label>
+                        <input
+                            id="description"
+                            type="text"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value) || ""}
+                            className="border border-gray-300 rounded-md p-2 w-1/6"
+                        />
+                        <label htmlFor="assemblePrice" className="mb-2 text-lg font-bold text-gray-700 mr-2 ml-2 mt-2">
                             หน่วย :
                         </label>
                         <input
@@ -209,9 +221,20 @@ export function CreateASM({ close }) {
                             type="text"
                             value={assembleUnit}
                             onChange={(e) => setAssembleUnit(e.target.value) || ""}
-                            className="border border-gray-300 rounded-md p-2 w-2/2"
+                            className="border border-gray-300 rounded-md p-2 w-1/6"
+                        />
+                        <label htmlFor="assemblePrice" className="mb-2 text-lg font-bold text-gray-700 mr-2 ml-2 mt-2">
+                            ค่าปรับสินค้า :
+                        </label>
+                        <input
+                            id="assemblePriceDamage"
+                            type="number"
+                            value={assemblePriceDamage}
+                            onChange={(e) => setAssemblePriceDamage(e.target.value) || ""}
+                            className="border border-gray-300 rounded-md p-2 w-1/6"
                         />
                     </div>
+
                     <div className="flex flex-col">
                         <input
                             id="asmName"
@@ -323,7 +346,7 @@ export function CreateASM({ close }) {
                             </table>
 
                         </div>
-                        <div className="flex flex-col mt-5">
+                        {/* <div className="flex flex-col mt-5">
                             <label htmlFor="description" className="mb-2 text-lg font-bold text-gray-700">
                                 คำอธิบาย :
                             </label>
@@ -333,7 +356,7 @@ export function CreateASM({ close }) {
                                 onChange={(e) => setDescription(e.target.value)}
                                 className="border border-gray-300 rounded-md p-2 h-80" // เพิ่มความสูงด้วย Tailwind CSS
                             />
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Buttons */}

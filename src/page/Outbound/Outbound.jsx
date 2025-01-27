@@ -9,6 +9,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import thaiBahtText from 'thai-baht-text';
 import ExcelJS from 'exceljs';
+import { stringify } from "flatted";
 
 export function Outbound() {
   const [branch, setBranch] = useState("");
@@ -522,7 +523,7 @@ export function Outbound() {
       reserve: [reserveData],
     };
 
-    localStorage.setItem("outboundFormData", JSON.stringify(formDataToSave));
+    localStorage.setItem("outboundFormData", stringify(formDataToSave));
   };
 
   useEffect(() => {
@@ -1407,11 +1408,12 @@ export function Outbound() {
     payment5.alignment = { vertical: 'middle', horizontal: 'left' };
     payment5.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
+    const totalPriceFivePercent = (totalFinalPrice1 + totalFinalPrice2) - (discountTotal ? discountTotal : 0);
     const newPrice = ((totalFinalPrice1 + totalFinalPrice2) - (discountTotal ? discountTotal : 0)) * 0.05;
     const totalNewPrice = ((totalFinalPrice1 + totalFinalPrice2) - (discountTotal ? discountTotal : 0)) - newPrice;
 
     const payment51 = worksheet.getCell('F39');
-    payment51.value = formatNumber((totalFinalPrice1 + totalFinalPrice2) - (discountTotal ? discountTotal : 0));
+    payment51.value = formatNumber((totalPriceFivePercent));
     payment51.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment51.alignment = { vertical: 'middle', horizontal: 'right' };
     payment51.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
@@ -1477,7 +1479,7 @@ export function Outbound() {
     payment72.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
     const payment73 = worksheet.getCell('H41');
-    payment73.value = formatNumber((totalNewPrice + totalShippingCost) * 0.07);
+    payment73.value =  `${formatNumber(total_Price_Discount * 0.07) ? formatNumber(total_Price_Discount * 0.07) : "-"} `;
     payment73.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment73.alignment = { vertical: 'middle', horizontal: 'right' };
     payment73.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
@@ -1526,7 +1528,7 @@ export function Outbound() {
     payment92.alignment = { vertical: 'middle', horizontal: 'right' };
     payment92.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
-    const newFinalPrice = totalNewPrice + ((totalNewPrice + totalShippingCost) * 0.07) + totalShippingCost + guaranteePriceTotal;
+    const newFinalPrice = totalNewPrice + totalShippingCost + (total_Price_Discount * 0.07) + guaranteePriceTotal;
 
     const payment93 = worksheet.getCell('H43');
     payment93.value = formatNumber(newFinalPrice);
@@ -3717,7 +3719,7 @@ export function Outbound() {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ใบเสนอราคา-เลขที่-${data.export_number}.xlsx`;
+            a.download = `ใบเสนอราคา-เลขที่-${receiptNumber}.xlsx`;
             a.click();
             URL.revokeObjectURL(url);
           }).catch((error) => {

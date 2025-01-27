@@ -3,13 +3,9 @@ import axios from "axios";
 import { format } from "date-fns";
 import { da, th } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-// import { data } from "autoprefixer";
-// import Item from "antd/es/list/Item";
 
 const StatusProduct = () => {
   const [status, setStatus] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState("");
   const [receiptNumber, setReceiptNumber] = useState("");
   const [transactionDate, setTransactionDate] = useState("");
   const [error, setError] = useState(null);
