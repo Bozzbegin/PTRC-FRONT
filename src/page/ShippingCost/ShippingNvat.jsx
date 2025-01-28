@@ -299,21 +299,23 @@ export default function Quotation() {
 
     worksheet.mergeCells('M20:M22');
     const conditionValue = worksheet.getCell('M20');
-    let expiryDateValue = expiryDate ? new Date(expiryDate) : null;
-    if (expiryDateValue) {
-      expiryDateValue.setDate(expiryDateValue.getDate());
 
-      conditionValue.value = expiryDateValue.toLocaleDateString('th-TH', {
+    if (actualOutDate) {
+      const returnDate = new Date(actualOutDate); 
+      returnDate.setDate(returnDate.getDate() + (data.date || 0)); 
+      conditionValue.value = returnDate.toLocaleDateString('th-TH', {
         day: '2-digit',
         month: 'short',
         year: '2-digit'
       });
     } else {
-      conditionValue.value = '';
+      conditionValue.value = 'ไม่พบข้อมูลวันที่';
     }
+
     conditionValue.font = { size: 13, name: 'Angsana New', bold: true };
     conditionValue.alignment = { vertical: 'middle', horizontal: 'left' };
     conditionValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCC00' } };
+
 
     worksheet.mergeCells('K23:L26');
     const lefPast = worksheet.getCell('K23');

@@ -11,12 +11,7 @@ export default function Quotation() {
 
   const [data, setData] = useState([])
   const [products, setProducts] = useState([])
-  const [note, setNote] = useState('')
   const [expiryDate, setExpiryDate] = useState('')
-  const [lesseeName, setLesseeName] = useState('');
-  const [lessorName, setLessorName] = useState('');
-  const [lesseeNameOne, setLesseeNameOne] = useState('');
-  const [lessorNameTwo, setLessorNameTwo] = useState('');
   const [assemble, setAssemble] = useState(false);
 
   useEffect(() => {
@@ -462,7 +457,7 @@ export default function Quotation() {
     const guarantee_price = Number(data.guarantee_price) || 0;
 
     const total_Price_Discount = (total_Price_Out + move_price + shipping_cost) - discount1;
-    const finalTotalPrice = (total_Price_Discount * 0.07) + guarantee_price + total_Price_Discount;
+    const finalTotalPrice = guarantee_price + total_Price_Discount;
 
     worksheet.mergeCells('A60:J61');
     const priceThb = worksheet.getCell('A60');

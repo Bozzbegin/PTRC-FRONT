@@ -309,19 +309,17 @@ export default function Quotation() {
     expDate.alignment = { vertical: 'middle', horizontal: 'left' };
     expDate.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFF00' } };
     worksheet.mergeCells('M17:M19');
-    const expDateValue = worksheet.getCell('M17');
-    let expiryDateValue = expiryDate ? new Date(expiryDate) : null;
-    if (expiryDateValue) {
-      expiryDateValue.setDate(expiryDateValue.getDate());
 
-      expDateValue.value = expiryDateValue.toLocaleDateString('th-TH', {
-        day: '2-digit',
-        month: 'short',
-        year: '2-digit'
-      });
-    } else {
-      expDateValue.value = '';
-    }
+    const expDateValue = worksheet.getCell('M17');
+    let expiryDateValue = data.actual_out ? new Date(data.actual_out) : null;
+
+    expiryDateValue.setDate(expiryDateValue.getDate() + 1 + data.date);
+    expDateValue.value = expiryDateValue.toLocaleDateString('th-TH', {
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit'
+    });
+
     expDateValue.font = { size: 13, name: 'Angsana New', bold: true };
     expDateValue.alignment = { vertical: 'middle', horizontal: 'left' };
     expDateValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFF00' } };
@@ -485,7 +483,6 @@ export default function Quotation() {
     }, 0);
 
     const total_Price_Discount = total_Price_Out + (data.move_price ? data.move_price : 0) + (data.shipping_cost ? data.shipping_cost : 0) - (data.discount ? data.discount : 0);
-
     const finalTotalPrice = (total_Price_Discount * 0.07) + (data.guarantee_price ? data.guarantee_price : 0) + total_Price_Discount;
 
     products.forEach((product, index) => {
