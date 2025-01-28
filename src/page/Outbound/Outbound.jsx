@@ -630,7 +630,6 @@ export function Outbound() {
       setSell_date(parsedData.sell_date || "");
       setDay_Length(parsedData.date || "");
       setNetPrice(parsedData.net_price || 0);
-      setHasVat(parsedData.vat === "vat");
       setFormData(parsedData.formData || {});
       setNetPrice(parsedData.netPrice || 0);
       setItems(parsedData.items || []);
@@ -639,17 +638,13 @@ export function Outbound() {
       setItem_sendto_database(parsedData.Item_sendto_database || []);
       setAlldata_default(parsedData.alldata_default || [{}]);
 
-
       setShowmodal(parsedData.showModal || false);
       setShowModalDiscount(parsedData.showModalDiscount || false);
       setShowmodal_create_product(parsedData.showModalCreateProduct || false);
       setConfirmitem(parsedData.confirmitem || []);
       setConfirmitemASM(parsedData.confirmitemASM || []);
-      setConfirmItem_Create(parsedData.confirmItemCreate || []);
       setWithHolDing(parsedData.withHolDing || true);
-      setItem_sendto_database(parsedData.itemSendToDatabase || []);
       setValidateModalInput(parsedData.validateModalInput || false);
-      setAlldata_default(parsedData.alldataDefault || [{}]);
       setQuantitySum(parsedData.quantitySum || 0);
     }
   }, []);
