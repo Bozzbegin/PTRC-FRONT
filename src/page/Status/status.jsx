@@ -17,8 +17,6 @@ const StatusProduct = () => {
   const [isExporting, setIsExporting] = useState(false); // สำหรับการล็อกปุ่ม
   const [isExportingText, setIsExportingText] = useState("ส่งออกสินค้า"); // ข้อความในปุ่ม
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -251,7 +249,7 @@ const StatusProduct = () => {
                       {item.branch_name}
                     </td>
                     <td className="text-center border-l-2 px-4 py-2">
-                      {item.export_number_out !==null || "" ?  item.export_number_out : item.export_number}
+                      {item.export_number_out !== null || "" ? item.export_number_out : item.export_number}
                     </td>
                     <td className="text-center border-l-2 px-4 py-2">
                       {formatDate(item.created_at)}
@@ -350,11 +348,17 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
           if (response.data.code === 200) {
             setModalProductDetails(response.data.data);
+
+            if (response.data.data.vat === "vat") {
+              setVat(true);
+            }
+
           } else {
             throw new Error(response.data.message);
           }
         } catch (error) {
           console.error("Error fetching item data:", error);
+
         } finally {
           setIsLoading(false);
         }
@@ -441,12 +445,15 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
             onClose();
             window.location.reload();
           });
+
         } else {
           throw new Error(outboundResponse.data.message);
         }
+
       } else {
         throw new Error(response.data.message);
       }
+
     } catch (error) {
       console.error("Error exporting data:", error);
       Swal.fire({

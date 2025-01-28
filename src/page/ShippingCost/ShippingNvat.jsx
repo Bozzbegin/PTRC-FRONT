@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import thaiBahtText from 'thai-baht-text';
 import ExcelJS from 'exceljs';
 
 export default function Quotation() {
@@ -11,12 +10,7 @@ export default function Quotation() {
 
   const [data, setData] = useState([])
   const [products, setProducts] = useState([])
-  const [note, setNote] = useState('')
-  const [expiryDate, setExpiryDate] = useState('')
-  const [lesseeName, setLesseeName] = useState('');
-  const [lessorName, setLessorName] = useState('');
-  const [lesseeNameOne, setLesseeNameOne] = useState('');
-  const [lessorNameTwo, setLessorNameTwo] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
   const [assemble, setAssemble] = useState(false);
 
   useEffect(() => {
@@ -39,28 +33,12 @@ export default function Quotation() {
           setAssemble(res.data.data.quotation_type);
           const createDate = new Date(res.data.data.reserve_out);
           const expiryDate = new Date(createDate);
-          expiryDate.setDate(createDate.getDate() + data.date);
+          expiryDate.setDate(createDate.getDate() + 2 + data.date);
           setExpiryDate(expiryDate.toISOString().split("T")[0]);
         }
       });
 
   }, [id]);
-
-  const num = [1, 2, 3, 4, 5, 6];
-
-  const formatThaiBahtText = (value) => {
-    if (isNaN(Number(value)) || value === null || value === undefined) {
-      return 'Invalid input';
-    }
-    return thaiBahtText(Number(value));
-  };
-
-  const formatNumber = (value) => {
-    if (isNaN(Number(value)) || value === null || value === undefined) {
-      return 'Invalid input';
-    }
-    return Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
 
   const exportToExcel = () => {
 
@@ -241,7 +219,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('C20:J22');
     const placeValue = worksheet.getCell('C20');
-    placeValue.value = `หน้างาน - ${data.place_name ? data.place_name : "-"}`;
+    placeValue.value = `หน้างาน - ${data.place_name ? data.place_name : ""}`;
     placeValue.font = { size: 13, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true };
     placeValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -323,7 +301,7 @@ export default function Quotation() {
     const conditionValue = worksheet.getCell('M20');
     let expiryDateValue = expiryDate ? new Date(expiryDate) : null;
     if (expiryDateValue) {
-      expiryDateValue.setDate(expiryDateValue.getDate() + 1);
+      expiryDateValue.setDate(expiryDateValue.getDate());
 
       conditionValue.value = expiryDateValue.toLocaleDateString('th-TH', {
         day: '2-digit',
@@ -389,7 +367,13 @@ export default function Quotation() {
       const rowNumber = 30 + index;
       worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
       const productCell = worksheet.getCell(`D${rowNumber}`);
-      productCell.value = `${product.size ? product.size : "-"}`;
+      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+        productCell.value = `${product.size} (${product.description})`;
+      } else if (product.name) {
+        productCell.value = `${product.size ? product.size : "-"}`;
+      } else if (product.assemble_name) {
+        productCell.value = `${product.description ? product.description : "-"}`;
+      }
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
     });
@@ -413,7 +397,13 @@ export default function Quotation() {
       const rowNumber = 30 + index;
       worksheet.mergeCells(`H${rowNumber}:I${rowNumber}`);
       const productCell = worksheet.getCell(`H${rowNumber}`);
-      productCell.value = `${product.quantity}   ${product.unit ? product.unit : ""}`;
+      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+        productCell.value = `${product.quantity} ${product.unit}`;
+      } else if (product.name) {
+        productCell.value = `${product.quantity}  ${product.unit ? product.unit : ""}`;
+      } else if (product.assemble_name) {
+        productCell.value = `${product.quantity} ${product.unit_asm}`;
+      }
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
     });
