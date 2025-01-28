@@ -397,7 +397,13 @@ export default function Quotation() {
       const rowNumber = 28 + index;
       worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
       const productCell = worksheet.getCell(`D${rowNumber}`);
-      productCell.value = `${product.size ? product.size : "-"}`;
+      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+        productCell.value = `${product.size} (${product.description})`;
+      } else if (product.name) {
+        productCell.value = `${product.size ? product.size : "-"}`;
+      } else if (product.assemble_name) {
+        productCell.value = `${product.description ? product.description : "-"}`;
+      }
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
     });
@@ -421,7 +427,13 @@ export default function Quotation() {
       const rowNumber = 28 + index;
       worksheet.mergeCells(`H${rowNumber}:I${rowNumber}`);
       const productCell = worksheet.getCell(`H${rowNumber}`);
-      productCell.value = `${product.quantity}   ${product.unit ? product.unit : ""}`;
+      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+        productCell.value = `${product.quantity} ${product.unit}`;
+      } else if (product.name) {
+        productCell.value = `${product.quantity}  ${product.unit ? product.unit : ""}`;
+      } else if (product.assemble_name) {
+        productCell.value = `${product.quantity} ${product.unit_asm}`;
+      }
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
     });
@@ -435,7 +447,13 @@ export default function Quotation() {
       const rowNumber = 28 + index;
       worksheet.mergeCells(`J${rowNumber}`);
       const productCell = worksheet.getCell(`J${rowNumber}`);
-      productCell.value = `${formatNumber(product.price ? product.price : 0)} `;
+      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+        productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
+      } else if (product.name) {
+        productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
+      } else if (product.assemble_name) {
+        productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
+      }
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
     });
@@ -464,6 +482,13 @@ export default function Quotation() {
       worksheet.mergeCells(`L${rowNumber}`);
       const productCell = worksheet.getCell(`L${rowNumber}`);
       productCell.value = `${(product.price_damage ? formatNumber(product.price_damage) : "-")} `;
+      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+        productCell.value = `${product.price ? formatNumber(product.price) : "-"}  ${product.assemble_price_damage ? formatNumber(product.assemble_price_damage) : "-"} `;
+      } else if (product.name) {
+        productCell.value = `${(product.price_damage ? formatNumber(product.price_damage) : "-")} `;
+      } else if (product.assemble_name) {
+        productCell.value = `${product.assemble_price_damage ? formatNumber(product.assemble_price_damage) : "-"} `;
+      }
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
     });
@@ -477,8 +502,13 @@ export default function Quotation() {
       return sum + (product.quantity * product.price * data.date);
     }, 0);
 
-    const total_Price_Discount = total_Price_Out + (data.move_price ? data.move_price : 0) + (data.shipping_cost ? data.shipping_cost : 0) - (data.discount ? data.discount : 0);
-    const finalTotalPrice = (total_Price_Discount * 0.07) + (data.guarantee_price ? data.guarantee_price : 0) + total_Price_Discount;
+    const move_price = Number(data.move_price) || 0;
+    const shipping_cost = Number(data.shipping_cost) || 0;
+    const discount1 = Number(data.discount) || 0;
+    const guarantee_price = Number(data.guarantee_price) || 0;
+
+    const total_Price_Discount = (total_Price_Out + move_price + shipping_cost) - discount1;
+    const finalTotalPrice = (total_Price_Discount * 0.07) + guarantee_price + total_Price_Discount;
 
     products.forEach((product, index) => {
       const rowNumber = 28 + index;
@@ -518,7 +548,7 @@ export default function Quotation() {
     guaranteePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const guaranteePriceValue = worksheet.getCell('M57');
-    guaranteePriceValue.value = `${(data.guarantee_price ? formatNumber(data.guarantee_price) : "-")} `;
+    guaranteePriceValue.value = `${(guarantee_price ? formatNumber(guarantee_price) : "-")} `;
     guaranteePriceValue.font = { size: 13, name: 'Angsana New' };
     guaranteePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -548,7 +578,7 @@ export default function Quotation() {
     discount.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const discountValue = worksheet.getCell('M54');
-    discountValue.value = `${(data.discount ? formatNumber(data.discount) : "-")} `;
+    discountValue.value = `${(discount1 ? formatNumber(discount1) : "-")} `;
     discountValue.font = { size: 13, name: 'Angsana New' };
     discountValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -558,7 +588,7 @@ export default function Quotation() {
     movePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const movePriceValue = worksheet.getCell('M53');
-    movePriceValue.value = `${(data.move_price ? formatNumber(data.move_price) : "-")} `;
+    movePriceValue.value = `${(move_price ? formatNumber(move_price) : "-")} `;
     movePriceValue.font = { size: 13, name: 'Angsana New' };
     movePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -568,7 +598,7 @@ export default function Quotation() {
     shippingCost.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const shippingCostValue = worksheet.getCell('M52');
-    shippingCostValue.value = `${(data.shipping_cost ? formatNumber(data.shipping_cost) : "-")} `;
+    shippingCostValue.value = `${(shipping_cost ? formatNumber(shipping_cost) : "-")} `;
     shippingCostValue.font = { size: 13, bold: true, name: 'Angsana New' };
     shippingCostValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -710,11 +740,11 @@ export default function Quotation() {
     payment5.alignment = { vertical: 'middle', horizontal: 'left' };
     payment5.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
-    const newPrice = (totalPrice - (data.discount ? data.discount : 0)) * 0.05;
-    const totalNewPrice = (totalPrice - (data.discount ? data.discount : 0)) - newPrice;
+    const newPrice = (totalPrice - discount1) * 0.05;
+    const totalNewPrice = (totalPrice - discount1) - newPrice;
 
     const payment51 = worksheet.getCell('F39');
-    payment51.value = formatNumber(totalPrice - (data.discount ? data.discount : 0));
+    payment51.value = formatNumber(totalPrice - (discount1));
     payment51.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment51.alignment = { vertical: 'middle', horizontal: 'right' };
     payment51.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
@@ -731,8 +761,8 @@ export default function Quotation() {
     payment53.alignment = { vertical: 'middle', horizontal: 'right' };
     payment53.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
-    const newShippingCostPrice = ((data.shipping_cost ? data.shipping_cost : 0) + (data.move_price ? data.move_price : 0)) * 0.03;
-    const totalShippingCost = ((data.shipping_cost ? data.shipping_cost : 0) + (data.move_price ? data.move_price : 0)) - newShippingCostPrice;
+    const newShippingCostPrice = (shipping_cost + move_price) * 0.03;
+    const totalShippingCost = (shipping_cost + move_price) - newShippingCostPrice;
 
     worksheet.mergeCells('D40:E40');
     const payment6 = worksheet.getCell('D40');
@@ -742,7 +772,7 @@ export default function Quotation() {
     payment6.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
     const payment61 = worksheet.getCell('F40');
-    payment61.value = formatNumber((data.shipping_cost ? data.shipping_cost : 0) + (data.move_price ? data.move_price : 0));
+    payment61.value = formatNumber(shipping_cost + move_price);
     payment61.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment61.alignment = { vertical: 'middle', horizontal: 'right' };
     payment61.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
@@ -829,7 +859,7 @@ export default function Quotation() {
     payment92.alignment = { vertical: 'middle', horizontal: 'right' };
     payment92.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
-    const newFinalPrice = totalNewPrice + (total_Price_Discount * 0.07) + totalShippingCost + data.guarantee_price;
+    const newFinalPrice = totalNewPrice + (total_Price_Discount * 0.07) + totalShippingCost + guarantee_price;
 
     const payment93 = worksheet.getCell('H43');
     payment93.value = formatNumber(newFinalPrice);
@@ -1554,13 +1584,13 @@ export default function Quotation() {
 
   return (
     <div>
-    <button
-      onClick={() => exportToExcel()}
-      className="bg-gray-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-gray-700 transition duration-200"
-    >
-      <span className="fa-solid fa-print"></span>
-      <span> พิมพ์ใบสัญญาเช่า</span>
-    </button>
-  </div >
+      <button
+        onClick={() => exportToExcel()}
+        className="bg-gray-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-gray-700 transition duration-200"
+      >
+        <span className="fa-solid fa-print"></span>
+        <span> พิมพ์ใบสัญญาเช่า</span>
+      </button>
+    </div >
   );
 }

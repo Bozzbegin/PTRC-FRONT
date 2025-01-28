@@ -11,12 +11,7 @@ export default function Quotation() {
 
   const [data, setData] = useState([])
   const [products, setProducts] = useState([])
-  const [note, setNote] = useState('')
   const [expiryDate, setExpiryDate] = useState('')
-  const [lesseeName, setLesseeName] = useState('');
-  const [lessorName, setLessorName] = useState('');
-  const [lesseeNameOne, setLesseeNameOne] = useState('');
-  const [lessorNameTwo, setLessorNameTwo] = useState('');
   const [assemble, setAssemble] = useState(false);
 
   useEffect(() => {
