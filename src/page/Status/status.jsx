@@ -3,6 +3,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import { da, th } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const StatusProduct = () => {
   const [status, setStatus] = useState([]);
@@ -13,6 +14,10 @@ const StatusProduct = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [reserveId, setReserveId] = useState(0);
+  const [isExporting, setIsExporting] = useState(false); // สำหรับการล็อกปุ่ม
+  const [isExportingText, setIsExportingText] = useState("ส่งออกสินค้า"); // ข้อความในปุ่ม
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -246,7 +251,7 @@ const StatusProduct = () => {
                       {item.branch_name}
                     </td>
                     <td className="text-center border-l-2 px-4 py-2">
-                      {item.export_number}
+                      {item.export_number_out !==null || "" ?  item.export_number_out : item.export_number}
                     </td>
                     <td className="text-center border-l-2 px-4 py-2">
                       {formatDate(item.created_at)}
@@ -296,7 +301,12 @@ const StatusProduct = () => {
           itemId={selectedProductId}
           reserveId={reserveId}
           status={status}
+          isExporting={isExporting}  // ส่ง isExporting ไปที่ Modal
+          isExportingText={isExportingText}  // ส่ง isExportingText ไปที่ Modal
+          setIsExporting={setIsExporting} // ส่งฟังก์ชัน setIsExporting ไปที่ Modal
+          setIsExportingText={setIsExportingText} // ส่งฟังก์ชัน setIsExportingText ไปที่ Modal
         />
+
       </div>
     </div>
   );
@@ -312,6 +322,8 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [showAlertShipping, setShowAlertShipping] = useState(false);
   const [vat, setVat] = useState(false);
   const [assemble, setAssemble] = useState(false);
+  const [isExporting, setIsExporting] = useState(false); // สำหรับการล็อกปุ่ม
+  const [isExportingText, setIsExportingText] = useState("ส่งออกสินค้า"); // ข้อความในปุ่ม
 
   const formatDateModal = (dateString) => {
     const date = new Date(dateString);
@@ -328,7 +340,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           if (!token) throw new Error("Token not found");
 
           const url = `http://192.168.195.75:5000/v1/product/status/status-one/${itemId}`;
-
           const response = await axios.get(url, {
             headers: {
               Authorization: token,
@@ -339,12 +350,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
           if (response.data.code === 200) {
             setModalProductDetails(response.data.data);
-            setAssemble(response.data.data.quotation_type);
-            if (response.data.data.vat === "vat") {
-              setVat(true);
-            } else if (response.data.data.vat === "nvat") {
-              setVat(false);
-            }
           } else {
             throw new Error(response.data.message);
           }
@@ -361,17 +366,24 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
   if (!isModalOpen) return null;
 
-  const handleExportClick = async () => {
 
+  const handleExportClick = async () => {
     if (!modalProductDetails || !modalProductDetails.products) {
       console.error("ไม่พบข้อมูลสินค้า");
       return;
     }
 
+    // ตรวจสอบว่าอยู่ในระหว่างการส่งออกหรือไม่
+    if (isExporting) {
+      return; // ถ้ากำลังส่งออกอยู่แล้วจะไม่ทำการส่งออกซ้ำ
+    }
+
+    setIsExporting(true); // ตั้งค่า isExporting เป็น true เพื่อไม่ให้กดซ้ำ
+    setIsExportingText("กำลังส่ง..."); // เปลี่ยนข้อความบนปุ่มเป็น "กำลังส่ง"
+
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token not found");
-
       const url = `http://192.168.195.75:5000/v1/product/outbound/reserve-item/${reserveId}`;
       const response = await axios.get(url, {
         headers: {
@@ -385,11 +397,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
         const productData = response.data.data;
         const dataProduct = response.data.data.product;
 
-
-        console.log(dataProduct);
-
         const newOutbound = {
-
           customer_name: productData?.customer_name || "",
           place_name: productData?.place_name || "",
           address: productData?.address || "",
@@ -408,11 +416,9 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
               size: Array.isArray(dataProduct?.size) ? dataProduct.size : [],
               meter: Array.isArray(dataProduct?.meter) ? dataProduct.meter : [],
               centimeter: Array.isArray(dataProduct?.centimeter) ? dataProduct.centimeter : [],
-
               assemble: Array.isArray(dataProduct?.assemble) ? dataProduct.assemble : [],
               assemble_price: Array.isArray(dataProduct?.assemble_price) ? dataProduct.assemble_price : [],
               assemble_quantity: Array.isArray(dataProduct?.assemble_quantity) ? dataProduct.assemble_quantity : [],
-
             },
           ],
         };
@@ -425,7 +431,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
             "x-api-key": "1234567890abcdef",
           },
         });
-
 
         if (outboundResponse.data.code === 201) {
           Swal.fire({
@@ -449,8 +454,12 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
         title: "เกิดข้อผิดพลาด",
         text: error.message,
       });
+    } finally {
+      setIsExporting(false); // เมื่อเสร็จการส่งออก ให้ปลดล็อกปุ่ม
+      setIsExportingText("ส่งออกสินค้า"); // เปลี่ยนข้อความกลับมาเป็น "ส่งออกสินค้า"
     }
   };
+
 
   const handleShowAlert = () => {
     setShowAlert(true);
@@ -675,11 +684,14 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
             <button
               onClick={handleExportClick}
+              disabled={isExporting} // ปิดการใช้งานปุ่มเมื่อกำลังส่งออก
               className="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-blue-700 transition duration-200"
             >
               <span className="fa-solid fa-file-export"></span>
-              <span> ส่งออกสินค้า</span>
+              <span>{isExportingText}</span> {/* เปลี่ยนข้อความของปุ่ม */}
             </button>
+
+
           </div>
         )}
 
