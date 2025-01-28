@@ -16,6 +16,9 @@ const StatusProduct = () => {
   const [reserveId, setReserveId] = useState(0);
   const [isExporting, setIsExporting] = useState(false); // สำหรับการล็อกปุ่ม
   const [isExportingText, setIsExportingText] = useState("ส่งออกสินค้า"); // ข้อความในปุ่ม
+  const [filteredStatus, setFilteredStatus] = useState([]);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,6 +41,7 @@ const StatusProduct = () => {
 
         if (response.data.code === 200) {
           setStatus(response.data.data["Status Product"]);
+          setFilteredStatus(response.data.data["Status Product"]);
         } else {
           throw new Error(response.data.message);
         }
@@ -82,77 +86,48 @@ const StatusProduct = () => {
     fetchBranches();
   }, []);
 
-  const handleSearch = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  useEffect(() => {
+    handleSearch(); // เรียกค้นหาทุกครั้งที่มีการเปลี่ยนแปลงในฟิลด์ค้นหา
+  }, [transactionDate, receiptNumber, branchName]);
 
-      if (!token) {
-        throw new Error("Token not found");
-      }
+  const handleSearch = () => {
+    console.log("กำลังกรองข้อมูล...", { receiptNumber, transactionDate, branchName });
 
-      if (receiptNumber !== "") {
-        const url =
-          "http://192.168.195.75:5000/v1/product/status/search-status";
+    const filtered = status.filter((item) => {
+      // กรองข้อมูลตามเลขที่ใบเสร็จ
+      const matchesReceiptNumber =
+        !receiptNumber || item.export_number_out?.toLowerCase().includes(receiptNumber.toLowerCase().trim());
 
-        const response = await axios.get(url, {
-          params: { receiptNumber: receiptNumber },
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
-          },
-        });
+      // กรองข้อมูลตามวันที่
+      const matchesTransactionDate =
+        !transactionDate || formatDate(item.created_at) === transactionDate; // เปรียบเทียบวันที่ในรูปแบบ yyyy-mm-dd
 
-        if (response.data.code === 200) {
-          const filteredStatus = response.data.data.filter((item) =>
-            item.export_number.includes(receiptNumber)
-          );
-          setStatus(filteredStatus);
-        } else {
-          throw new Error(response.data.message);
-        }
-      } else if (transactionDate !== "") {
-        const url = "http://192.168.195.75:5000/v1/product/status/date";
+      // กรองข้อมูลตามสาขา
+      const matchesBranchName =
+        !branchName || item.branch_name?.toLowerCase().includes(branchName.toLowerCase().trim());
 
-        const response = await axios.get(url, {
-          params: { date: transactionDate },
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
-          },
-        });
+      return matchesReceiptNumber && matchesTransactionDate && matchesBranchName;
+    });
 
-        if (response.data.code === 200) {
-          const filteredStatus = response.data.data["Status Product"].filter(
-            (item) => item.created_at.includes(transactionDate)
-          );
-          setStatus(filteredStatus);
-        } else {
-          throw new Error(response.data.message);
-        }
-      } else {
-        if (receiptNumber === "" || transactionDate === "") {
-          const url = "http://192.168.195.75:5000/v1/product/status/status";
+    // การจัดเรียงผลลัพธ์
+    const sortedFiltered = filtered.sort((a, b) => {
+      // เรียงลำดับตามวันที่ (จากล่าสุดไปเก่าสุด)
+      const dateA = new Date(a.created_at);
+      const dateB = new Date(b.created_at);
+      if (dateA > dateB) return -1; // ถ้า A ใหม่กว่า B, ให้ A ขึ้นมาก่อน
+      if (dateA < dateB) return 1; // ถ้า B ใหม่กว่า A, ให้ B ขึ้นมาก่อน
+      return 0; // ถ้าเท่ากัน, ไม่ต้องทำการเรียง
+    });
 
-          const response = await axios.get(url, {
-            headers: {
-              Authorization: token,
-              "Content-Type": "application/json",
-              "x-api-key": "1234567890abcdef",
-            },
-          });
+    setFilteredStatus(sortedFiltered); // ตั้งค่าผลลัพธ์ที่กรองและเรียงแล้ว
+  };
 
-          if (response.data.code === 200) {
-            setStatus(response.data.data["Status Product"]);
-          } else {
-            throw new Error(response.data.message);
-          }
-        }
-      }
-    } catch (error) {
-      setError(error.message);
-    }
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`; // ส่งกลับวันที่ในรูปแบบ yyyy-mm-dd
   };
 
   const openModal = (id, reserve_id) => {
@@ -169,16 +144,11 @@ const StatusProduct = () => {
     setIsModalOpen(false);
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return format(date, "d MMMM yyyy", { locale: th });
-  };
+
 
   return (
     <div className="w-full h-[90%] flex overflow-auto no-scrollbar">
       <div className="w-full h-full flex flex-col gap-4">
-        {error && <p className="text-red-500">{error}</p>}
-
         <div className="w-full flex items-start justify-start gap-4">
           <div className="flex items-center gap-2">
             <span className="r-2 font-bold text-xl text-sky-800">สาขา :</span>
@@ -186,7 +156,13 @@ const StatusProduct = () => {
               className="h-10 w-[220px] rounded-md border border-gray-500 p-2 flex items-center"
               style={{ overflow: "visible", color: "black" }}
             >
-              {branchName ? branchName : "-"}
+              <input
+                type="text"
+                value={branchName || ""}
+                onChange={(e) => setBranchName(e.target.value)}
+                className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+                placeholder="ค้นหาสาขา"
+              />
             </div>
           </div>
           <div className="flex items-center">
@@ -197,6 +173,7 @@ const StatusProduct = () => {
               type="text"
               value={receiptNumber || ""}
               onChange={(e) => setReceiptNumber(e.target.value)}
+              onKeyUp={handleSearch}  // ค้นหาเมื่อพิมพ์
               className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
               placeholder="ค้นหาเลขที่ใบเสร็จ"
             />
@@ -209,18 +186,13 @@ const StatusProduct = () => {
               type="date"
               value={transactionDate || ""}
               onChange={(e) => setTransactionDate(e.target.value)}
+              onKeyUp={handleSearch}  // ค้นหาเมื่อพิมพ์
               className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
             />
           </div>
-          <button
-            onClick={handleSearch}
-            className="w-[120px] bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md"
-          >
-            ค้นหา
-          </button>
         </div>
 
-        {status.length === 0 ? (
+        {filteredStatus.length === 0 ? (
           <p className="text-center text-2xl mt-10">ไม่พบรายการสินค้า</p>
         ) : (
           <div className="row-span-11 overflow-auto no-scrollbar">
@@ -243,13 +215,13 @@ const StatusProduct = () => {
                 </tr>
               </thead>
               <tbody>
-                {status.map((item, index) => (
-                  <tr key={index} className="  border-2">
+                {filteredStatus.map((item, index) => (
+                  <tr key={index} className="border-2">
                     <td className="text-center border-l-2 px-4 py-2">
                       {item.branch_name}
                     </td>
                     <td className="text-center border-l-2 px-4 py-2">
-                      {item.export_number_out !== null || "" ? item.export_number_out : item.export_number}
+                      {item.export_number_out || item.export_number}
                     </td>
                     <td className="text-center border-l-2 px-4 py-2">
                       {formatDate(item.created_at)}
@@ -257,34 +229,19 @@ const StatusProduct = () => {
                     <td className="text-start border-l-2 px-4 py-2">
                       {item.customer_name}
                     </td>
-                    <td className="text-center border-l-2 px-4 py-2 ">
-                      {item.type === "sell"
-                        ? "ขาย"
-                        : item.type === "hire"
-                          ? "เช่า"
-                          : item.type === "both"
-                            ? "ขาย/เช่า"
-                            : item.type}
+                    <td className="text-center border-l-2 px-4 py-2">
+                      {item.type === 'hire' ? "เช่า" : item.type === 'sell' ? "ขาย" : "เช่า/ขาย"}
                     </td>
                     <td className="text-center border-l-2 px-4 py-2">
-                      {item.status === "reserve"
-                        ? "จอง"
-                        : item.status === "hire"
-                          ? "กำลังเช่า"
-                          : item.status === "late"
-                            ? "เลยกำหนด"
-                            : item.status === "continue"
-                              ? "เช่าต่อ"
-                              : item.status === "return"
-                                ? "ส่งคืนเเล้ว"
-                                : item.status}
+                      {item.status === 'reserve' ? "จอง" : "กำลังเช่า"}
                     </td>
+
                     <td className="text-center border-l-2 px-4 py-2">
                       <button
                         onClick={() => openModal(item.id, item.reserve_id)}
                         className="bg-green-500 text-white w-[100px] bg-[#FFFFFF] h-8 rounded-md border hover:bg-green-700 transition items-center justify-between px-2"
                       >
-                        ดูข้อมูล <i className="fa-solid fa-angle-right mr-2 relative top-0.5"></i>
+                        ดูข้อมูล
                       </button>
                     </td>
                   </tr>
@@ -293,18 +250,6 @@ const StatusProduct = () => {
             </table>
           </div>
         )}
-        <Modal
-          isModalOpen={isModalOpen}
-          onClose={closeModal}
-          itemId={selectedProductId}
-          reserveId={reserveId}
-          status={status}
-          isExporting={isExporting}  // ส่ง isExporting ไปที่ Modal
-          isExportingText={isExportingText}  // ส่ง isExportingText ไปที่ Modal
-          setIsExporting={setIsExporting} // ส่งฟังก์ชัน setIsExporting ไปที่ Modal
-          setIsExportingText={setIsExportingText} // ส่งฟังก์ชัน setIsExportingText ไปที่ Modal
-        />
-
       </div>
     </div>
   );
@@ -348,17 +293,14 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
           if (response.data.code === 200) {
             setModalProductDetails(response.data.data);
-
             if (response.data.data.vat === "vat") {
               setVat(true);
             }
-
           } else {
             throw new Error(response.data.message);
           }
         } catch (error) {
           console.error("Error fetching item data:", error);
-
         } finally {
           setIsLoading(false);
         }
@@ -445,15 +387,12 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
             onClose();
             window.location.reload();
           });
-
         } else {
           throw new Error(outboundResponse.data.message);
         }
-
       } else {
         throw new Error(response.data.message);
       }
-
     } catch (error) {
       console.error("Error exporting data:", error);
       Swal.fire({
@@ -547,7 +486,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
             {currentStatus != 'reserve' && (
               <p className="text-right mb-2">
                 <strong className="text-gray-700">เลขที่สัญญาเช่า : </strong>{" "}
-                {modalProductDetails.export_number}
+                {modalProductDetails.export_number_out}
               </p>
             )}
 
@@ -620,14 +559,13 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
               <h3 className="text-lg font-semibold text-gray-700 mb-2">
                 รายการสินค้า
               </h3>
-              <div class="relative">
-                <div class="absolute inset-0 bg-[url('https://example.com/path-to-your-image.png')] bg-no-repeat bg-center bg-contain opacity-20"></div>
-                <div class="relative z-10">
-
+              <div className="relative">
+                <div className="absolute inset-0 bg-[url('https://example.com/path-to-your-image.png')] bg-no-repeat bg-center bg-contain opacity-20"></div>
+                <div className="relative z-10">
                   <h1>
                     <div className="">
-                      <table className="w-full border-collapse border shadow-sm ">
-                        <thead className="bg-blue-300 text-gray-700 ">
+                      <table className="w-full border-collapse border shadow-sm">
+                        <thead className="bg-blue-300 text-gray-700">
                           <tr>
                             <th className="border p-2">จำนวน</th>
                             <th className="border p-2">ชื่อสินค้า</th>
@@ -636,41 +574,31 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                         </thead>
                         <tbody className="overflow-y-auto max-h-64">
                           {modalProductDetails.products.map((product, index) => (
-                            <tr
-                              key={product.product_id}
-                              className="hover:bg-gray-50 transition duration-200"
-                            >
+                            <tr key={product.product_id} className="hover:bg-gray-50 transition duration-200">
                               <td className="border p-2 text-center">
-                                {product.quantity} {product.unit}
+                                {product.quantity} {product.unit ? product.unit : product.unit_asm}
                               </td>
                               <td className="border p-2 text-center">
-                                {assemble === "with_assembled" &&
-                                  (
-                                    <div key={index}>
-                                      {product.name && product.assemble_name ? `${product.name} (${product.assemble_name})` : product.name || product.assemble_name}
-                                    </div>
-                                  )}
-                                {assemble === "standard" &&
-                                  (
-                                    <div key={index}>
-                                      {product.name && product.assemble_name ? `${product.name} (${product.assemble_name})` : product.name || product.assemble_name}
-                                    </div>
-                                  )}
+                                {modalProductDetails.quotation_type === "with_assembled"
+                                  ? product.assemble_name || `${product.name} (${product.code})`  // ถ้ามี assemble_name ให้ใช้ assemble_name ถ้าไม่มีก็ใช้ name
+                                  : `${product.name} (${product.code})`}
                               </td>
                               <td className="border p-2 text-center">
                                 {product.size}
-                                {assemble === "with_assembled" && (
-                                  product.description ? ` ${product.description}` : ""
-                                )}
+                                {modalProductDetails.quotation_type === "with_assembled" && product.description
+                                  ? ` ${product.description}`  // แสดง description ในกรณีที่เป็น "with_assembled" และมี description
+                                  : ""}
                               </td>
                             </tr>
                           ))}
                         </tbody>
+
                       </table>
                     </div>
                   </h1>
                 </div>
               </div>
+
 
             </div>
 
