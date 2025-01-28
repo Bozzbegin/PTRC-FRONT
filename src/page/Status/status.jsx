@@ -250,10 +250,22 @@ const StatusProduct = () => {
             </table>
           </div>
         )}
+               <Modal
+          isModalOpen={isModalOpen}
+          onClose={closeModal}
+          itemId={selectedProductId}
+          reserveId={reserveId}
+          status={status}
+          isExporting={isExporting}  // ส่ง isExporting ไปที่ Modal
+          isExportingText={isExportingText}  // ส่ง isExportingText ไปที่ Modal
+          setIsExporting={setIsExporting} // ส่งฟังก์ชัน setIsExporting ไปที่ Modal
+          setIsExportingText={setIsExportingText} // ส่งฟังก์ชัน setIsExportingText ไปที่ Modal
+        />
+
       </div>
     </div>
   );
-};
+}
 
 const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [modalProductDetails, setModalProductDetails] = useState(null);
