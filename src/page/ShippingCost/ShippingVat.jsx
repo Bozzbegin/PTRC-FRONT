@@ -104,7 +104,7 @@ export default function Quotation() {
     // worksheet.getColumn(13).width = 10;
     worksheet.getColumn(1).width = 6;
     worksheet.getColumn(2).width = 4;
-    worksheet.getColumn(3).width = 8;
+    worksheet.getColumn(3).width = 9.9;
     worksheet.getColumn(4).width = 3.9;
     worksheet.getColumn(5).width = 8;
     worksheet.getColumn(6).width = 8;
@@ -204,37 +204,37 @@ export default function Quotation() {
     worksheet.mergeCells('A8:B10');
     const customer_name = worksheet.getCell('A8');
     customer_name.value = '   ชื่อผู้ติดต่อ :';
-    customer_name.font = { size: 13, bold: true, name: 'Angsana New' };
+    customer_name.font = { size: 14, bold: true, name: 'Angsana New' };
     customer_name.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('C8:F10');
     const customer_nameValue = worksheet.getCell('C8');
     customer_nameValue.value = `${data.customer_name ? data.customer_name : "-"}`;
-    customer_nameValue.font = { size: 13, name: 'Angsana New' };
+    customer_nameValue.font = { size: 14, name: 'Angsana New' };
     customer_nameValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('A11:B13');
     const company_name = worksheet.getCell('A11');
     company_name.value = '   ชื่อบริษัท :';
-    company_name.font = { size: 13, bold: true, name: 'Angsana New' };
+    company_name.font = { size: 14, bold: true, name: 'Angsana New' };
     company_name.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('C11:J13');
     const company_nameValue = worksheet.getCell('C11');
     company_nameValue.value = `${data.company_name ? data.company_name : "-"}`;
-    company_nameValue.font = { size: 13, name: 'Angsana New' };
+    company_nameValue.font = { size: 14, name: 'Angsana New' };
     company_nameValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('A14:B16');
     const address = worksheet.getCell('A14');
     address.value = '   ที่อยู่ :';
-    address.font = { size: 13, bold: true, name: 'Angsana New' };
+    address.font = { size: 14, bold: true, name: 'Angsana New' };
     address.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('C14:J16');
     const addressValue = worksheet.getCell('C14');
     addressValue.value = `${data.address ? data.address : "-"}`;
-    addressValue.font = { size: 13, name: 'Angsana New' };
+    addressValue.font = { size: 14, name: 'Angsana New' };
     addressValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('A17:B19');
@@ -243,50 +243,50 @@ export default function Quotation() {
     worksheet.mergeCells('C17:J19');
     const placeValue = worksheet.getCell('C17');
     placeValue.value = `หน้างาน - ${data.place_name ? data.place_name : ""}`;
-    placeValue.font = { size: 13, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true };
+    placeValue.font = { size: 14, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true };
     placeValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('A20:B22');
     const phone = worksheet.getCell('A20');
     phone.value = '   โทร :';
-    phone.font = { size: 13, bold: true, name: 'Angsana New' };
+    phone.font = { size: 14, bold: true, name: 'Angsana New' };
     phone.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('C20:E22');
     const phoneValue = worksheet.getCell('C20:E22');
     phoneValue.value = `${data.customer_tel ? data.customer_tel : "-"}`;
-    phoneValue.font = { size: 13, name: 'Angsana New' };
+    phoneValue.font = { size: 14, name: 'Angsana New' };
     phoneValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('A23:C25');
     const taxId = worksheet.getCell('A23');
     taxId.value = '   เลขประจำตัวผู้เสียภาษีอากร:';
-    taxId.font = { size: 13, bold: true, name: 'Angsana New' };
+    taxId.font = { size: 14, bold: true, name: 'Angsana New' };
     taxId.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('D23:G25');
     const taxIdValue = worksheet.getCell('D23:G25');
     taxIdValue.value = '-';
-    taxIdValue.font = { size: 13, name: 'Angsana New' };
+    taxIdValue.font = { size: 14, name: 'Angsana New' };
     taxIdValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
 
     worksheet.mergeCells('K8:L10');
     const taxNumber = worksheet.getCell('K8');
     taxNumber.value = '  เลขที่ใบส่งสินค้า :';
-    taxNumber.font = { size: 13, bold: true, name: 'Angsana New' };
+    taxNumber.font = { size: 14, bold: true, name: 'Angsana New' };
     taxNumber.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('M8:M10');
     const taxNumberValue = worksheet.getCell('M8');
     taxNumberValue.value = `${'P' + data.export_number}`;
-    taxNumberValue.font = { size: 13, name: 'Angsana New' };
+    taxNumberValue.font = { size: 14, name: 'Angsana New' };
     taxNumberValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('K11:L13');
     const dateShipping = worksheet.getCell('K11');
     dateShipping.value = '  วันที่ส่งสินค้า :';
-    dateShipping.font = { size: 13, bold: true, name: 'Angsana New' };
+    dateShipping.font = { size: 14, bold: true, name: 'Angsana New' };
     dateShipping.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('M11:M13');
@@ -298,13 +298,13 @@ export default function Quotation() {
         year: '2-digit'
       })
       : ''}`;
-    dateShippingValue.font = { size: 13, name: 'Angsana New' };
+    dateShippingValue.font = { size: 14, name: 'Angsana New' };
     dateShippingValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('K14:L16');
     const date = worksheet.getCell('K14');
     date.value = '  วันที่เริ่มเช่าสินค้า :';
-    date.font = { size: 13, bold: true, name: 'Angsana New' };
+    date.font = { size: 14, bold: true, name: 'Angsana New' };
     date.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('M14:M16');
@@ -320,13 +320,13 @@ export default function Quotation() {
     } else {
       dateValue.value = '';
     }
-    dateValue.font = { size: 13, name: 'Angsana New' };
+    dateValue.font = { size: 14, name: 'Angsana New' };
     dateValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     worksheet.mergeCells('K17:L19');
     const expDate = worksheet.getCell('K17');
     expDate.value = '  วันที่ครบกำหนดเช่าสินค้า :';
-    expDate.font = { size: 13, bold: true, name: 'Angsana New' };
+    expDate.font = { size: 14, bold: true, name: 'Angsana New' };
     expDate.alignment = { vertical: 'middle', horizontal: 'left' };
     expDate.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF59D' } };
     worksheet.mergeCells('M17:M19');
@@ -341,37 +341,37 @@ export default function Quotation() {
       year: '2-digit'
     });
 
-    expDateValue.font = { size: 13, name: 'Angsana New', bold: true };
+    expDateValue.font = { size: 14, name: 'Angsana New', bold: true };
     expDateValue.alignment = { vertical: 'middle', horizontal: 'left' };
     expDateValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF59D' } };
 
     worksheet.mergeCells('K20:L22');
     const condition = worksheet.getCell('K20');
     condition.value = '  ต่อสัญญาเช่าครั้งที่ :';
-    condition.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    condition.font = { size: 14, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     condition.alignment = { vertical: 'middle', horizontal: 'left' };
-    condition.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC8E6C9' } };
+    condition.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F5E9' } };
 
     worksheet.mergeCells('M20:M22');
     const conditionValue = worksheet.getCell('M20');
     conditionValue.value = '-';
-    conditionValue.font = { size: 13, name: 'Angsana New', bold: true, color: { argb: 'FFFF0000' } };
+    conditionValue.font = { size: 14, name: 'Angsana New', bold: true, color: { argb: 'FFFF0000' } };
     conditionValue.alignment = { vertical: 'middle', horizontal: 'left' };
-    conditionValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC8E6C9' } };
+    conditionValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F5E9' } };
 
     worksheet.mergeCells('K23:L25');
     const exportPast = worksheet.getCell('K23');
     exportPast.value = '  อ้างอิงเลขที่ Po :';
-    exportPast.font = { size: 13, bold: true, name: 'Angsana New' };
+    exportPast.font = { size: 14, bold: true, name: 'Angsana New' };
     exportPast.alignment = { vertical: 'middle', horizontal: 'left' };
-    exportPast.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC8E6C9' } };
+    exportPast.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F5E9' } };
 
     worksheet.mergeCells('M23:M25');
     const exportPastValue = worksheet.getCell('M23');
     exportPastValue.value = data.reserve_number;
-    exportPastValue.font = { size: 13, name: 'Angsana New', bold: true };
+    exportPastValue.font = { size: 14, name: 'Angsana New', bold: true };
     exportPastValue.alignment = { vertical: 'middle', horizontal: 'left' };
-    exportPastValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC8E6C9' } };
+    exportPastValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F5E9' } };
 
     const indexNumber = worksheet.getCell('A27');
     indexNumber.value = ' ลำดับที่';
@@ -382,7 +382,7 @@ export default function Quotation() {
       const rowNumber = 28 + index;
       const productCell = worksheet.getCell(`A${rowNumber}`);
       productCell.value = `${index + 1}`;
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
     });
 
@@ -403,7 +403,7 @@ export default function Quotation() {
       } else if (product.assemble_name) {
         productCell.value = product.assemble_name;
       }
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
     });
 
@@ -418,7 +418,7 @@ export default function Quotation() {
       } else if (product.assemble_name) {
         productCell.value = `${product.description ? product.description : "-"}`;
       }
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
     });
 
@@ -448,7 +448,7 @@ export default function Quotation() {
       } else if (product.assemble_name) {
         productCell.value = `${product.quantity} ${product.unit_asm}`;
       } 
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
     });
 
@@ -462,7 +462,7 @@ export default function Quotation() {
       worksheet.mergeCells(`J${rowNumber}`);
       const productCell = worksheet.getCell(`J${rowNumber}`);
       productCell.value = "-";
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
     });
 
@@ -490,7 +490,7 @@ export default function Quotation() {
       worksheet.mergeCells(`L${rowNumber}`);
       const productCell = worksheet.getCell(`L${rowNumber}`);
       productCell.value = "-";
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
     });
 
@@ -511,7 +511,7 @@ export default function Quotation() {
       worksheet.mergeCells(`M${rowNumber}`);
       const productCell = worksheet.getCell(`M${rowNumber}`);
       productCell.value = "-";
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
     });
 
@@ -540,62 +540,62 @@ export default function Quotation() {
 
     const guaranteePrice = worksheet.getCell('K57');
     guaranteePrice.value = ' ค่าประกันสินค้า';
-    guaranteePrice.font = { size: 13, name: 'Angsana New' };
+    guaranteePrice.font = { size: 14, name: 'Angsana New' };
     guaranteePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const guaranteePriceValue = worksheet.getCell('M57');
     guaranteePriceValue.value = "-";
-    guaranteePriceValue.font = { size: 13, name: 'Angsana New' };
+    guaranteePriceValue.font = { size: 14, name: 'Angsana New' };
     guaranteePriceValue.alignment = { vertical: 'middle', horizontal: 'center' };
 
     const vat = worksheet.getCell('K56');
     vat.value = ' ภาษีมูลค่าเพิ่ม / Vat 7%';
-    vat.font = { size: 13, name: 'Angsana New' };
+    vat.font = { size: 14, name: 'Angsana New' };
     vat.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const vatValue = worksheet.getCell('M56');
     vatValue.value = "-";
-    vatValue.font = { size: 13, name: 'Angsana New' };
+    vatValue.font = { size: 14, name: 'Angsana New' };
     vatValue.alignment = { vertical: 'middle', horizontal: 'center' };
 
     const totalDiscount = worksheet.getCell('K55');
     totalDiscount.value = ' รวมหลังหักส่วนลด';
-    totalDiscount.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalDiscount.font = { size: 14, bold: true, name: 'Angsana New' };
     totalDiscount.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const totalDiscountValue = worksheet.getCell('M55');
     totalDiscountValue.value = "-";
-    totalDiscountValue.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalDiscountValue.font = { size: 14, bold: true, name: 'Angsana New' };
     totalDiscountValue.alignment = { vertical: 'middle', horizontal: 'center' };
 
     const discount = worksheet.getCell('K54');
     discount.value = ' ส่วนลด';
-    discount.font = { size: 13, name: 'Angsana New' };
+    discount.font = { size: 14, name: 'Angsana New' };
     discount.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const discountValue = worksheet.getCell('M54');
     discountValue.value = "-";
-    discountValue.font = { size: 13, name: 'Angsana New' };
+    discountValue.font = { size: 14, name: 'Angsana New' };
     discountValue.alignment = { vertical: 'middle', horizontal: 'center' };
 
     const movePrice = worksheet.getCell('K53');
     movePrice.value = ' ค่าบริการเคลื่อนย้ายสินค้า';
-    movePrice.font = { size: 13, name: 'Angsana New' };
+    movePrice.font = { size: 14, name: 'Angsana New' };
     movePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const movePriceValue = worksheet.getCell('M53');
     movePriceValue.value = "-";
-    movePriceValue.font = { size: 13, name: 'Angsana New' };
+    movePriceValue.font = { size: 14, name: 'Angsana New' };
     movePriceValue.alignment = { vertical: 'middle', horizontal: 'center' };
 
     const shippingCost = worksheet.getCell('K52');
     shippingCost.value = ' ค่าขนส่งสินค้าไป - กลับ';
-    shippingCost.font = { size: 13, bold: true, name: 'Angsana New' };
+    shippingCost.font = { size: 14, bold: true, name: 'Angsana New' };
     shippingCost.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const shippingCostValue = worksheet.getCell('M52');
     shippingCostValue.value = "-";
-    shippingCostValue.font = { size: 13, bold: true, name: 'Angsana New' };
+    shippingCostValue.font = { size: 14, bold: true, name: 'Angsana New' };
     shippingCostValue.alignment = { vertical: 'middle', horizontal: 'center' };
 
     const totalPrice = products.reduce((sum, product) => {
@@ -603,12 +603,12 @@ export default function Quotation() {
     }, 0);
     const totalPriceOut = worksheet.getCell('K51');
     totalPriceOut.value = ' รวมเงิน';
-    totalPriceOut.font = { size: 13, name: 'Angsana New' };
+    totalPriceOut.font = { size: 14, name: 'Angsana New' };
     totalPriceOut.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const totalPriceOutValue = worksheet.getCell('M51');
     totalPriceOutValue.value = "-";
-    totalPriceOutValue.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalPriceOutValue.font = { size: 14, bold: true, name: 'Angsana New' };
     totalPriceOutValue.alignment = { vertical: 'middle', horizontal: 'center' };
 
     worksheet.mergeCells('A55:B55');
@@ -690,40 +690,40 @@ export default function Quotation() {
     worksheet.mergeCells('A61:B61');
     const nameCustomer = worksheet.getCell('A61');
     nameCustomer.value = 'ลงชื่อ :';
-    nameCustomer.font = { size: 13, bold: true, name: 'Angsana New' };
+    nameCustomer.font = { size: 14, bold: true, name: 'Angsana New' };
     nameCustomer.alignment = { vertical: 'bottom', horizontal: 'right' };
 
     worksheet.mergeCells('A62:B62');
     const dateShipping1 = worksheet.getCell('A62');
     dateShipping1.value = 'ลงวันที่ :';
-    dateShipping1.font = { size: 13, bold: true, name: 'Angsana New' };
+    dateShipping1.font = { size: 14, bold: true, name: 'Angsana New' };
     dateShipping1.alignment = { vertical: 'bottom', horizontal: 'right' };
 
     const nameCustomer1 = worksheet.getCell('G61');
     nameCustomer1.value = 'ผู้ส่งของ';
-    nameCustomer1.font = { size: 13, bold: true, name: 'Angsana New' };
+    nameCustomer1.font = { size: 14, bold: true, name: 'Angsana New' };
     nameCustomer1.alignment = { vertical: 'bottom', horizontal: 'left' };
 
     worksheet.mergeCells('H61:I61');
     const namePle = worksheet.getCell('H61');
     namePle.value = 'ลงชื่อ :';
-    namePle.font = { size: 13, bold: true, name: 'Angsana New' };
+    namePle.font = { size: 14, bold: true, name: 'Angsana New' };
     namePle.alignment = { vertical: 'bottom', horizontal: 'right' };
 
     const namePle2 = worksheet.getCell('M61');
     namePle2.value = 'ผู้รับของ';
-    namePle2.font = { size: 13, bold: true, name: 'Angsana New' };
+    namePle2.font = { size: 14, bold: true, name: 'Angsana New' };
     namePle2.alignment = { vertical: 'bottom', horizontal: 'left' };
 
     const namePle1 = worksheet.getCell('J61');
     namePle1.value = '';
-    namePle1.font = { size: 13, bold: true, name: 'Angsana New' };
+    namePle1.font = { size: 14, bold: true, name: 'Angsana New' };
     namePle1.alignment = { vertical: 'bottom', horizontal: 'center' };
 
     worksheet.mergeCells('H62:M62');
     const namePleDate = worksheet.getCell('H62');
     namePleDate.value = '**ได้รับสินค้าตามรายการข้างต้นไว้ถูกต้องเเล้ว**';
-    namePleDate.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
+    namePleDate.font = { size: 14, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     namePleDate.alignment = { vertical: 'bottom', horizontal: 'center' };
 
     worksheet.mergeCells('C61:F61');
@@ -738,7 +738,7 @@ export default function Quotation() {
         year: '2-digit'
       })
       : ''}`;
-    nameCustomerDate1.font = { size: 13, bold: true, name: 'Angsana New' };
+    nameCustomerDate1.font = { size: 14, bold: true, name: 'Angsana New' };
     nameCustomerDate1.alignment = { vertical: 'bottom', horizontal: 'center' };
 
     for (let col = 1; col <= 13; col++) {
