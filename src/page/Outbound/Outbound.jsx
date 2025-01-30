@@ -733,10 +733,10 @@ export function Outbound() {
     worksheet.getColumn(7).width = 10;
     worksheet.getColumn(8).width = 8;
     worksheet.getColumn(9).width = 5;
-    worksheet.getColumn(10).width = 8;
-    worksheet.getColumn(11).width = 7;
+    worksheet.getColumn(10).width = 9;
+    worksheet.getColumn(11).width = 8;
     worksheet.getColumn(12).width = 14;
-    worksheet.getColumn(13).width = 11.2;
+    worksheet.getColumn(13).width = 11.8;
 
     worksheet.addRows(headerData);
 
