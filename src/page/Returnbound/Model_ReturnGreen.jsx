@@ -168,8 +168,9 @@ export function Modal_ReturnGreen({ close, data }) {
                       : "ไม่มีวันที่เริ่มต้น"}
                     <span className="px-4">ถึง</span>
                     {items.actual_out && items.date
-                      ? calculateNewDate(items.actual_out, items.date)
-                      : "ไม่มีวันที่สิ้นสุด"}
+                      ? calculateNewDate(items.actual_out, items.date - 1) // ลบ 1 วัน
+                      : "ไม่มีวันที่สิ้นสุด"} <span>(เช่า {items.date} วัน)</span>
+
                   </label>
                 </div>
 
@@ -186,8 +187,8 @@ export function Modal_ReturnGreen({ close, data }) {
               </div>
             ))}
           <div className="bg-transparent">
- 
-          {selectedProductId && <ProductReturn id={selectedProductId}/>}
+
+            {selectedProductId && <ProductReturn id={selectedProductId} />}
 
           </div>
         </div>
