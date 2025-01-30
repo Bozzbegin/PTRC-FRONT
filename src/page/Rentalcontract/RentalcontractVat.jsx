@@ -315,17 +315,17 @@ export default function Quotation() {
 
     worksheet.mergeCells('M17:M19');
     const expDateValue = worksheet.getCell('M17');
-    let expiryDateValue = expiryDate ? new Date(expiryDate) : null;
-    if (expiryDateValue) {
-      expiryDateValue.setDate(expiryDateValue.getDate() + 1);
+    let actualDate = data.actual_out ? new Date(data.actual_out) : null;
 
-      expDateValue.value = expiryDateValue.toLocaleDateString('th-TH', {
+    if (actualDate) {
+      actualDate.setDate(actualDate.getDate() + data.date);
+      expDateValue.value = actualDate.toLocaleDateString('th-TH', {
         day: '2-digit',
         month: 'short',
         year: '2-digit'
       });
     } else {
-      expDateValue.value = '';
+      expDateValue.value = 'ไม่พบข้อมูลวันที่';
     }
     expDateValue.font = { size: 13, name: 'Angsana New', bold: true };
     expDateValue.alignment = { vertical: 'middle', horizontal: 'left' };

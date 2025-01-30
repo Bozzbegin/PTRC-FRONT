@@ -289,7 +289,7 @@ export default function Quotation() {
       : ''}`;
     dateValue.font = { size: 13, name: 'Angsana New' };
     dateValue.alignment = { vertical: 'middle', horizontal: 'left' };
-
+    
     worksheet.mergeCells('K17:L19');
     const expDate = worksheet.getCell('K17');
     expDate.value = '  วันที่เริ่มเช่าสินค้า :';
@@ -324,7 +324,7 @@ export default function Quotation() {
     let actualDate = data.actual_out ? new Date(data.actual_out) : null;
 
     if (actualDate) {
-      actualDate.setDate(actualDate.getDate() + (data.date || 0) + 1);
+      actualDate.setDate(actualDate.getDate() + data.date);
       conditionValue.value = actualDate.toLocaleDateString('th-TH', {
         day: '2-digit',
         month: 'short',

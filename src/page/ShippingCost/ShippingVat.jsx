@@ -34,7 +34,7 @@ export default function Quotation() {
           setAssemble(res.data.data.quotation_type);
           const createDate = new Date(res.data.data.reserve_out);
           const expiryDate = new Date(createDate);
-          expiryDate.setDate(createDate.getDate() + 2 + data.date);
+          // expiryDate.setDate(createDate.getDate() + 2 + data.date);
           setExpiryDate(expiryDate.toISOString().split("T")[0]);
         }
       });
@@ -309,11 +309,11 @@ export default function Quotation() {
     expDate.alignment = { vertical: 'middle', horizontal: 'left' };
     expDate.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFF00' } };
     worksheet.mergeCells('M17:M19');
-
+   
     const expDateValue = worksheet.getCell('M17');
     let expiryDateValue = data.actual_out ? new Date(data.actual_out) : null;
 
-    expiryDateValue.setDate(expiryDateValue.getDate() + 1 + data.date);
+    expiryDateValue.setDate(expiryDateValue.getDate() + data.date);
     expDateValue.value = expiryDateValue.toLocaleDateString('th-TH', {
       day: '2-digit',
       month: 'short',
