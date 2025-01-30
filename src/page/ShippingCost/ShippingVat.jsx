@@ -186,7 +186,7 @@ export default function Quotation() {
     cell.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FFFF8C42' }
+      fgColor: { argb: 'FFFFE0B2' }
     };
     cell.border = {
       top: { style: 'medium' },
@@ -328,7 +328,7 @@ export default function Quotation() {
     expDate.value = '  วันที่ครบกำหนดเช่าสินค้า :';
     expDate.font = { size: 13, bold: true, name: 'Angsana New' };
     expDate.alignment = { vertical: 'middle', horizontal: 'left' };
-    expDate.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFF00' } };
+    expDate.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF59D' } };
     worksheet.mergeCells('M17:M19');
    
     const expDateValue = worksheet.getCell('M17');
@@ -343,35 +343,35 @@ export default function Quotation() {
 
     expDateValue.font = { size: 13, name: 'Angsana New', bold: true };
     expDateValue.alignment = { vertical: 'middle', horizontal: 'left' };
-    expDateValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFF00' } };
+    expDateValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF59D' } };
 
     worksheet.mergeCells('K20:L22');
     const condition = worksheet.getCell('K20');
     condition.value = '  ต่อสัญญาเช่าครั้งที่ :';
     condition.font = { size: 13, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     condition.alignment = { vertical: 'middle', horizontal: 'left' };
-    condition.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'F92D050' } };
+    condition.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC8E6C9' } };
 
     worksheet.mergeCells('M20:M22');
     const conditionValue = worksheet.getCell('M20');
     conditionValue.value = '-';
     conditionValue.font = { size: 13, name: 'Angsana New', bold: true, color: { argb: 'FFFF0000' } };
     conditionValue.alignment = { vertical: 'middle', horizontal: 'left' };
-    conditionValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'F92D050' } };
+    conditionValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC8E6C9' } };
 
     worksheet.mergeCells('K23:L25');
     const exportPast = worksheet.getCell('K23');
     exportPast.value = '  อ้างอิงเลขที่ Po :';
     exportPast.font = { size: 13, bold: true, name: 'Angsana New' };
     exportPast.alignment = { vertical: 'middle', horizontal: 'left' };
-    exportPast.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'F92D050' } };
+    exportPast.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC8E6C9' } };
 
     worksheet.mergeCells('M23:M25');
     const exportPastValue = worksheet.getCell('M23');
     exportPastValue.value = data.reserve_number;
     exportPastValue.font = { size: 13, name: 'Angsana New', bold: true };
     exportPastValue.alignment = { vertical: 'middle', horizontal: 'left' };
-    exportPastValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'F92D050' } };
+    exportPastValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC8E6C9' } };
 
     const indexNumber = worksheet.getCell('A27');
     indexNumber.value = ' ลำดับที่';
