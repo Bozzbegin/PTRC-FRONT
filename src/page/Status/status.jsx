@@ -91,7 +91,6 @@ const StatusProduct = () => {
   }, [transactionDate, receiptNumber, branchName]);
 
   const handleSearch = () => {
-    console.log("กำลังกรองข้อมูล...", { receiptNumber, transactionDate, branchName });
 
     const filtered = status.filter((item) => {
       // กรองข้อมูลตามเลขที่ใบเสร็จ
@@ -234,7 +233,7 @@ const StatusProduct = () => {
                       {item.type === 'hire' ? "เช่า" : item.type === 'sell' ? "ขาย" : "เช่า/ขาย"}
                     </td>
                     <td className="text-center border-l-2 px-4 py-2">
-                      {item.status === 'reserve' ? "จอง" : "กำลังเช่า"}
+                      {item.status === 'reserve' ? "จอง" : item.status === 'hire' ? "กำลังเช่า" : item.status === 'return' ? 'ส่งคืนสินค้า' : item.status === 'late' ? 'เลยกำหนด' : item.status === 'continue' ? 'เช่าต่อ' : item.status}
                     </td>
 
                     <td className="text-center border-l-2 px-4 py-2">
