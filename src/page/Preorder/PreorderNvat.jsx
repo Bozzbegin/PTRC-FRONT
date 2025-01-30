@@ -82,12 +82,12 @@ export default function Quotation() {
 
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Quotation');
-    
+
     worksheet.pageSetup = {
-      orientation: 'portrait', 
-      fitToPage: true, 
-      fitToWidth: 1, 
-      fitToHeight: 1 ,
+      orientation: 'portrait',
+      fitToPage: true,
+      fitToWidth: 1,
+      fitToHeight: 1,
       paperSize: 9
     };
 
@@ -477,8 +477,8 @@ export default function Quotation() {
     const discount1 = Number(data.discount) || 0;
     const guarantee_price = Number(data.guarantee_price) || 0;
 
-    const total_Price_Discount = (total_Price_Out + move_price + shipping_cost) - discount1;
-    const finalTotalPrice = guarantee_price + total_Price_Discount;
+    const total_Price_Discount = total_Price_Out - discount1;
+    const finalTotalPrice = guarantee_price + total_Price_Discount + move_price + shipping_cost;
 
     worksheet.mergeCells('A60:J61');
     const priceThb = worksheet.getCell('A60');
@@ -513,45 +513,45 @@ export default function Quotation() {
     guaranteePriceValue.font = { size: 13, name: 'Angsana New' };
     guaranteePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
-    const totalDiscount = worksheet.getCell('K58');
-    totalDiscount.value = ' รวมหลังหักส่วนลด';
-    totalDiscount.font = { size: 13, bold: true, name: 'Angsana New' };
-    totalDiscount.alignment = { vertical: 'middle', horizontal: 'left' };
-
-    const totalDiscountValue = worksheet.getCell('M58');
-    totalDiscountValue.value = `${formatNumber(total_Price_Discount)} `;
-    totalDiscountValue.font = { size: 13, bold: true, name: 'Angsana New' };
-    totalDiscountValue.alignment = { vertical: 'middle', horizontal: 'right' };
-
-    const discount = worksheet.getCell('K57');
-    discount.value = ' ส่วนลด';
-    discount.font = { size: 13, name: 'Angsana New' };
-    discount.alignment = { vertical: 'middle', horizontal: 'left' };
-
-    const discountValue = worksheet.getCell('M57');
-    discountValue.value = `${(data.discount ? formatNumber(discount1) : "-")} `;
-    discountValue.font = { size: 13, name: 'Angsana New' };
-    discountValue.alignment = { vertical: 'middle', horizontal: 'right' };
-
-    const movePrice = worksheet.getCell('K56');
+    const movePrice = worksheet.getCell('K58');
     movePrice.value = ' ค่าบริการเคลื่อนย้ายสินค้า';
     movePrice.font = { size: 13, name: 'Angsana New' };
     movePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
-    const movePriceValue = worksheet.getCell('M56');
+    const movePriceValue = worksheet.getCell('M58');
     movePriceValue.value = `${(data.move_price ? formatNumber(move_price) : "-")} `;
     movePriceValue.font = { size: 13, name: 'Angsana New' };
     movePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
-    const shippingCost = worksheet.getCell('K55');
+    const shippingCost = worksheet.getCell('K57');
     shippingCost.value = ' ค่าขนส่งสินค้าไป - กลับ';
     shippingCost.font = { size: 13, bold: true, name: 'Angsana New' };
     shippingCost.alignment = { vertical: 'middle', horizontal: 'left' };
 
-    const shippingCostValue = worksheet.getCell('M55');
+    const shippingCostValue = worksheet.getCell('M57');
     shippingCostValue.value = `${(shipping_cost ? formatNumber(shipping_cost) : "-")} `;
     shippingCostValue.font = { size: 13, bold: true, name: 'Angsana New' };
     shippingCostValue.alignment = { vertical: 'middle', horizontal: 'right' };
+
+    const totalDiscount = worksheet.getCell('K56');
+    totalDiscount.value = ' รวมหลังหักส่วนลด';
+    totalDiscount.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalDiscount.alignment = { vertical: 'middle', horizontal: 'left' };
+
+    const totalDiscountValue = worksheet.getCell('M56');
+    totalDiscountValue.value = `${formatNumber(total_Price_Discount)} `;
+    totalDiscountValue.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalDiscountValue.alignment = { vertical: 'middle', horizontal: 'right' };
+
+    const discount = worksheet.getCell('K55');
+    discount.value = ' ส่วนลด';
+    discount.font = { size: 13, name: 'Angsana New' };
+    discount.alignment = { vertical: 'middle', horizontal: 'left' };
+
+    const discountValue = worksheet.getCell('M55');
+    discountValue.value = `${(data.discount ? formatNumber(discount1) : "-")} `;
+    discountValue.font = { size: 13, name: 'Angsana New' };
+    discountValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
     const totalPrice = products.reduce((sum, product) => {
       return sum + (product.quantity * product.price * data.date);
@@ -1412,7 +1412,7 @@ export default function Quotation() {
 
           worksheet.addImage(imageId, {
             tl: { col: 0, row: 1 },
-            ext: { width: 175, height: 162.5 } 
+            ext: { width: 175, height: 162.5 }
           });
 
           productData.forEach((row, index) => {
