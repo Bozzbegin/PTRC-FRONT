@@ -299,10 +299,10 @@ export default function Quotation() {
 
     worksheet.mergeCells('M20:M22');
     const conditionValue = worksheet.getCell('M20');
-
+    
     if (actualOutDate) {
-      const returnDate = new Date(actualOutDate); 
-      returnDate.setDate(returnDate.getDate() + (data.date || 0)); 
+      const returnDate = new Date(actualOutDate);
+      returnDate.setDate((returnDate.getDate() + data.date) - 1);
       conditionValue.value = returnDate.toLocaleDateString('th-TH', {
         day: '2-digit',
         month: 'short',

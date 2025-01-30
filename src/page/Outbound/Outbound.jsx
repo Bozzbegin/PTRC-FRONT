@@ -42,6 +42,7 @@ export function Outbound() {
   const navigate = useNavigate();
   const [receiptNumber, setReceiptNumber] = useState('');
   const [rawSellDate, setRawSellDate] = useState("");
+  const [reserve, setReserve] = useState([]);
 
   const combinedItems = [
     ...confirmitem.map((item) => ({
@@ -233,7 +234,9 @@ export function Outbound() {
   };
 
   const handlePriceAPI = (id, value, isAssemble = false) => {
-    const parsedValue = parseFloat(value) || 0;
+    console.log(id, value)
+    const parsedValue = parseFloat(value);
+    console.log(parsedValue)
     if (isAssemble) {
       const index = confirmitemASM.findIndex((item) => item.id_asm === id);
       if (index !== -1) {
@@ -273,8 +276,8 @@ export function Outbound() {
   const confirm_order = async () => {
 
     resetForm();
-
-    if (!name || !day_length || confirmitem.length === 0 || confirmitem.some((item) => !item.price && !item.price3D)) {
+    // || confirmitem.length === 0 || confirmitem.some((item) => !item.price && !item.price3D)
+    if (!name || !day_length) {
 
       Swal.fire({
         icon: "warning",
@@ -618,6 +621,7 @@ export function Outbound() {
 
   useEffect(() => {
     const savedFormData = localStorage.getItem("outboundData");
+
     if (savedFormData) {
       const parsedData = JSON.parse(savedFormData);
 
@@ -631,7 +635,6 @@ export function Outbound() {
       setDay_Length(parsedData.date || "");
       setNetPrice(parsedData.net_price || 0);
       setFormData(parsedData.formData || {});
-      setNetPrice(parsedData.netPrice || 0);
       setItems(parsedData.items || []);
       setConfirmItem_Create(parsedData.confirmitem_create || []);
       setHasVat(parsedData.hasVat || true);
@@ -646,9 +649,10 @@ export function Outbound() {
       setWithHolDing(parsedData.withHolDing || true);
       setValidateModalInput(parsedData.validateModalInput || false);
       setQuantitySum(parsedData.quantitySum || 0);
+      setReserve(parsedData.reserve);
+
     }
   }, []);
-
 
   const exportToExcelVat = () => {
 
@@ -4149,31 +4153,18 @@ export function Outbound() {
                                 <input
                                   type="number"
                                   className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
-                                  value={item.isAssemble ? formatNumber(item.assemble_price || 0)
-                                    : formatNumber(
-                                      day_length >= 30
-                                        ? item.price30D || item.price || 0
-                                        : item.price || item.price3D || 0
-                                    )}
+                                  value={item.isAssemble ? formatNumber(item.assemble_price || 0) : formatNumber(day_length >= 30 ? item.price30D || item.price || 0 : item.price || item.price3D || 0)}
                                   onChange={(e) => {
-                                    handlePriceAPI(item.isAssemble ? item.id_asm : item.id, e.target.value, item.isAssemble);
+                                    let newValue = e.target.value;
+                                    handlePriceAPI(item.isAssemble ? item.id_asm : item.id, newValue, item.isAssemble);
                                   }}
                                 />
-                              ) : item.isAssemble ? formatNumber(item.assemble_price || 0) : formatNumber(
-                                day_length >= 30
-                                  ? item.price30D || item.price || 0
-                                  : item.price || item.price3D || 0
+                              ) : item.isAssemble ? formatNumber(item.assemble_price || 0) : formatNumber(day_length >= 30 ? item.price30D || item.price || 0 : item.price || item.price3D || 0
                               )}
                             </td>
+
                             <td className="px-4 py-2">
-                              {item.isAssemble
-                                ? formatNumber(
-                                  ((item.assemble_price || 0) * (item.amountASM || 0)
-                                  ))
-                                : formatNumber(
-                                  ((day_length >= 30 ? item.price30D || item.price || 0 : item.price || item.price3D || 0)) *
-                                  (item.amount || 0)
-                                )}
+                              {item.isAssemble ? formatNumber(((item.assemble_price || 0) * (item.amountASM || 0))) : formatNumber(((day_length >= 30 ? item.price30D || item.price || 0 : item.price || item.price3D || 0)) * (item.amount || 0))}
                             </td>
 
                             <td className="px-4 py-2">
