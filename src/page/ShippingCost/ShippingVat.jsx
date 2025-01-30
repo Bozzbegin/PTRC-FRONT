@@ -89,19 +89,32 @@ export default function Quotation() {
       paperSize: 9
     };
 
+    // worksheet.getColumn(1).width = 6;
+    // worksheet.getColumn(2).width = 4;
+    // worksheet.getColumn(3).width = 10;
+    // worksheet.getColumn(4).width = 3;
+    // worksheet.getColumn(5).width = 7;
+    // worksheet.getColumn(6).width = 8;
+    // worksheet.getColumn(7).width = 10;
+    // worksheet.getColumn(8).width = 7;
+    // worksheet.getColumn(9).width = 5;
+    // worksheet.getColumn(10).width = 8;
+    // worksheet.getColumn(11).width = 7;
+    // worksheet.getColumn(12).width = 12;
+    // worksheet.getColumn(13).width = 10;
     worksheet.getColumn(1).width = 6;
     worksheet.getColumn(2).width = 4;
-    worksheet.getColumn(3).width = 10;
-    worksheet.getColumn(4).width = 3;
-    worksheet.getColumn(5).width = 7;
+    worksheet.getColumn(3).width = 8;
+    worksheet.getColumn(4).width = 3.9;
+    worksheet.getColumn(5).width = 8;
     worksheet.getColumn(6).width = 8;
     worksheet.getColumn(7).width = 10;
-    worksheet.getColumn(8).width = 7;
-    worksheet.getColumn(9).width = 5;
-    worksheet.getColumn(10).width = 8;
-    worksheet.getColumn(11).width = 7;
-    worksheet.getColumn(12).width = 12;
-    worksheet.getColumn(13).width = 10;
+    worksheet.getColumn(8).width = 8;
+    worksheet.getColumn(9).width = 6;
+    worksheet.getColumn(10).width = 9;
+    worksheet.getColumn(11).width = 8;
+    worksheet.getColumn(12).width = 14;
+    worksheet.getColumn(13).width = 11.8;
 
     worksheet.addRows(headerData);
 

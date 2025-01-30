@@ -732,7 +732,7 @@ export function Outbound() {
     worksheet.getColumn(6).width = 8;
     worksheet.getColumn(7).width = 10;
     worksheet.getColumn(8).width = 8;
-    worksheet.getColumn(9).width = 5;
+    worksheet.getColumn(9).width = 6;
     worksheet.getColumn(10).width = 9;
     worksheet.getColumn(11).width = 8;
     worksheet.getColumn(12).width = 14;
