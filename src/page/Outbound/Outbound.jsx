@@ -868,7 +868,7 @@ export function Outbound() {
     phone.font = { size: 13, bold: true, name: 'Angsana New' };
     phone.alignment = { vertical: 'middle', horizontal: 'left' };
 
-    worksheet.mergeCells('C20:E22');
+    worksheet.mergeCells('C20:I22');
     const phoneValue = worksheet.getCell('C20:E22');
     phoneValue.value = customer_tel;
     phoneValue.font = { size: 13, name: 'Angsana New' };
@@ -1337,12 +1337,12 @@ export function Outbound() {
 
     const guaranteePrice = worksheet.getCell('K57');
     guaranteePrice.value = ' ค่าประกันสินค้า';
-    guaranteePrice.font = { size: 13, name: 'Angsana New' };
+    guaranteePrice.font = { size: 13, name: 'Angsana New', bold: true };
     guaranteePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const guaranteePriceValue = worksheet.getCell('M57');
     guaranteePriceValue.value = `${(outboundData.guarantee_price ? formatNumber(outboundData.guarantee_price) : "-")} `;
-    guaranteePriceValue.font = { size: 13, name: 'Angsana New' };
+    guaranteePriceValue.font = { size: 13, name: 'Angsana New', bold: true };
     guaranteePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
     const vat = worksheet.getCell('K56');
@@ -1357,12 +1357,12 @@ export function Outbound() {
 
     const totalDiscount = worksheet.getCell('K55');
     totalDiscount.value = ' รวมหลังหักส่วนลด';
-    totalDiscount.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalDiscount.font = { size: 13, name: 'Angsana New' };
     totalDiscount.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const totalDiscountValue = worksheet.getCell('M55');
     totalDiscountValue.value = `${formatNumber(total_Price_Discount)} `;
-    totalDiscountValue.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalDiscountValue.font = { size: 13, name: 'Angsana New' };
     totalDiscountValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
     const discount = worksheet.getCell('K54');
@@ -1387,12 +1387,12 @@ export function Outbound() {
 
     const shippingCost = worksheet.getCell('K52');
     shippingCost.value = ' ค่าขนส่งสินค้าไป - กลับ';
-    shippingCost.font = { size: 13, bold: true, name: 'Angsana New' };
+    shippingCost.font = { size: 13, name: 'Angsana New' };
     shippingCost.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const shippingCostValue = worksheet.getCell('M52');
     shippingCostValue.value = `${(outboundData.shipping_cost ? formatNumber(outboundData.shipping_cost) : "-")} `;
-    shippingCostValue.font = { size: 13, bold: true, name: 'Angsana New' };
+    shippingCostValue.font = { size: 13, name: 'Angsana New' };
     shippingCostValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
     const totalPriceOut = worksheet.getCell('K51');
@@ -1402,7 +1402,7 @@ export function Outbound() {
 
     const totalPriceOutValue = worksheet.getCell('M51');
     totalPriceOutValue.value = `${formatNumber(totalFinalPrice1 + totalFinalPrice2)} `;
-    totalPriceOutValue.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalPriceOutValue.font = { size: 13, name: 'Angsana New' };
     totalPriceOutValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
     worksheet.mergeCells('A55:B55');
@@ -2557,7 +2557,7 @@ export function Outbound() {
     phone.font = { size: 13, bold: true, name: 'Angsana New' };
     phone.alignment = { vertical: 'middle', horizontal: 'left' };
 
-    worksheet.mergeCells('C23:E25');
+    worksheet.mergeCells('C23:I25');
     const phoneValue = worksheet.getCell('C23:E25');
     phoneValue.value = `${customer_tel ? customer_tel : "-"}`;
     phoneValue.font = { size: 13, name: 'Angsana New' };
@@ -3046,12 +3046,12 @@ export function Outbound() {
 
     const guaranteePrice = worksheet.getCell('K59');
     guaranteePrice.value = ' ค่าประกันสินค้า';
-    guaranteePrice.font = { size: 13, name: 'Angsana New' };
+    guaranteePrice.font = { size: 13, name: 'Angsana New', bold: true };
     guaranteePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const guaranteePriceValue = worksheet.getCell('M59');
     guaranteePriceValue.value = `${(outboundData.guarantee_price ? formatNumber(outboundData.guarantee_price) : "-")} `;
-    guaranteePriceValue.font = { size: 13, name: 'Angsana New' };
+    guaranteePriceValue.font = { size: 13, name: 'Angsana New', bold: true };
     guaranteePriceValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
     // const totalDiscount = worksheet.getCell('K58');
@@ -3086,22 +3086,22 @@ export function Outbound() {
 
     const shippingCost = worksheet.getCell('K57');
     shippingCost.value = ' ค่าขนส่งสินค้าไป - กลับ';
-    shippingCost.font = { size: 13, bold: true, name: 'Angsana New' };
+    shippingCost.font = { size: 13, name: 'Angsana New' };
     shippingCost.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const shippingCostValue = worksheet.getCell('M57');
     shippingCostValue.value = `${(outboundData.shipping_cost ? formatNumber(outboundData.shipping_cost) : "-")} `;
-    shippingCostValue.font = { size: 13, bold: true, name: 'Angsana New' };
+    shippingCostValue.font = { size: 13, name: 'Angsana New' };
     shippingCostValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
     const totalDiscount = worksheet.getCell('K56');
     totalDiscount.value = ' รวมหลังหักส่วนลด';
-    totalDiscount.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalDiscount.font = { size: 13, name: 'Angsana New' };
     totalDiscount.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const totalDiscountValue = worksheet.getCell('M56');
     totalDiscountValue.value = `${formatNumber(total_Price_Discount)} `;
-    totalDiscountValue.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalDiscountValue.font = { size: 13, name: 'Angsana New' };
     totalDiscountValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
     const discount = worksheet.getCell('K55');
@@ -3121,7 +3121,7 @@ export function Outbound() {
 
     const totalPriceOutValue = worksheet.getCell('M54');
     totalPriceOutValue.value = `${formatNumber(totalFinalPrice1 + totalFinalPrice2)} `;
-    totalPriceOutValue.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalPriceOutValue.font = { size: 13, name: 'Angsana New' };
     totalPriceOutValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
     worksheet.mergeCells('A57:B57');
