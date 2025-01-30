@@ -541,9 +541,11 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                 {modalProductDetails.date + " วัน " + "(" + formatDateModal(new Date(new Date(modalProductDetails.reserve_out).getTime() + 1 * 24 * 60 * 60 * 1000)) + " - " +
                   formatDateModal(
                     new Date(
-                      (new Date(modalProductDetails.reserve_out).getTime() + 1 * 24 * 60 * 60 * 1000) + modalProductDetails.date * 24 * 60 * 60 * 1000
+                      (new Date(modalProductDetails.reserve_out).getTime() + 1 * 24 * 60 * 60 * 1000) +
+                      (modalProductDetails.date - 1) * 24 * 60 * 60 * 1000 // 🔥 ลบ 1 วัน
                     )
-                  ) + ")"}
+                  )
+                  + ")"}
               </div>
 
               <div className="flex items-center space-x-4 mb-2">
