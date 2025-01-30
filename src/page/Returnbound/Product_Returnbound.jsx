@@ -14,7 +14,7 @@ export default function ProductReturn({ id }) {
   useEffect(() => {
     const fetchData = async () => {
       if (!id || hasFetched) return;
-
+  
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -27,46 +27,48 @@ export default function ProductReturn({ id }) {
             },
           }
         );
-
+  
         const data = response.data;
-
+  
         if (data.status) {
           setOutboundId(data.option.outbound_id);
-
+  
           const normalProducts = data.option.return_logs.map((log) => ({
             id: log.product_id,
             type: "normal",
             product_name: log.product_name || "สินค้า",
             code: log.code,
             borrowed_quantity: log.borrowed_quantity,
-            remaining_quantity: log.borrowed_quantity - log.return_quantity,
+            remaining_quantity: log.borrowed_quantity - log.return_quantity - log.return_damage,
             unit: log.unit
           }));
-
-          const assembledProducts = data.option.return_assemble_logs.map((log) => ({
-            id: log.assemble_id,
-            type: "assemble",
-            assemble_name: log.assemble_name || `สินค้าประกอบ ID: ${log.assemble_id}`,
-            borrowed_quantity: log.assemble_quantity_borrow,
-            remaining_quantity: log.assemble_quantity_borrow - log.assemble_quantity_return,
-            descriptionASM: log.description || "ไม่มีคำอธิบาย", // เพิ่มส่วนนี้เพื่อเก็บคำอธิบาย
-            unit_asm: log.unit_asm,
-            product_details: log.product_id.split(",").map((id, index) => ({
-              product_id: id,
-              product_names: log.product_names.split(",")[index],
-              borrowed_quantity: parseInt(log.product_quantity_borrow.split(",")[index]),
-              return_quantity: parseInt(log.product_quantity_return.split(",")[index]),
-              remaining_quantityASM:
-                parseInt(log.product_quantity_borrow.split(",")[index]) -
-                parseInt(log.product_quantity_return.split(",")[index]),
-
-            })),
-          }));
-
-
+  
+          // เช็คว่า return_assemble_logs เป็น null หรือไม่
+          const assembledProducts = data.option.return_assemble_logs
+            ? data.option.return_assemble_logs.map((log) => ({
+                id: log.assemble_id,
+                type: "assemble",
+                assemble_name: log.assemble_name || `สินค้าประกอบ ID: ${log.assemble_id}`,
+                borrowed_quantity: log.assemble_quantity_borrow,
+                remaining_quantity: log.assemble_quantity_borrow - log.assemble_quantity_return,
+                descriptionASM: log.description || "ไม่มีคำอธิบาย", // เพิ่มส่วนนี้เพื่อเก็บคำอธิบาย
+                unit_asm: log.unit_asm,
+                product_details: log.product_id.split(",").map((id, index) => ({
+                  product_id: id,
+                  product_names: log.product_names.split(",")[index],
+                  borrowed_quantity: parseInt(log.product_quantity_borrow.split(",")[index]),
+                  return_quantity: parseInt(log.product_quantity_return.split(",")[index]),
+                  remaining_quantityASM:
+                    parseInt(log.product_quantity_borrow.split(",")[index]) -
+                    parseInt(log.product_quantity_return.split(",")[index]) - 
+                    parseInt(log.return_damage.split(",")[index]),
+                })),
+              }))
+            : []; // กรณีที่ไม่มีสินค้าประกอบ, ให้เป็น array ว่าง
+  
           const combinedData = [...normalProducts, ...assembledProducts];
           setProductData(combinedData);
-
+  
           const initialReturnData = {};
           combinedData.forEach((item) => {
             if (item.type === "assemble") {
@@ -87,7 +89,7 @@ export default function ProductReturn({ id }) {
               };
             }
           });
-
+  
           setReturnData(initialReturnData);
           setHasFetched(true);
         } else {
@@ -100,9 +102,10 @@ export default function ProductReturn({ id }) {
         setIsLoading(false);
       }
     };
-
+  
     fetchData();
   }, [id, hasFetched]);
+  
 
   const handleInputChange = (productId, field, value, assembleId = null) => {
     const key = assembleId ? `assemble_${assembleId}_${productId}` : `normal_${productId}`;
