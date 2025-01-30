@@ -266,7 +266,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('D23:G25');
     const taxIdValue = worksheet.getCell('D23:G25');
-    taxIdValue.value = '-';
+    taxIdValue.value = ` ${data.tax_id ? data.tax_id : "-"}`;
     taxIdValue.font = { size: 14, name: 'Angsana New' };
     taxIdValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
