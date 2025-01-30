@@ -156,13 +156,14 @@ const StatusProduct = () => {
               className="h-10 w-[220px] rounded-md border border-gray-500 p-2 flex items-center"
               style={{ overflow: "visible", color: "black" }}
             >
-              <input
+              {/* <input
                 type="text"
                 value={branchName || ""}
                 onChange={(e) => setBranchName(e.target.value)}
                 className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
                 placeholder="ค้นหาสาขา"
-              />
+              /> */}
+              <p>{branchName}</p>
             </div>
           </div>
           <div className="flex items-center">
@@ -250,7 +251,7 @@ const StatusProduct = () => {
             </table>
           </div>
         )}
-               <Modal
+        <Modal
           isModalOpen={isModalOpen}
           onClose={closeModal}
           itemId={selectedProductId}
