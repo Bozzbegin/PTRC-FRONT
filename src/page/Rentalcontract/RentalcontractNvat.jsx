@@ -100,7 +100,7 @@ export default function Quotation() {
     worksheet.getColumn(1).width = 6;
     worksheet.getColumn(2).width = 4;
     worksheet.getColumn(3).width = 10;
-    worksheet.getColumn(4).width = 8;
+    worksheet.getColumn(4).width = 3;
     worksheet.getColumn(5).width = 7;
     worksheet.getColumn(6).width = 8;
     worksheet.getColumn(7).width = 10;
@@ -1472,7 +1472,7 @@ export default function Quotation() {
 
           worksheet.addImage(imageId, {
             tl: { col: 0, row: 1 },
-            ext: { width: 185, height: 162.5 }
+            ext: { width: 175, height: 162.5 }
           });
 
           productData.forEach((row, index) => {
