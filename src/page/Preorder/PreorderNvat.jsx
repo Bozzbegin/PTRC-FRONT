@@ -1412,7 +1412,7 @@ export default function Quotation() {
 
           worksheet.addImage(imageId, {
             tl: { col: 0, row: 1 },
-            ext: { width: 175, height: 162.5 }
+            ext: { width: 175, height: 162.5 } 
           });
 
           productData.forEach((row, index) => {

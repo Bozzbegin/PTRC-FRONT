@@ -81,7 +81,7 @@ export default function Quotation() {
     worksheet.getColumn(5).width = 7;
     worksheet.getColumn(6).width = 8;
     worksheet.getColumn(7).width = 10;
-    worksheet.getColumn(8).width = 7;
+    worksheet.getColumn(8).width = 8;
     worksheet.getColumn(9).width = 5;
     worksheet.getColumn(10).width = 8;
     worksheet.getColumn(11).width = 7;
@@ -165,7 +165,7 @@ export default function Quotation() {
     cell.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FFFF8C42' }
+      fgColor: { argb: 'FFFFE0B2' }
     };
     cell.border = {
       top: { style: 'medium' },
@@ -303,7 +303,7 @@ export default function Quotation() {
     condition.value = '  วันที่รับสินค้าคืน :';
     condition.font = { size: 13, bold: true, name: 'Angsana New' };
     condition.alignment = { vertical: 'middle', horizontal: 'left' };
-    condition.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCC00' } };
+    condition.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF59D' } };
 
     worksheet.mergeCells('M20:M22');
     const conditionValue = worksheet.getCell('M20');
@@ -322,7 +322,7 @@ export default function Quotation() {
 
     conditionValue.font = { size: 13, name: 'Angsana New', bold: true };
     conditionValue.alignment = { vertical: 'middle', horizontal: 'left' };
-    conditionValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCC00' } };
+    conditionValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF59D' } };
 
 
     worksheet.mergeCells('K23:L26');
@@ -330,14 +330,14 @@ export default function Quotation() {
     lefPast.value = '  อ้างอิงเลขที่ Po :';
     lefPast.font = { size: 13, bold: true, name: 'Angsana New' };
     lefPast.alignment = { vertical: 'middle', horizontal: 'left' };
-    lefPast.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'F92D050' } };
+    lefPast.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC8E6C9' } };
 
     worksheet.mergeCells('M23:M26');
     const lefPastValue = worksheet.getCell('M23');
     lefPastValue.value = data.reserve_number;
     lefPastValue.font = { size: 13, name: 'Angsana New', bold: true };
     lefPastValue.alignment = { vertical: 'middle', horizontal: 'left' };
-    lefPastValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'F92D050' } };
+    lefPastValue.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC8E6C9' } };
 
     const indexNumber = worksheet.getCell('A29');
     indexNumber.value = 'ลำดับที่';
@@ -515,45 +515,45 @@ export default function Quotation() {
     guaranteePriceValue.font = { size: 13, name: 'Angsana New' };
     guaranteePriceValue.alignment = { vertical: 'middle', horizontal: 'center' };
 
-    const totalDiscount = worksheet.getCell('K58');
-    totalDiscount.value = ' รวมหลังหักส่วนลด';
-    totalDiscount.font = { size: 13, bold: true, name: 'Angsana New' };
-    totalDiscount.alignment = { vertical: 'middle', horizontal: 'left' };
-
-    const totalDiscountValue = worksheet.getCell('M58');
-    totalDiscountValue.value = "-";
-    totalDiscountValue.font = { size: 13, bold: true, name: 'Angsana New' };
-    totalDiscountValue.alignment = { vertical: 'middle', horizontal: 'center' };
-
-    const discount = worksheet.getCell('K57');
-    discount.value = ' ส่วนลด';
-    discount.font = { size: 13, name: 'Angsana New' };
-    discount.alignment = { vertical: 'middle', horizontal: 'left' };
-
-    const discountValue = worksheet.getCell('M57');
-    discountValue.value = "-";
-    discountValue.font = { size: 13, name: 'Angsana New' };
-    discountValue.alignment = { vertical: 'middle', horizontal: 'center' };
-
-    const movePrice = worksheet.getCell('K56');
+    const movePrice = worksheet.getCell('K57');
     movePrice.value = ' ค่าบริการเคลื่อนย้ายสินค้า';
     movePrice.font = { size: 13, name: 'Angsana New' };
     movePrice.alignment = { vertical: 'middle', horizontal: 'left' };
 
-    const movePriceValue = worksheet.getCell('M56');
+    const movePriceValue = worksheet.getCell('M57');
     movePriceValue.value = "-";
     movePriceValue.font = { size: 13, name: 'Angsana New' };
     movePriceValue.alignment = { vertical: 'middle', horizontal: 'center' };
 
-    const shippingCost = worksheet.getCell('K55');
+    const shippingCost = worksheet.getCell('K58');
     shippingCost.value = ' ค่าขนส่งสินค้าไป - กลับ';
     shippingCost.font = { size: 13, bold: true, name: 'Angsana New' };
     shippingCost.alignment = { vertical: 'middle', horizontal: 'left' };
 
-    const shippingCostValue = worksheet.getCell('M55');
+    const shippingCostValue = worksheet.getCell('M58');
     shippingCostValue.value = "-";
     shippingCostValue.font = { size: 13, bold: true, name: 'Angsana New' };
     shippingCostValue.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    const totalDiscount = worksheet.getCell('K56');
+    totalDiscount.value = ' รวมหลังหักส่วนลด';
+    totalDiscount.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalDiscount.alignment = { vertical: 'middle', horizontal: 'left' };
+
+    const totalDiscountValue = worksheet.getCell('M56');
+    totalDiscountValue.value = "-";
+    totalDiscountValue.font = { size: 13, bold: true, name: 'Angsana New' };
+    totalDiscountValue.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    const discount = worksheet.getCell('K55');
+    discount.value = ' ส่วนลด';
+    discount.font = { size: 13, name: 'Angsana New' };
+    discount.alignment = { vertical: 'middle', horizontal: 'left' };
+
+    const discountValue = worksheet.getCell('M55');
+    discountValue.value = "-";
+    discountValue.font = { size: 13, name: 'Angsana New' };
+    discountValue.alignment = { vertical: 'middle', horizontal: 'center' };
 
     const totalPrice = products.reduce((sum, product) => {
       return sum + (product.quantity * product.price * data.date);
@@ -1383,7 +1383,7 @@ export default function Quotation() {
 
           worksheet.addImage(imageId, {
             tl: { col: 0, row: 1 },
-            ext: { width: 175, height: 162.5 }
+            ext: { width: 175, height: 162.5 } 
           });
 
           productData.forEach((row, index) => {
