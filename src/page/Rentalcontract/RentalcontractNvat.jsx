@@ -88,6 +88,15 @@ export default function Quotation() {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Quotation');
 
+    worksheet.pageSetup = {
+      orientation: 'portrait',
+      fitToPage: true,
+      fitToWidth: 1,
+      fitToHeight: 1,
+      paperSize: 9
+
+    };
+
     worksheet.getColumn(1).width = 6;
     worksheet.getColumn(2).width = 4;
     worksheet.getColumn(3).width = 10;
@@ -289,7 +298,7 @@ export default function Quotation() {
       : ''}`;
     dateValue.font = { size: 13, name: 'Angsana New' };
     dateValue.alignment = { vertical: 'middle', horizontal: 'left' };
-    
+
     worksheet.mergeCells('K17:L19');
     const expDate = worksheet.getCell('K17');
     expDate.value = '  วันที่เริ่มเช่าสินค้า :';
