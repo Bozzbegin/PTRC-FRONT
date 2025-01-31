@@ -49,6 +49,8 @@ export function Modal_EditAssemble({ id, close }) {
             assemble_name: product.assemble_name,
             assemble_price: product.assemble_price,
             description: product.description,
+            unit_asm: product.unit_asm,
+            assemble_price_damage: product.assemble_price_damage,
             product: product.product.map((item) => ({
                 id: item.id,
                 quantity: item.quantity_use,
@@ -75,8 +77,8 @@ export function Modal_EditAssemble({ id, close }) {
                     text: "แก้ไขสินค้าประกอบสำเร็จ",
                     confirmButtonText: "ตกลง",
                 }).then(() => {
-                    close(); // ปิด modal
-                    window.location.reload(); // รีโหลดหน้า
+                    close();
+                    window.location.reload();
                 });
             }
         } catch (error) {
