@@ -292,20 +292,20 @@ export function Outbound() {
         (acc, item) => {
           if (item.isAssemble) {
             acc.assemble.push(String(item.id_asm));
-            acc.assemble_quantity.push(String(item.amountASM || 0));
-            acc.assemble_price.push(String(item.assemble_price || 0));
-            acc.assemble_service_price.push(String(item.assemble_service_price || 0));
-            acc.unit_asm.push(String(item.unit_asm || 0));
-            acc.assemble_price_damage.push(String(item.assemble_price_damage || 0));
+            acc.assemble_quantity.push(String(item.amountASM));
+            acc.assemble_price.push(String(item.assemble_price));
+            acc.assemble_service_price.push(String(item.assemble_service_price));
+            acc.unit_asm.push(String(item.unit_asm));
+            acc.assemble_price_damage.push(String(item.assemble_price_damage));
           } else {
             acc.code.push(item.code || "");
             acc.product_id.push(String(item.id));
             acc.price.push(
               item.type === "ขาย"
-                ? String(item.price || 0)
-                : String(item.price3D || 0)
+                ? String(item.price)
+                : String(item.price3D)
             );
-            acc.quantity.push(String(item.amount || 0));
+            acc.quantity.push(String(item.amount));
             acc.size.push(item.size || "");
             acc.type.push(item.type === "เช่า" ? "0" : "1");
           }
@@ -432,6 +432,7 @@ export function Outbound() {
         assemble_price: [],
         description: [],
         unit_asm: [],
+        unit: [],
         assemble_price_damage: [],
         assemble_service_price: [],
       };
@@ -459,6 +460,7 @@ export function Outbound() {
     reserveData.assemble_price = [];
     reserveData.description = [];
     reserveData.unit_asm = [];
+    reserveData.unit = [];
     reserveData.assemble_price_damage = [];
     reserveData.assemble_service_price = [];
 
@@ -484,6 +486,7 @@ export function Outbound() {
         reserveData.size.push(item.size || "");
         reserveData.centimeter.push(item.centimeter || "");
         reserveData.meter.push(item.meter || "");
+        reserveData.unit.push(String(item.unit || ""));
         reserveData.type.push(item.type === "ขาย" ? "1" : "2");
       }
     });
@@ -510,14 +513,14 @@ export function Outbound() {
       address,
       date: day_length,
       vat: hasVat ? "vat" : "nvat",
-      shipping_cost: formData.shipping_cost || 0,
-      discount: formData.discount || 0,
-      move_price: formData.move_price || 0,
-      guarantee_price: formData.guarantee_price || 0,
-      taxid: formData.taxid || "",
-      remark1: formData.remark1 || "",
-      remark2: formData.remark2 || "",
-      remark3: formData.remark3 || "",
+      shipping_cost: formData.shipping_cost,
+      discount: formData.discoun,
+      move_price: formData.move_price,
+      guarantee_price: formData.guarantee_price,
+      taxid: formData.taxid,
+      remark1: formData.remark1,
+      remark2: formData.remark2,
+      remark3: formData.remark3,
       company_name: comName,
       customer_tel,
       sell_date: sell_date,
@@ -660,6 +663,7 @@ export function Outbound() {
           price_damage: parseFloat(reserveData.price_damage[index]),
           amount: parseInt(reserveData.quantity[index], 10),
           size: reserveData.size[index],
+          unit: reserveData.unit[index],
           centimeter: reserveData.centimeter[index],
           meter: reserveData.meter[index],
           type: reserveData.type[index] === "1" ? "ขาย" : "เช่า",
@@ -1010,9 +1014,20 @@ export function Outbound() {
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
 
+      // if (ListProductAll.assemble_name) {
+      //   ListProductAll.assemble_name.forEach((assemble, index) => {
+      //     let rowNumber = 28 + index;
+      //     rowNumber++;
+
+      //     const assembleCell = worksheet.getCell(`B${rowNumber}`);
+      //     assembleCell.value = assemble;
+      //     assembleCell.font = { size: 13, name: 'Angsana New' };
+      //     assembleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+      //   });
+      // }
       if (ListProductAll.assemble_name) {
         ListProductAll.assemble_name.forEach((assemble, index) => {
-          let rowNumber = 28 + index;
           rowNumber++;
 
           const assembleCell = worksheet.getCell(`B${rowNumber}`);
@@ -1025,17 +1040,17 @@ export function Outbound() {
 
     });
 
-    if (ListProductAll.assemble_name && ListProductAll.product_name.length === 0) {
-      ListProductAll.assemble_name.forEach((assemble, index) => {
-        let rowNumber = 28 + index;
+    // if (ListProductAll.assemble_name) {
+    //   ListProductAll.assemble_name.forEach((assemble, index) => {
+    //     let rowNumber = 28 + index;
 
-        const assembleCell = worksheet.getCell(`B${rowNumber}`);
-        assembleCell.value = assemble;
-        assembleCell.font = { size: 13, name: 'Angsana New' };
-        assembleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+    //     const assembleCell = worksheet.getCell(`B${rowNumber}`);
+    //     assembleCell.value = assemble;
+    //     assembleCell.font = { size: 13, name: 'Angsana New' };
+    //     assembleCell.alignment = { vertical: 'middle', horizontal: 'left' };
 
-      });
-    }
+    //   });
+    // }
 
     ListProductAll.size.forEach((product, index) => {
       let rowNumber = 28 + index;
@@ -1086,7 +1101,7 @@ export function Outbound() {
       }
 
       const productCell = worksheet.getCell(`H${rowNumber}`);
-      const productCellValue = combinedItems[index].unit || "";
+      const productCellValue = combinedItems[index].unit;
 
       productCell.value = `${product + " " + productCellValue}`;
       productCell.font = { size: 13, name: 'Angsana New' };
@@ -1111,22 +1126,22 @@ export function Outbound() {
 
     });
 
-    if (ListProductAll.description && ListProductAll.product_name.length === 0) {
-      ListProductAll.description.forEach((description, index) => {
-        let rowNumber = 28 + index;
+    // if (ListProductAll.description && ListProductAll.product_name.length === 0) {
+    //   ListProductAll.description.forEach((description, index) => {
+    //     let rowNumber = 28 + index;
 
-        const descriptionMergeRange = `H${rowNumber}:I${rowNumber}`;
-        if (!worksheet.getCell(`H${rowNumber}`).isMerged) {
-          worksheet.mergeCells(descriptionMergeRange);
-        }
+    //     const descriptionMergeRange = `H${rowNumber}:I${rowNumber}`;
+    //     if (!worksheet.getCell(`H${rowNumber}`).isMerged) {
+    //       worksheet.mergeCells(descriptionMergeRange);
+    //     }
 
-        const assembleCell = worksheet.getCell(`H${rowNumber}`);
-        assembleCell.value = ListProductAll.assemble_quantity[index] + " " + ListProductAll.unit_asm[index];
-        assembleCell.font = { size: 13, name: 'Angsana New' };
-        assembleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+    //     const assembleCell = worksheet.getCell(`H${rowNumber}`);
+    //     assembleCell.value = ListProductAll.assemble_quantity[index] + " " + ListProductAll.unit_asm[index];
+    //     assembleCell.font = { size: 13, name: 'Angsana New' };
+    //     assembleCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
-      });
-    }
+    //   });
+    // }
 
     const pricePerDay = worksheet.getCell('J27');
     pricePerDay.value = 'ค่าเช่า / วัน';
@@ -2701,17 +2716,17 @@ export function Outbound() {
 
     });
 
-    if (ListProductAll.assemble_name && ListProductAll.assemble_name.length > 0) {
-      ListProductAll.assemble_name.forEach((assemble, index) => {
-        let rowNumber = 30 + index;
+    // if (ListProductAll.assemble_name && ListProductAll.assemble_name.length > 0) {
+    //   ListProductAll.assemble_name.forEach((assemble, index) => {
+    //     let rowNumber = 30 + index;
 
-        const assembleCell = worksheet.getCell(`B${rowNumber}`);
-        assembleCell.value = assemble;
-        assembleCell.font = { size: 13, name: 'Angsana New' };
-        assembleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+    //     const assembleCell = worksheet.getCell(`B${rowNumber}`);
+    //     assembleCell.value = assemble;
+    //     assembleCell.font = { size: 13, name: 'Angsana New' };
+    //     assembleCell.alignment = { vertical: 'middle', horizontal: 'left' };
 
-      });
-    }
+    //   });
+    // }
 
     ListProductAll.size.forEach((product, index) => {
       let rowNumber = 30 + index;
@@ -4203,7 +4218,7 @@ export function Outbound() {
                               <input
                                 type="number"
                                 className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
-                                value={item.isAssemble ? item.amountASM || 0 : item.amount || 0} 
+                                value={item.isAssemble ? item.amountASM || 0 : item.amount || 0}
                                 onChange={(e) => {
                                   handleAmountChange(
                                     item.isAssemble ? item.id_asm : item.id,

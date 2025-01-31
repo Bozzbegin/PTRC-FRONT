@@ -1,4 +1,5 @@
 import React, { useState,useEffect } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 
 export function ModalDiscount({ close, confirm }) {
 
@@ -22,14 +23,14 @@ export function ModalDiscount({ close, confirm }) {
   // };
 
   const initialFormData = JSON.parse(localStorage.getItem("formData")) || {
-    shipping_cost: 0,
-    move_price: 0,
-    discount: 0,
-    guarantee_price: 0,
-    taxid: "",
-    remark1: "",
-    remark2: "",
-    remark3: ""
+    shipping_cost: shipping_cost,
+    move_price: move_price,
+    discount: discount,
+    guarantee_price: guarantee_price,
+    taxid: taxid,
+    remark1: remark1,
+    remark2: remark2,
+    remark3: remark3
   };
 
   const [formData, setFormData] = useState(initialFormData);
