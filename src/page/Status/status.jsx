@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 const StatusProduct = () => {
   const [status, setStatus] = useState([]);
   const [receiptNumber, setReceiptNumber] = useState("");
+  const [receiptNumberOut, setReceiptNumberOut] = useState("");
   const [transactionDate, setTransactionDate] = useState("");
   const [error, setError] = useState(null);
   const [branchName, setBranchName] = useState("");
@@ -17,6 +18,177 @@ const StatusProduct = () => {
   const [isExporting, setIsExporting] = useState(false); // สำหรับการล็อกปุ่ม
   const [isExportingText, setIsExportingText] = useState("ส่งออกสินค้า"); // ข้อความในปุ่ม
   const [filteredStatus, setFilteredStatus] = useState([]);
+  const [selectMode, setSelectMode] = useState(false); // ควบคุมการแสดง Checkbox
+  const [Id_status, setId_status] = useState([]); // เก็บค่า ID ที่เลือก
+
+  // ฟังก์ชันจัดการการเลือก Checkbox
+  const handleSelectStatus = (id) => {
+    setId_status((prev) => {
+      if (prev.some((item) => item.id === id)) {
+        return prev.filter((item) => item.id !== id);
+      } else {
+        return [...prev, { id }];
+      }
+    });
+  };
+  const handleRserve = async () => {
+    if (Id_status.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "กรุณาเลือกสถานะที่ต้องการเปลี่ยนกลับเป็นจอง",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("Token not found");
+      }
+
+      const url = "http://192.168.195.75:5000/v1/product/status/set-reserve";
+
+      // ✅ แสดง Swal Confirm ก่อนยกเลิก
+      const result = await Swal.fire({
+        title: "ยืนยันการเปลี่ยนสถานะกลับมาเป็นจอง ?",
+        text: "คุณต้องการเปลี่ยนสถานะสินค้าที่เลือกเป็น 'จอง' หรือไม่?",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#28a745", // ✅ สีเขียวสด
+        cancelButtonColor: "#d33", // ❌ สีแดง
+        confirmButtonText: "ใช่, จองเลย!",
+        cancelButtonText: "ยกเลิก",
+      });
+
+      if (!result.isConfirmed) {
+        return; // ❌ ถ้ากดยกเลิก ให้หยุดทำงาน
+      }
+
+      // ✅ ส่ง API
+      const response = await axios.post(
+        url,
+        { choose_status: Id_status },
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          },
+        }
+      );
+
+      if (response.data.code === 200) {
+        // ✅ แสดง Swal Success
+        Swal.fire({
+          icon: "success",
+          title: "เปลี่ยนสถานะสำเร็จ!",
+          text: "สถานะที่เลือกถูกเปลี่ยนเป็นเรียบร้อยแล้ว",
+          confirmButtonText: "ตกลง",
+        }).then(() => {
+          window.location.reload();
+        });
+
+        setId_status([]); // ✅ เคลียร์ค่า หลังส่ง API สำเร็จ
+
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาด:", error);
+
+      // ✅ แสดง Swal Error
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด!",
+        text: error.message || "ไม่สามารถดำเนินการได้",
+        confirmButtonText: "ตกลง",
+      }).then(() => {
+        window.location.reload();
+      });
+    }
+  };
+
+  // ฟังก์ชันส่ง API เพื่อยกเลิกสถานะ
+  const handleCancel = async () => {
+    if (Id_status.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "กรุณาเลือกสถานะที่ต้องการยกเลิก",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("Token not found");
+      }
+
+      const url = "http://192.168.195.75:5000/v1/product/status/set-cancel";
+
+      // ✅ แสดง Swal Confirm ก่อนยกเลิก
+      const result = await Swal.fire({
+        title: "คุณแน่ใจหรือไม่?",
+        text: "คุณต้องการยกเลิกสถานะที่เลือกหรือไม่?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "ใช่, ยกเลิกเลย!",
+        cancelButtonText: "ยกเลิก",
+      });
+
+      if (!result.isConfirmed) {
+        return; // ❌ ถ้ากดยกเลิก ให้หยุดทำงาน
+      }
+
+      // ✅ ส่ง API
+      const response = await axios.post(
+        url,
+        { choose_status: Id_status },
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          },
+        }
+      );
+
+      if (response.data.code === 200) {
+        // ✅ แสดง Swal Success
+        Swal.fire({
+          icon: "success",
+          title: "ยกเลิกสถานะสำเร็จ!",
+          text: "สถานะที่เลือกถูกยกเลิกเรียบร้อยแล้ว",
+          confirmButtonText: "ตกลง",
+        }).then(() => {
+          window.location.reload();
+        });
+
+        setId_status([]); // ✅ เคลียร์ค่า หลังส่ง API สำเร็จ
+
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาด:", error);
+
+      // ✅ แสดง Swal Error
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด!",
+        text: error.message || "ไม่สามารถดำเนินการได้",
+        confirmButtonText: "ตกลง",
+      }).then(() => {
+        window.location.reload();
+      });
+    }
+  };
 
 
 
@@ -88,14 +260,17 @@ const StatusProduct = () => {
 
   useEffect(() => {
     handleSearch(); // เรียกค้นหาทุกครั้งที่มีการเปลี่ยนแปลงในฟิลด์ค้นหา
-  }, [transactionDate, receiptNumber, branchName]);
+  }, [transactionDate, receiptNumber, branchName ,receiptNumberOut]);
 
   const handleSearch = () => {
 
     const filtered = status.filter((item) => {
       // กรองข้อมูลตามเลขที่ใบเสร็จ
       const matchesReceiptNumber =
-        !receiptNumber || item.export_number_out?.toLowerCase().includes(receiptNumber.toLowerCase().trim());
+        !receiptNumber || item.export_number?.toLowerCase().includes(receiptNumber.toLowerCase().trim());
+
+        const matchesReceiptNumberOut =
+        !receiptNumberOut || item.export_number_out?.toLowerCase().includes(receiptNumber.toLowerCase().trim());
 
       // กรองข้อมูลตามวันที่
       const matchesTransactionDate =
@@ -105,10 +280,9 @@ const StatusProduct = () => {
       const matchesBranchName =
         !branchName || item.branch_name?.toLowerCase().includes(branchName.toLowerCase().trim());
 
-      return matchesReceiptNumber && matchesTransactionDate && matchesBranchName;
+      return matchesReceiptNumber && matchesTransactionDate && matchesBranchName && matchesReceiptNumberOut;
     });
 
-    // การจัดเรียงผลลัพธ์
     const sortedFiltered = filtered.sort((a, b) => {
       // เรียงลำดับตามวันที่ (จากล่าสุดไปเก่าสุด)
       const dateA = new Date(a.created_at);
@@ -180,6 +354,19 @@ const StatusProduct = () => {
           </div>
           <div className="flex items-center">
             <span className="pr-2 pl-5 font-bold text-xl text-sky-800">
+              เลขที่ใบส่งค้า :
+            </span>
+            <input
+              type="text"
+              value={receiptNumberOut || ""}
+              onChange={(e) =>setReceiptNumberOut(e.target.value)}
+              onKeyUp={handleSearch}  // ค้นหาเมื่อพิมพ์
+              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+              placeholder="ค้นหาเลขที่ใบส่งสินค้า"
+            />
+          </div>
+          <div className="flex items-center">
+            <span className="pr-2 pl-5 font-bold text-xl text-sky-800">
               วันที่ทำรายการ :
             </span>
             <input
@@ -196,50 +383,88 @@ const StatusProduct = () => {
           <p className="text-center text-2xl mt-10">ไม่พบรายการสินค้า</p>
         ) : (
           <div className="row-span-11 overflow-auto no-scrollbar">
+            <div className="flex justify-end mb-2">
+              <button
+                onClick={() => setSelectMode(!selectMode)}
+                className="bg-blue-500 text-white px-4 py-4 rounded-md hover:bg-blue-700 transition"
+              >
+                {selectMode ? "ยกเลิกการเลือก" : "เลือกหลายรายการ"}
+              </button>
+              {selectMode && (
+                <div className="flex justify-center ms-4">
+                  <button
+                    onClick={handleCancel}
+                    className="bg-red-500 text-white px-4 py-4 rounded-md hover:bg-red-700 transition"
+                  >
+                    ยกเลิกรายการที่เลือก ({Id_status.length})
+                  </button>
+                  <div className="ms-4">
+                    <button
+                      onClick={handleRserve}
+                      className="bg-green-500 text-white px-4 py-4 rounded-md hover:bg-red-700 transition"
+                    >
+                      เปลี่ยนเป็นจอง ({Id_status.length})
+                    </button></div>
+
+                </div>
+              )}
+            </div>
+
             <table className="table-auto w-full border-collapse">
-              <thead className="bg-blue-200 border-l-2  h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
+              <thead className="bg-blue-200 border-l-2 h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
                 <tr>
-                  <th className="px-4 border-l-2  py-2 rounded-tl-lg border-white">
-                    สาขา
-                  </th>
-                  <th className="px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
-                  <th className="px-4 border-l-2  py-2">วันที่ทำรายการ</th>
-                  <th className="px-4 border-l-2  py-2">
-                    นามลูกค้า/ชื่อบริษัท
-                  </th>
-                  <th className="px-4 border-l-2  py-2">รูปแบบ</th>
-                  <th className="px-4 border-l-2  py-2">สถานะ</th>
-                  <th className="px-4 border-l-2  py-2 rounded-tr-lg">
-                    เพิ่มเติม
-                  </th>
+                  {selectMode && <th className="px-4 py-2 border-l-2">เลือก</th>} {/* Checkbox Header */}
+                  <th className="px-4 py-2 border-l-2">เลขที่ใบเสร็จ</th>
+                  <th className="px-4 py-2 border-l-2">วันที่ทำรายการ</th>
+                  <th className="px-4 py-2 border-l-2">นามลูกค้า/ชื่อบริษัท</th>
+                  <th className="px-4 py-2 border-l-2">รูปแบบ</th>
+                  <th className="px-4 py-2 border-l-2">สถานะ</th>
+                  <th className="px-4 py-2 border-l-2">เพิ่มเติม</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredStatus.map((item, index) => (
                   <tr key={index} className="border-2">
+                    {selectMode && ( // แสดง Checkbox เมื่อกดปุ่ม "เลือกหลายรายการ"
+                      <td className="text-center px-4 py-2 border-l-2">
+                        <input
+                          type="checkbox"
+                          checked={Id_status.some((s) => s.id === item.id)}
+                          onChange={() => handleSelectStatus(item.id)}
+                          className="w-5 h-5"
+                        />
+                      </td>
+                    )}
+                    <td className="text-center border-l-2 px-4 py-2">{item.export_number_out || item.export_number}</td>
+                    <td className="text-center border-l-2 px-4 py-2">{formatDate(item.created_at)}</td>
+                    <td className="text-start border-l-2 px-4 py-2">{item.customer_name}</td>
                     <td className="text-center border-l-2 px-4 py-2">
-                      {item.branch_name}
+                      {item.type === "hire" ? "เช่า" : item.type === "sell" ? "ขาย" : "เช่า/ขาย"}
                     </td>
                     <td className="text-center border-l-2 px-4 py-2">
-                      {item.export_number_out || item.export_number}
+                      {item.status === "reserve" ? (
+                        <div className="text-yellow-400 font-bold">จอง</div>
+                      ) : item.status === "cancel" ? (
+                        <div className="text-red-500 font-bold">ยกเลิก</div>
+                      ) : item.status === "hire" ? (
+                        <div className="text-green-500 font-bold">กำลังเช่า</div>
+                      ) : item.status === "return" ? (
+                        <div className="text-blue-500 font-bold">คืนสินค้าครบแล้ว</div>
+                      ) : item.status === "late" ? (
+                        <div className="text-white bg-red-300 rounded-md font-bold">เลยกำหนด</div>
+                      ) : item.status === "continue" ? (
+                        "เช่าต่อ"
+                      ) : (
+                        item.status
+                      )}
                     </td>
-                    <td className="text-center border-l-2 px-4 py-2">
-                      {formatDate(item.created_at)}
-                    </td>
-                    <td className="text-start border-l-2 px-4 py-2">
-                      {item.customer_name}
-                    </td>
-                    <td className="text-center border-l-2 px-4 py-2">
-                      {item.type === 'hire' ? "เช่า" : item.type === 'sell' ? "ขาย" : "เช่า/ขาย"}
-                    </td>
-                    <td className="text-center border-l-2 px-4 py-2">
-                      {item.status === 'reserve' ? "จอง" : item.status === 'hire' ? "กำลังเช่า" : item.status === 'return' ? 'ส่งคืนสินค้า' : item.status === 'late' ? 'เลยกำหนด' : item.status === 'continue' ? 'เช่าต่อ' : item.status}
-                    </td>
-
                     <td className="text-center border-l-2 px-4 py-2">
                       <button
-                        onClick={() => openModal(item.id, item.reserve_id)}
-                        className="bg-green-500 text-white w-[100px] bg-[#FFFFFF] h-8 rounded-md border hover:bg-green-700 transition items-center justify-between px-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openModal(item.id, item.reserve_id);
+                        }}
+                        className="bg-green-500 text-white w-[100px] h-8 rounded-md border hover:bg-green-700 transition items-center justify-between px-2"
                       >
                         ดูข้อมูล
                       </button>
@@ -469,10 +694,10 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                   : currentStatus === "continue"
                     ? "เช่าต่อ"
                     : currentStatus === "cancel"
-                    ? "ยกเลิก"
-                    : currentStatus === "return"
-                      ? "ส่งคืนเเล้ว"
-                      : currentStatus}
+                      ? "ยกเลิก"
+                      : currentStatus === "return"
+                        ? "ส่งคืนเเล้ว"
+                        : currentStatus}
           </h2>
           <button
             onClick={onClose}
