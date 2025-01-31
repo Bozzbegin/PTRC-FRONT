@@ -165,6 +165,7 @@ export function Outbound() {
   };
 
   const closeModalDiscount = (data) => {
+    console.log(data)
     if (data) {
       setFormData(data);
     }
@@ -609,6 +610,7 @@ export function Outbound() {
 
     // localStorage.removeItem("outboundFormData");
     localStorage.removeItem("outboundData");
+    localStorage.removeItem("formData");
 
   };
 

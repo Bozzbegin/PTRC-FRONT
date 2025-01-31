@@ -1,8 +1,27 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 
 export function ModalDiscount({ close, confirm }) {
 
-  const [formData, setFormData] = useState({
+  // const [formData, setFormData] = useState({
+  //   shipping_cost: 0,
+  //   move_price: 0,
+  //   discount: 0,
+  //   guarantee_price: 0,
+  //   taxid: "",
+  //   remark1: "",
+  //   remark2: "",
+  //   remark3: ""
+  // });
+
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevState) => ({
+  //     ...prevState,
+  //     [name]: value,
+  //   }));
+  // };
+
+  const initialFormData = JSON.parse(localStorage.getItem("formData")) || {
     shipping_cost: 0,
     move_price: 0,
     discount: 0,
@@ -11,7 +30,13 @@ export function ModalDiscount({ close, confirm }) {
     remark1: "",
     remark2: "",
     remark3: ""
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
+
+  useEffect(() => {
+    localStorage.setItem("formData", JSON.stringify(formData));
+  }, [formData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
