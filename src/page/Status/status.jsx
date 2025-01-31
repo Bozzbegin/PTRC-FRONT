@@ -468,6 +468,8 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                   ? "ใบส่งของ"
                   : currentStatus === "continue"
                     ? "เช่าต่อ"
+                    : currentStatus === "cancel"
+                    ? "ยกเลิก"
                     : currentStatus === "return"
                       ? "ส่งคืนเเล้ว"
                       : currentStatus}
