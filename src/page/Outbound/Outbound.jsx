@@ -275,7 +275,7 @@ export function Outbound() {
 
   const confirm_order = async () => {
 
-    resetForm();
+    // resetForm();
     // || confirmitem.length === 0 || confirmitem.some((item) => !item.price && !item.price3D)
     if (!name || !day_length) {
 
@@ -449,7 +449,7 @@ export function Outbound() {
         reserveData.code.push(item.code || "");
         reserveData.product_id.push(String(item.id || ""));
         reserveData.product_name.push(String(item.name || ""));
-        reserveData.price.push(String(item.type === "ขาย" ? item.price || 0 : item.price3D || 0));
+        reserveData.price.push(String(day_length >= 30 ? item.price30D || 0 : item.price || 0));
         reserveData.quantity.push(String(item.amount || 0));
         reserveData.size.push(item.size || "");
         reserveData.centimeter.push(item.centimeter || "");
@@ -502,35 +502,35 @@ export function Outbound() {
 
     localStorage.setItem("outboundData", JSON.stringify(outboundData));
 
-    const formDataToSave = {
-      branch,
-      products,
-      name,
-      comName,
-      address,
-      workside,
-      sell_date,
-      day_length,
-      customer_tel,
-      items,
-      netPrice,
-      confirmitem,
-      confirmitemASM,
-      confirmitem_create,
-      hasVat,
-      withHolDing,
-      Item_sendto_database,
-      validateModalInput,
-      alldata_default,
-      formData,
-      quantitySum,
-      total_price: totalPrice,
-      vat_amount: vat,
-      net_price: netPrice,
-      reserve: [reserveData],
-    };
+    //   const formDataToSave = {
+    //     branch,
+    //     products,
+    //     name,
+    //     comName,
+    //     address,
+    //     workside,
+    //     sell_date,
+    //     day_length,
+    //     customer_tel,
+    //     items,
+    //     netPrice,
+    //     confirmitem,
+    //     confirmitemASM,
+    //     confirmitem_create,
+    //     hasVat,
+    //     withHolDing,
+    //     Item_sendto_database,
+    //     validateModalInput,
+    //     alldata_default,
+    //     formData,
+    //     quantitySum,
+    //     total_price: totalPrice,
+    //     vat_amount: vat,
+    //     net_price: netPrice,
+    //     reserve: [reserveData],
+    //   };
 
-    localStorage.setItem("outboundFormData", stringify(formDataToSave));
+    //   localStorage.setItem("outboundFormData", stringify(formDataToSave));
   };
 
   useEffect(() => {
@@ -607,7 +607,7 @@ export function Outbound() {
     setFormData({});
     setQuantitySum(0);
 
-    localStorage.removeItem("outboundFormData");
+    // localStorage.removeItem("outboundFormData");
     localStorage.removeItem("outboundData");
 
   };
@@ -649,7 +649,7 @@ export function Outbound() {
       setWithHolDing(parsedData.withHolDing || true);
       setValidateModalInput(parsedData.validateModalInput || false);
       setQuantitySum(parsedData.quantitySum || 0);
-      setReserve(parsedData.reserve);
+      setReserve(parsedData.reserve || []);
 
     }
   }, []);
@@ -3010,7 +3010,7 @@ export function Outbound() {
     const guaranteePriceTotal = parseFloat(outboundData.guarantee_price) || 0;
 
     const total_Price_Discount = (Number(totalFinalPrice1 + totalFinalPrice2)) - discountTotal;
-    const finalTotalPrice =  total_Price_Discount + movePriceTotal + shippingCostTotal + guaranteePriceTotal;
+    const finalTotalPrice = total_Price_Discount + movePriceTotal + shippingCostTotal + guaranteePriceTotal;
 
     products.forEach((product, index) => {
       const rowNumber = 30 + index;
