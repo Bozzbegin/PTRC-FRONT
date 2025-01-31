@@ -22,6 +22,7 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
         setProducts(res.data.data);
       }
     });
+    
   }, []);
 
   const filteritem_Search = () => {
