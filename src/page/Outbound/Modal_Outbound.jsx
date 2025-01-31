@@ -43,6 +43,7 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
       if (existingItemIndex !== -1) {
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex] = { ...item, amount: parsedAmount, price: item.price3D || 0, isAssemble: false };
+       
         return updatedItems;
       } else {
         return [...prevItems, { ...item, amount: parsedAmount, price: item.price3D || 0, isAssemble: false }];
