@@ -204,8 +204,36 @@ export function Outbound() {
     }
   };
 
+  // const handlePriceAPI = (id, value, isAssemble = false) => {
+  //   const parsedValue = parseFloat(value);
+  //   if (isAssemble) {
+  //     const index = confirmitemASM.findIndex((item) => item.id_asm === id);
+  //     if (index !== -1) {
+  //       const updatedConfirmItemASM = [...confirmitemASM];
+  //       updatedConfirmItemASM[index] = {
+  //         ...updatedConfirmItemASM[index],
+  //         assemble_price: parsedValue,
+  //       };
+  //       setConfirmitemASM(updatedConfirmItemASM);
+  //     }
+
+  //   } else {
+
+  //     const index = confirmitem.findIndex((item) => item.id === id);
+  //     if (index !== -1) {
+  //       const updatedConfirmItem = [...confirmitem];
+  //       updatedConfirmItem[index] = {
+  //         ...updatedConfirmItem[index],
+  //         price: parsedValue,
+  //       };
+  //       setConfirmitem(updatedConfirmItem);
+  //     }
+  //   }
+  // };
+
   const handlePriceAPI = (id, value, isAssemble = false) => {
     const parsedValue = parseFloat(value);
+
     if (isAssemble) {
       const index = confirmitemASM.findIndex((item) => item.id_asm === id);
       if (index !== -1) {
@@ -215,10 +243,9 @@ export function Outbound() {
           assemble_price: parsedValue,
         };
         setConfirmitemASM(updatedConfirmItemASM);
+        saveToLocalStorage();
       }
-
     } else {
-
       const index = confirmitem.findIndex((item) => item.id === id);
       if (index !== -1) {
         const updatedConfirmItem = [...confirmitem];
@@ -227,6 +254,7 @@ export function Outbound() {
           price: parsedValue,
         };
         setConfirmitem(updatedConfirmItem);
+        saveToLocalStorage();
       }
     }
   };
@@ -246,6 +274,7 @@ export function Outbound() {
 
     // resetForm();
     // || confirmitem.length === 0 || confirmitem.some((item) => !item.price && !item.price3D)
+
     if (!name || !day_length) {
 
       Swal.fire({
@@ -4143,7 +4172,7 @@ export function Outbound() {
                         <th className="px-4 py-2">รูปแบบ</th>
                         <th className="px-4 py-2">จำนวน</th>
                         <th className="px-4 py-2">ราคา</th>
-                        <th className="px-4 py-2">รวม</th>
+                        {/* <th className="px-4 py-2">รวม</th> */}
                         <th className="px-4 py-2 rounded-tr-lg">เลือก</th>
                       </tr>
                     </thead>
@@ -4169,11 +4198,12 @@ export function Outbound() {
                                 <option value="ขาย">ขาย</option>
                               </select>
                             </td>
+
                             <td className="px-4 py-2">
                               <input
                                 type="number"
                                 className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
-                                value={item.isAssemble ? item.amountASM || 0 : item.amount || 0} // ค่าเริ่มต้น
+                                value={item.isAssemble ? item.amountASM || 0 : item.amount || 0} 
                                 onChange={(e) => {
                                   handleAmountChange(
                                     item.isAssemble ? item.id_asm : item.id,
@@ -4184,24 +4214,53 @@ export function Outbound() {
                               />
                             </td>
 
-                            <td className="px-4 py-2">
+                            {/* <td className="px-4 py-2">
                               {item.type === 'เช่า' ? (
                                 <input
                                   type="number"
                                   className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
-                                  value={item.isAssemble ? formatNumber(item.assemble_price || 0) : formatNumber(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0))}
+                                  value={item.isAssemble
+                                    ? formatNumber(confirmitemASM.find(i => i.id_asm === item.id_asm)?.assemble_price || 0)
+                                    : formatNumber(confirmitem.find(i => i.id === item.id)?.price || 0)
+                                  }
                                   onChange={(e) => {
                                     let newValue = e.target.value;
                                     handlePriceAPI(item.isAssemble ? item.id_asm : item.id, newValue, item.isAssemble);
                                   }}
                                 />
-                              ) : item.isAssemble ? formatNumber(item.assemble_price || 0) : formatNumber(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0)
-                              )}
-                            </td>
+                              ) : item.isAssemble
+                                ? formatNumber(confirmitemASM.find(i => i.id_asm === item.id_asm)?.assemble_price || 0)
+                                : formatNumber(confirmitem.find(i => i.id === item.id)?.price || 0)
+                              }
+                            </td> */}
 
                             <td className="px-4 py-2">
-                              {item.isAssemble ? formatNumber(((item.assemble_price || 0) * (item.amountASM || 0))) : formatNumber(((day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0))) * (item.amount || 0))}
+                              {item.type === 'เช่า' ? (
+                                <input
+                                  type="number"
+                                  className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
+                                  value={item.isAssemble
+                                    ? formatNumber(confirmitemASM.find(i => i.id_asm === item.id_asm)?.assemble_price || 0)
+                                    : formatNumber(
+                                      confirmitem.find(i => i.id === item.id)?.price ||
+                                      (day_length >= 30 ? item.price30D : item.price3D) || 0
+                                    )
+                                  }
+                                  min="0"
+                                  onChange={(e) => {
+                                    let newValue = e.target.value;
+                                    handlePriceAPI(item.isAssemble ? item.id_asm : item.id, newValue, item.isAssemble);
+                                  }}
+                                />
+                              ) : item.isAssemble
+                                ? formatNumber(confirmitemASM.find(i => i.id_asm === item.id_asm)?.assemble_price || 0)
+                                : formatNumber(confirmitem.find(i => i.id === item.id)?.price || 0)
+                              }
                             </td>
+
+                            {/* <td className="px-4 py-2">
+                              {item.isAssemble ? formatNumber(((item.assemble_price || 0) * (item.amountASM || 0))) : formatNumber(((day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0))) * (item.amount || 0))}
+                            </td> */}
 
                             <td className="px-4 py-2">
                               <button
