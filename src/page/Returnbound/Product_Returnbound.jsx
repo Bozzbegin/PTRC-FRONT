@@ -162,129 +162,117 @@ export default function ProductReturn({ id }) {
     });
   };
 
-  const renderNormalProducts = (item) => (
-    <tr key={item.id}>
-      <td className="text-center py-4  align-middle">{item.product_name}</td>
-      <td className="text-center py-4  align-middle">{item.code}</td>
-      <td className="text-center py-4  align-middle">{item.borrowed_quantity}</td>
-      <td className="text-center py-4  align-middle">{item.remaining_quantity}</td>
-      <td className="text-center py-4  align-middle">
-        <input
-          type="checkbox"
-          checked={returnData[`normal_${item.id}`]?.return_all || false}
-          onChange={(e) => handleReturnAllForNormalProduct(item.id, e.target.checked)}
-          className="w-5 h-5"
-        />
-      </td>
-      <td className="text-center align-middle ">
-        <input
-          type="number"
-          value={returnData[`normal_${item.id}`]?.return_quantity || 0}
-          onChange={(e) => handleInputChange(item.id, "return_quantity", e.target.value)}
-          className="w-20 border rounded px-1 py-1"
-        />
-      </td>
-      <td className="text-center align-middle">
-        <input
-          type="number"
-          value={returnData[`normal_${item.id}`]?.damage_quantity || 0}
-          onChange={(e) => handleInputChange(item.id, "damage_quantity", e.target.value)}
-          className="w-20 border rounded px-1 py-1"
-        />
-      </td>
-      <td className="text-center align-middle">
-        <input
-          type="text"
-          value={returnData[`normal_${item.id}`]?.description || ""}
-          onChange={(e) => handleInputChange(item.id, "description", e.target.value)}
-          className="w-36 border rounded px-1 py-1"
-        />
-      </td>
-    </tr>
-  );
-
-
+  const renderNormalProducts = (item) => {
+    const isFullyReturned = item.remaining_quantity === 0;
+  
+    return (
+      <tr key={item.id} className="border-b">
+        {[item.product_name, item.code, item.borrowed_quantity, item.remaining_quantity].map(
+          (text, index) => (
+            <td key={index} className="text-center py-3 text-lg align-middle">{text}</td>
+          )
+        )}
+        <td className="text-center py-3 align-middle">
+          <input
+            type="checkbox"
+            checked={returnData[`normal_${item.id}`]?.return_all || false}
+            onChange={(e) => handleReturnAllForNormalProduct(item.id, e.target.checked)}
+            className="w-5 h-5 cursor-pointer"
+            disabled={isFullyReturned}
+          />
+        </td>
+        {["return_quantity", "damage_quantity"].map((field, index) => (
+          <td key={index} className="text-center align-middle">
+            <input
+              type="number"
+              value={returnData[`normal_${item.id}`]?.[field] || 0}
+              onChange={(e) => handleInputChange(item.id, field, e.target.value)}
+              className="w-24 border rounded px-2 py-1 text-center"
+              disabled={isFullyReturned}
+            />
+          </td>
+        ))}
+        <td className="text-center align-middle">
+          <input
+            type="text"
+            value={isFullyReturned ? "คืนครบแล้ว" : returnData[`normal_${item.id}`]?.description || ""}
+            onChange={(e) => handleInputChange(item.id, "description", e.target.value)}
+            className="w-40 border rounded px-2 py-1 text-center"
+            disabled={isFullyReturned}
+          />
+        </td>
+      </tr>
+    );
+  };
+  
   const renderAssembledProducts = (item) => (
     <React.Fragment key={item.id}>
-      <tr>
-        {/* เพิ่มปุ่มแสดง/ซ่อนในคอลัมน์ "รายละเอียด/รหัส" */}
-        <td className="text-center align-middle">{item.assemble_name}</td>
-        <td className="text-center align-middle">
+      <tr className="border-b">
+        <td className="text-center py-3 align-middle font-semibold">{item.assemble_name}</td>
+        <td className="text-center py-3 align-middle">
           <button
-            className="text-blue-500 underline"
+            className="text-blue-500 underline focus:outline-none"
             onClick={() => toggleRow(item.id)}
           >
-            {expandedRows[item.id] ? (
-              <i className="fa-solid fa-caret-up"></i>
-            ) : (
-              <i className="fa-solid fa-caret-down"></i>
-            )}
+            <i className={`fa-solid ${expandedRows[item.id] ? "fa-caret-up" : "fa-caret-down"}`}></i>
           </button>
         </td>
         <td colSpan="6"></td>
       </tr>
       {expandedRows[item.id] &&
-        item.product_details.map((detail) => (
-          <tr key={detail.product_id}>
-            <td className="text-center align-middle">{detail.product_names}</td>
-            <td className="text-center align-middle">-</td>
-            <td className="text-center align-middle">{detail.borrowed_quantity}</td>
-            <td className="text-center align-middle">{detail.remaining_quantityASM}</td>
-            <td className="text-center align-middle">
-              <input
-                type="checkbox"
-                checked={
-                  returnData[`assemble_${item.id}_${detail.product_id}`]?.return_all || false
-                }
-                onChange={(e) =>
-                  handleReturnAllForProductDetail(item.id, detail.product_id, e.target.checked)
-                }
-                className="w-5 h-5"
-              />
-            </td>
-            <td className="text-center align-middle">
-              <input
-                type="number"
-                value={
-                  returnData[`assemble_${item.id}_${detail.product_id}`]?.return_quantity || 0
-                }
-                onChange={(e) =>
-                  handleInputChange(detail.product_id, "return_quantity", e.target.value, item.id)
-                }
-                disabled={
-                  returnData[`assemble_${item.id}_${detail.product_id}`]?.return_all || false
-                }
-                className="w-20 border rounded px-1 py-1"
-              />
-            </td>
-            <td className="text-center align-middle">
-              <input
-                type="number"
-                value={
-                  returnData[`assemble_${item.id}_${detail.product_id}`]?.damage_quantity || 0
-                }
-                onChange={(e) =>
-                  handleInputChange(detail.product_id, "damage_quantity", e.target.value, item.id)
-                }
-                className="w-20 border rounded px-1 py-1"
-              />
-            </td>
-            <td className="text-center align-middle">
-              <input
-                type="text"
-                value={
-                  returnData[`assemble_${item.id}_${detail.product_id}`]?.description || ""
-                }
-                onChange={(e) =>
-                  handleInputChange(detail.product_id, "description", e.target.value, item.id)
-                }
-                className="w-36 border rounded px-1 py-1"
-              />
-            </td>
-          </tr>
-        ))}
+        item.product_details.map((detail) => {
+          const isFullyReturned = detail.remaining_quantityASM === 0;
+          return (
+            <tr key={detail.product_id} className="border-b bg-gray-50">
+              <td className="text-center align-middle">{detail.product_names}</td>
+              <td className="text-center align-middle">-</td>
+              <td className="text-center align-middle">{detail.borrowed_quantity}</td>
+              <td className="text-center align-middle">{detail.remaining_quantityASM}</td>
+              <td className="text-center align-middle">
+                <input
+                  type="checkbox"
+                  checked={returnData[`assemble_${item.id}_${detail.product_id}`]?.return_all || false}
+                  onChange={(e) =>
+                    handleReturnAllForProductDetail(item.id, detail.product_id, e.target.checked)
+                  }
+                  className="w-5 h-5 cursor-pointer"
+                  disabled={isFullyReturned}
+                />
+              </td>
+              {["return_quantity", "damage_quantity"].map((field, index) => (
+                <td key={index} className="text-center align-middle">
+                  <input
+                    type="number"
+                    value={returnData[`assemble_${item.id}_${detail.product_id}`]?.[field] || 0}
+                    onChange={(e) =>
+                      handleInputChange(detail.product_id, field, e.target.value, item.id)
+                    }
+                    disabled={isFullyReturned}
+                    className="w-24 border rounded px-2 py-1 text-center"
+                  />
+                </td>
+              ))}
+              <td className="text-center align-middle">
+                <input
+                  type="text"
+                  value={isFullyReturned ? "คืนครบแล้ว" : returnData[`assemble_${item.id}_${detail.product_id}`]?.description || ""}
+                  onChange={(e) =>
+                    handleInputChange(detail.product_id, "description", e.target.value, item.id)
+                  }
+                  className="w-40 border rounded px-2 py-1 text-center"
+                  disabled={isFullyReturned}
+                />
+              </td>
+            </tr>
+          );
+        })}
     </React.Fragment>
   );
+  
+  
+  
+
+
   
 
 
@@ -399,11 +387,11 @@ export default function ProductReturn({ id }) {
       <h1 className="text-2xl font-semibold mb-6 text-center">รายละเอียดสินค้า</h1>
       <div className="overflow-x-auto bg-white">
         <table className="min-w-full table-auto border-collapse border border-gray-300">
-          <thead className="bg-blue-300 border-xl">
+          <thead className="bg-blue-300 border-xl text-lg">
             <tr>
               <th className="px-4 py-2  text-center align-middle">ชื่อสินค้า</th>
               <th className="px-4 py-2 text-center align-middle">รายละเอียด/รหัส</th>
-              <th className="px-4 py-2 text-center align-middle">ยืมไป</th>
+              <th className="px-4 py-2 text-center align-middle">เช่าไป</th>
               <th className="px-4 py-2 text-center align-middle">เหลือคืน</th>
               <th className="px-4 py-2 text-center align-middle">คืนทั้งหมด</th>
               <th className="px-2 py-2 text-center align-middle">จำนวนที่คืน</th>
@@ -412,7 +400,7 @@ export default function ProductReturn({ id }) {
             </tr>
           </thead>
 
-          <tbody className="bg-white">
+          <tbody className="bg-white text-lg">
             {productData.map((item) =>
               item.type === "normal"
                 ? renderNormalProducts(item)
