@@ -9,7 +9,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import thaiBahtText from 'thai-baht-text';
 import ExcelJS from 'exceljs';
-import { stringify } from "flatted";
 
 export function Outbound() {
   const [branch, setBranch] = useState("");
@@ -118,34 +117,6 @@ export function Outbound() {
     setSell_date(formattedDate);
   };
 
-  // const parseThaiDate = (thaiDate) => {
-
-  //   const thaiMonths = [
-  //     "ม.ค.",
-  //     "ก.พ.",
-  //     "มี.ค.",
-  //     "เม.ย.",
-  //     "พ.ค.",
-  //     "มิ.ย.",
-  //     "ก.ค.",
-  //     "ส.ค.",
-  //     "ก.ย.",
-  //     "ต.ค.",
-  //     "พ.ย.",
-  //     "ธ.ค.",
-  //   ];
-
-  //   const [day, month, year] = thaiDate.split(" ");
-  //   const monthIndex = thaiMonths.indexOf(month);
-
-  //   if (monthIndex === -1) return null;
-
-  //   const fullYear = parseInt(year, 10) + 2500 - 543;
-  //   return `${fullYear}-${String(monthIndex + 1).padStart(2, "0")}-${String(
-  //     day
-  //   ).padStart(2, "0")}`;
-  // };
-
   const updateQuantitySum = () => {
     const totalItems = confirmitem.length + confirmitemASM.length;
     setQuantitySum(totalItems);
@@ -165,7 +136,6 @@ export function Outbound() {
   };
 
   const closeModalDiscount = (data) => {
-    console.log(data)
     if (data) {
       setFormData(data);
     }
@@ -235,9 +205,7 @@ export function Outbound() {
   };
 
   const handlePriceAPI = (id, value, isAssemble = false) => {
-    console.log(id, value)
     const parsedValue = parseFloat(value);
-    console.log(parsedValue)
     if (isAssemble) {
       const index = confirmitemASM.findIndex((item) => item.id_asm === id);
       if (index !== -1) {
@@ -415,26 +383,55 @@ export function Outbound() {
 
   const saveToLocalStorage = () => {
 
-    const reserveData = {
-      code: [],
-      product_name: [],
-      product_id: [],
-      price: [],
-      price_damage: [],
-      quantity: [],
-      size: [],
-      centimeter: [],
-      meter: [],
-      type: [],
-      assemble: [],
-      assemble_name: [],
-      assemble_quantity: [],
-      assemble_price: [],
-      description: [],
-      unit_asm: [],
-      assemble_price_damage: [],
-      assemble_service_price: [],
-    };
+    const savedOutboundData = localStorage.getItem("outboundData");
+    const existingReserveData = savedOutboundData
+      ? JSON.parse(savedOutboundData).reserve[0]
+      : {
+        code: [],
+        product_name: [],
+        product_id: [],
+        price: [],
+        price_damage: [],
+        quantity: [],
+        size: [],
+        centimeter: [],
+        meter: [],
+        type: [],
+        assemble: [],
+        assemble_name: [],
+        assemble_quantity: [],
+        assemble_price: [],
+        description: [],
+        unit_asm: [],
+        assemble_price_damage: [],
+        assemble_service_price: [],
+      };
+
+
+    const reserveData = { ...existingReserveData };
+
+    if (existingReserveData.price.length === 0) {
+      reserveData.price = [];
+    }
+
+    reserveData.code = [];
+    reserveData.product_name = [];
+    reserveData.product_id = [];
+    reserveData.price = [];
+    reserveData.price_damage = [];
+    reserveData.quantity = [];
+    reserveData.size = [];
+    reserveData.centimeter = [];
+    reserveData.meter = [];
+    reserveData.type = [];
+    reserveData.assemble = [];
+    reserveData.assemble_name = [];
+    reserveData.assemble_quantity = [];
+    reserveData.assemble_price = [];
+    reserveData.description = [];
+    reserveData.unit_asm = [];
+    reserveData.assemble_price_damage = [];
+    reserveData.assemble_service_price = [];
 
     combinedItems.forEach(item => {
       if (item.isAssemble) {
@@ -450,7 +447,10 @@ export function Outbound() {
         reserveData.code.push(item.code || "");
         reserveData.product_id.push(String(item.id || ""));
         reserveData.product_name.push(String(item.name || ""));
-        reserveData.price.push(String(day_length >= 30 ? item.price30D || 0 : item.price || 0));
+        const existingPrice = existingReserveData.price.length > 0 ? existingReserveData.price : [];
+        // reserveData.price.push(String(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0)));
+        reserveData.price.push(existingPrice.length > 0 ? existingPrice[0] : String(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0)));
+        reserveData.price_damage.push(String(item.price_damage || 0));
         reserveData.quantity.push(String(item.amount || 0));
         reserveData.size.push(item.size || "");
         reserveData.centimeter.push(item.centimeter || "");
@@ -503,35 +503,6 @@ export function Outbound() {
 
     localStorage.setItem("outboundData", JSON.stringify(outboundData));
 
-    //   const formDataToSave = {
-    //     branch,
-    //     products,
-    //     name,
-    //     comName,
-    //     address,
-    //     workside,
-    //     sell_date,
-    //     day_length,
-    //     customer_tel,
-    //     items,
-    //     netPrice,
-    //     confirmitem,
-    //     confirmitemASM,
-    //     confirmitem_create,
-    //     hasVat,
-    //     withHolDing,
-    //     Item_sendto_database,
-    //     validateModalInput,
-    //     alldata_default,
-    //     formData,
-    //     quantitySum,
-    //     total_price: totalPrice,
-    //     vat_amount: vat,
-    //     net_price: netPrice,
-    //     reserve: [reserveData],
-    //   };
-
-    //   localStorage.setItem("outboundFormData", stringify(formDataToSave));
   };
 
   useEffect(() => {
@@ -567,9 +538,7 @@ export function Outbound() {
 
   const calculateTotalPrice = () => {
     return combinedItems.reduce((total, item) => {
-      const priceToUse = day_length >= 30
-        ? item.price30D || item.price || 0
-        : item.price || item.price3D || 0;
+      const priceToUse = day_length >= 30 ? item.price30D : day_length < 30 ? item.price3D : item.price || 0;
 
       const itemTotal = item.isAssemble
         ? ((item.assemble_price || 0) * (item.amountASM || 0))
@@ -608,9 +577,7 @@ export function Outbound() {
     setFormData({});
     setQuantitySum(0);
 
-    // localStorage.removeItem("outboundFormData");
     localStorage.removeItem("outboundData");
-    localStorage.removeItem("formData");
 
   };
 
@@ -652,6 +619,36 @@ export function Outbound() {
       setValidateModalInput(parsedData.validateModalInput || false);
       setQuantitySum(parsedData.quantitySum || 0);
       setReserve(parsedData.reserve || []);
+
+      if (parsedData.reserve && parsedData.reserve.length > 0) {
+        const reserveData = parsedData.reserve[0];
+
+        const confirmItems = reserveData.code.map((code, index) => ({
+          code,
+          id: reserveData.product_id[index],
+          name: reserveData.product_name[index],
+          price: parseFloat(reserveData.price[index]),
+          price_damage: parseFloat(reserveData.price_damage[index]),
+          amount: parseInt(reserveData.quantity[index], 10),
+          size: reserveData.size[index],
+          centimeter: reserveData.centimeter[index],
+          meter: reserveData.meter[index],
+          type: reserveData.type[index] === "1" ? "ขาย" : "เช่า",
+        }));
+        const confirmItemsASM = reserveData.assemble.map((id_asm, index) => ({
+          id_asm,
+          assemble_name: reserveData.assemble_name[index],
+          amountASM: parseInt(reserveData.assemble_quantity[index], 10),
+          assemble_price: parseFloat(reserveData.assemble_price[index]),
+          description: reserveData.description[index],
+          unit_asm: reserveData.unit_asm[index],
+          assemble_price_damage: parseFloat(reserveData.assemble_price_damage[index]),
+          assemble_service_price: parseFloat(reserveData.assemble_service_price[index]),
+        }));
+
+        setConfirmitem(confirmItems);
+        setConfirmitemASM(confirmItemsASM);
+      }
 
     }
   }, []);
@@ -4186,23 +4183,24 @@ export function Outbound() {
                                 }}
                               />
                             </td>
+
                             <td className="px-4 py-2">
                               {item.type === 'เช่า' ? (
                                 <input
                                   type="number"
                                   className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
-                                  value={item.isAssemble ? formatNumber(item.assemble_price || 0) : formatNumber(day_length >= 30 ? item.price30D || item.price || 0 : item.price || item.price3D || 0)}
+                                  value={item.isAssemble ? formatNumber(item.assemble_price || 0) : formatNumber(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0))}
                                   onChange={(e) => {
                                     let newValue = e.target.value;
                                     handlePriceAPI(item.isAssemble ? item.id_asm : item.id, newValue, item.isAssemble);
                                   }}
                                 />
-                              ) : item.isAssemble ? formatNumber(item.assemble_price || 0) : formatNumber(day_length >= 30 ? item.price30D || item.price || 0 : item.price || item.price3D || 0
+                              ) : item.isAssemble ? formatNumber(item.assemble_price || 0) : formatNumber(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0)
                               )}
                             </td>
 
                             <td className="px-4 py-2">
-                              {item.isAssemble ? formatNumber(((item.assemble_price || 0) * (item.amountASM || 0))) : formatNumber(((day_length >= 30 ? item.price30D || item.price || 0 : item.price || item.price3D || 0)) * (item.amount || 0))}
+                              {item.isAssemble ? formatNumber(((item.assemble_price || 0) * (item.amountASM || 0))) : formatNumber(((day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0))) * (item.amount || 0))}
                             </td>
 
                             <td className="px-4 py-2">
@@ -4238,11 +4236,11 @@ export function Outbound() {
               </span>
               <span className="col-span-3 row-span-3 grid grid-cols-4">
                 <span className="col-span-1"></span>
-                <span className="col-span-1 grid justify-end p-1">รวมเงิน</span>
+                {/* <span className="col-span-1 grid justify-end p-1">รวมเงิน</span>
                 <span className="col-span-1 grid justify-end p-1">
                   {formatNumber(calculateTotalPrice())}
-                </span>
-                <span className="col-span-1 grid justify-start p-1">บาท</span>
+                </span> */}
+                {/* <span className="col-span-1 grid justify-start p-1">บาท</span> */}
 
               </span>
             </div>
