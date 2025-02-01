@@ -260,7 +260,7 @@ const StatusProduct = () => {
 
   useEffect(() => {
     handleSearch(); // เรียกค้นหาทุกครั้งที่มีการเปลี่ยนแปลงในฟิลด์ค้นหา
-  }, [transactionDate, receiptNumber, branchName ,receiptNumberOut]);
+  }, [transactionDate, receiptNumber, branchName, receiptNumberOut]);
 
   const handleSearch = () => {
 
@@ -269,7 +269,7 @@ const StatusProduct = () => {
       const matchesReceiptNumber =
         !receiptNumber || item.export_number?.toLowerCase().includes(receiptNumber.toLowerCase().trim());
 
-        const matchesReceiptNumberOut =
+      const matchesReceiptNumberOut =
         !receiptNumberOut || item.export_number_out?.toLowerCase().includes(receiptNumber.toLowerCase().trim());
 
       // กรองข้อมูลตามวันที่
@@ -359,7 +359,7 @@ const StatusProduct = () => {
             <input
               type="text"
               value={receiptNumberOut || ""}
-              onChange={(e) =>setReceiptNumberOut(e.target.value)}
+              onChange={(e) => setReceiptNumberOut(e.target.value)}
               onKeyUp={handleSearch}  // ค้นหาเมื่อพิมพ์
               className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
               placeholder="ค้นหาเลขที่ใบส่งสินค้า"
@@ -386,7 +386,7 @@ const StatusProduct = () => {
             <div className="flex justify-end mb-2">
               <button
                 onClick={() => setSelectMode(!selectMode)}
-                className="bg-blue-500 text-white px-4 py-4 rounded-md hover:bg-blue-700 transition"
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
               >
                 {selectMode ? "ยกเลิกการเลือก" : "เลือกหลายรายการ"}
               </button>
@@ -394,14 +394,14 @@ const StatusProduct = () => {
                 <div className="flex justify-center ms-4">
                   <button
                     onClick={handleCancel}
-                    className="bg-red-500 text-white px-4 py-4 rounded-md hover:bg-red-700 transition"
+                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
                   >
                     ยกเลิกรายการที่เลือก ({Id_status.length})
                   </button>
                   <div className="ms-4">
                     <button
                       onClick={handleRserve}
-                      className="bg-green-500 text-white px-4 py-4 rounded-md hover:bg-red-700 transition"
+                      className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
                     >
                       เปลี่ยนเป็นจอง ({Id_status.length})
                     </button></div>
@@ -412,36 +412,26 @@ const StatusProduct = () => {
 
             <table className="table-auto w-full border-collapse">
               <thead className="bg-blue-200 border-l-2 h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
-                <tr>
-                  {selectMode && <th className="px-4 py-2 border-l-2">เลือก</th>} {/* Checkbox Header */}
+                <tr>            
                   <th className="px-4 py-2 border-l-2">เลขที่ใบเสร็จ</th>
                   <th className="px-4 py-2 border-l-2">วันที่ทำรายการ</th>
                   <th className="px-4 py-2 border-l-2">นามลูกค้า/ชื่อบริษัท</th>
                   <th className="px-4 py-2 border-l-2">รูปแบบ</th>
                   <th className="px-4 py-2 border-l-2">สถานะ</th>
                   <th className="px-4 py-2 border-l-2">เพิ่มเติม</th>
+                  {selectMode && <th className="px-4 py-2 border-l-2">เลือก</th>} {/* Checkbox Header */}
                 </tr>
               </thead>
               <tbody>
                 {filteredStatus.map((item, index) => (
                   <tr key={index} className="border-2">
-                    {selectMode && ( // แสดง Checkbox เมื่อกดปุ่ม "เลือกหลายรายการ"
-                      <td className="text-center px-4 py-2 border-l-2">
-                        <input
-                          type="checkbox"
-                          checked={Id_status.some((s) => s.id === item.id)}
-                          onChange={() => handleSelectStatus(item.id)}
-                          className="w-5 h-5"
-                        />
-                      </td>
-                    )}
                     <td className="text-center border-l-2 px-4 py-2">{item.export_number_out || item.export_number}</td>
                     <td className="text-center border-l-2 px-4 py-2">{formatDate(item.created_at)}</td>
                     <td className="text-start border-l-2 px-4 py-2">{item.customer_name}</td>
                     <td className="text-center border-l-2 px-4 py-2">
-                      {item.type === "hire" ? "เช่า" : item.type === "sell" ? "ขาย" : "เช่า/ขาย"}
+                      {"เช่า"}
                     </td>
-                    <td className="text-center border-l-2 px-4 py-2">
+                    <td className="text-center text-xl border-l-2 px-4 py-2">
                       {item.status === "reserve" ? (
                         <div className="text-yellow-400 font-bold">จอง</div>
                       ) : item.status === "cancel" ? (
@@ -469,6 +459,16 @@ const StatusProduct = () => {
                         ดูข้อมูล
                       </button>
                     </td>
+                    {selectMode && ( // แสดง Checkbox เมื่อกดปุ่ม "เลือกหลายรายการ"
+                      <td className="text-center px-4 py-2 border-l-2">
+                        <input
+                          type="checkbox"
+                          checked={Id_status.some((s) => s.id === item.id)}
+                          onChange={() => handleSelectStatus(item.id)}
+                          className="w-5 h-5"
+                        />
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
