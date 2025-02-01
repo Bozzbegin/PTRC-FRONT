@@ -765,7 +765,7 @@ export default function Quotation() {
     namePle.alignment = { vertical: 'bottom', horizontal: 'right' };
 
     const namePle1 = worksheet.getCell('J63');
-    namePle1.value = 'เปิ้ล 095-5862149';
+    namePle1.value = `${data.customer_sell}`;
     namePle1.font = { size: 13, bold: true, name: 'Angsana New' };
     namePle1.alignment = { vertical: 'bottom', horizontal: 'center' };
 

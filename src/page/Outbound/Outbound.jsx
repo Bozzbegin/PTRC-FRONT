@@ -42,6 +42,7 @@ export function Outbound() {
   const [receiptNumber, setReceiptNumber] = useState('');
   const [rawSellDate, setRawSellDate] = useState("");
   const [reserve, setReserve] = useState([]);
+  const [customer_sell, setCustomer_sell] = useState([]);
 
   const combinedItems = [
     ...confirmitem.map((item) => ({
@@ -337,6 +338,7 @@ export function Outbound() {
       date: day_length,
       date_sell: sell_date,
       customer_tel: customer_tel,
+      customer_sell: customer_sell,
       reserve: reserve,
       assemble_status: confirmitem_create.assemble_status || false,
       vat: hasVat ? "vat" : "nvat",
@@ -523,6 +525,7 @@ export function Outbound() {
       remark3: formData.remark3,
       company_name: comName,
       customer_tel,
+      customer_sell,
       sell_date: sell_date,
       total_price: totalPrice,
       vat_amount: vat,
@@ -553,6 +556,7 @@ export function Outbound() {
     sell_date,
     day_length,
     customer_tel,
+    customer_sell,
     items,
     netPrice,
     confirmitem,
@@ -588,6 +592,7 @@ export function Outbound() {
     setProducts([]);
     setName("");
     setComName("");
+    setCustomer_sell("");
     setAddress("");
     setcustomer_tel("");
     setWorkside("");
@@ -631,6 +636,7 @@ export function Outbound() {
       setComName(parsedData.company_name || "");
       setAddress(parsedData.address || "");
       setcustomer_tel(parsedData.customer_tel || "");
+      setCustomer_sell(parsedData.customer_sell || "");
       setWorkside(parsedData.place_name || "");
       setSell_date(parsedData.sell_date || "");
       setDay_Length(parsedData.date || "");
@@ -1725,7 +1731,7 @@ export function Outbound() {
     namePle.alignment = { vertical: 'bottom', horizontal: 'right' };
 
     const namePle1 = worksheet.getCell('J61');
-    namePle1.value = 'เปิ้ล 095-5862149';
+    namePle1.value = `${customer_sell}`;
     namePle1.font = { size: 13, bold: true, name: 'Angsana New' };
     namePle1.alignment = { vertical: 'bottom', horizontal: 'center' };
 
@@ -4112,6 +4118,24 @@ export function Outbound() {
                 />
               </div>
             ))}
+
+            <div className="grid justify-end items-center grid-cols-4 pt-10">
+              <span className="col-span-1 grid justify-end pr-2">
+                ชื่อผู้เสนอ :
+              </span>
+              <select
+                className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
+                value={customer_sell}
+                onChange={(e) => setCustomer_sell(e.target.value)}
+              >
+                <option value="">เลือกชื่อผู้เสนอ</option>
+                <option value="เปิ้ล - 0955862149">เปิ้ล - 0955862149</option>
+                <option value="บาว - 0853806974">บาว - 0853806974</option>
+                <option value="walkin / โคกขาม">walkin / โคกขาม</option>
+                <option value="walkin / นพวงศ์">walkin / นพวงศ์</option>
+                <option value="walkin / ชลบุรี<">walkin / ชลบุรี</option>
+              </select>
+            </div>
 
             <div className="grid justify-end items-center grid-cols-4 pt-10">
               <span className="col-span-1 grid justify-end pr-2 ">
