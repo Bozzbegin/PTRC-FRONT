@@ -336,6 +336,7 @@ const StatusProduct = () => {
                 className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
                 placeholder="ค้นหาสาขา"
               /> */}
+
               <p>{branchName}</p>
             </div>
           </div>
@@ -413,12 +414,12 @@ const StatusProduct = () => {
             <table className="table-auto w-full border-collapse">
               <thead className="bg-blue-200 border-l-2 h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
                 <tr>            
-                  <th className="px-4 py-2 border-l-2">เลขที่ใบเสร็จ</th>
+                  <th className="px-4 py-2 border-l-2 rounded-tl-lg rounded-br-sm">เลขที่ใบเสร็จ</th>
                   <th className="px-4 py-2 border-l-2">วันที่ทำรายการ</th>
                   <th className="px-4 py-2 border-l-2">นามลูกค้า/ชื่อบริษัท</th>
                   <th className="px-4 py-2 border-l-2">รูปแบบ</th>
                   <th className="px-4 py-2 border-l-2">สถานะ</th>
-                  <th className="px-4 py-2 border-l-2">เพิ่มเติม</th>
+                  <th className="px-4 py-2 border-l-2 rounded-tr-lg rounded-br-sm">เพิ่มเติม</th>
                   {selectMode && <th className="px-4 py-2 border-l-2">เลือก</th>} {/* Checkbox Header */}
                 </tr>
               </thead>
