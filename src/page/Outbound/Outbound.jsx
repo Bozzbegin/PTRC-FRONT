@@ -301,11 +301,7 @@ export function Outbound() {
           } else {
             acc.code.push(item.code || "");
             acc.product_id.push(String(item.id));
-            acc.price.push(
-              item.type === "ขาย"
-                ? String(item.price)
-                : String(item.price3D)
-            );
+            acc.price.push(day_length >= 30 ? String(item.price30D) : day_length < 30 ? String(item.price3D) : item.price);
             acc.quantity.push(String(item.amount));
             acc.size.push(item.size || "");
             acc.type.push(item.type === "เช่า" ? "0" : "1");
@@ -480,9 +476,9 @@ export function Outbound() {
         reserveData.code.push(item.code || "");
         reserveData.product_id.push(String(item.id || ""));
         reserveData.product_name.push(String(item.name || ""));
-        const existingPrice = existingReserveData.price.length > 0 ? existingReserveData.price : [];
-        // reserveData.price.push(String(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0)));
-        reserveData.price.push(existingPrice.length > 0 ? existingPrice[0] : String(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0)));
+        // const existingPrice = existingReserveData.price.length > 0 ? existingReserveData.price : [];
+        reserveData.price.push(String(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0)));
+        // reserveData.price.push(existingPrice.length > 0 ? existingPrice[0] : String(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0)));
         reserveData.price_damage.push(String(item.price_damage || 0));
         reserveData.quantity.push(String(item.amount || 0));
         reserveData.size.push(item.size || "");

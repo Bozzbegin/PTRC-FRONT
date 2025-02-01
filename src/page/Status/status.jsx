@@ -428,7 +428,7 @@ const StatusProduct = () => {
                   <tr key={index} className="border-2">
                     <td className="text-center border-l-2 px-4 py-2">{item.export_number_out || item.export_number}</td>
                     <td className="text-center border-l-2 px-4 py-2">{formatDate(item.created_at)}</td>
-                    <td className="text-start border-l-2 px-4 py-2">{item.customer_name}</td>
+                    <td className="text-start border-l-2 px-4 py-2">{item.customer_name || item.company_name}</td>
                     <td className="text-center border-l-2 px-4 py-2">
                       {"เช่า"}
                     </td>
