@@ -276,7 +276,7 @@ export function Outbound() {
     // resetForm();
     // || confirmitem.length === 0 || confirmitem.some((item) => !item.price && !item.price3D)
 
-    if (!name || !day_length) {
+    if (!day_length) {
 
       Swal.fire({
         icon: "warning",
@@ -4274,16 +4274,16 @@ export function Outbound() {
                                 <input
                                   type="number"
                                   className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
-                                  value={item.isAssemble
-                                    ? formatNumber(confirmitemASM.find(i => i.id_asm === item.id_asm)?.assemble_price || 0)
-                                    : formatNumber(
-                                      confirmitem.find(i => i.id === item.id)?.price ||
-                                      (day_length >= 30 ? item.price30D : item.price3D) || 0
-                                    )
+                                  value={item.isAssemble === true ? formatNumber(confirmitemASM.find(i => i.id_asm === item.id_asm)?.assemble_price || 0)
+                                    : formatNumber(confirmitem.find(i => i.id === item.id)?.price || (day_length >= 30 ? item.price30D : item.price3D) || 0)
                                   }
-                                  min="0"
+                                  min={0}
+                                  // onChange={(e) => {
+                                  //   let newValue = e.target.value;
+                                  //   handlePriceAPI(item.isAssemble ? item.id_asm : item.id, newValue, item.isAssemble);
+                                  // }}
                                   onChange={(e) => {
-                                    let newValue = e.target.value;
+                                    let newValue = Math.max(0, Number(e.target.value)); // ป้องกันค่าติดลบ
                                     handlePriceAPI(item.isAssemble ? item.id_asm : item.id, newValue, item.isAssemble);
                                   }}
                                 />

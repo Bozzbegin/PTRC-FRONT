@@ -413,7 +413,7 @@ const StatusProduct = () => {
 
             <table className="table-auto w-full border-collapse">
               <thead className="bg-blue-200 border-l-2 h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
-                <tr>            
+                <tr>
                   <th className="px-4 py-2 border-l-2 rounded-tl-lg rounded-br-sm">เลขที่ใบเสร็จ</th>
                   <th className="px-4 py-2 border-l-2">วันที่ทำรายการ</th>
                   <th className="px-4 py-2 border-l-2">นามลูกค้า/ชื่อบริษัท</th>
@@ -428,7 +428,7 @@ const StatusProduct = () => {
                   <tr key={index} className="border-2">
                     <td className="text-center border-l-2 px-4 py-2">{item.export_number_out || item.export_number}</td>
                     <td className="text-center border-l-2 px-4 py-2">{formatDate(item.created_at)}</td>
-                    <td className="text-start border-l-2 px-4 py-2">{item.customer_name || item.company_name}</td>
+                    <td className="text-start border-l-2 px-4 py-2">{item.customer_name ? item.customer_name : item.company_name}</td>
                     <td className="text-center border-l-2 px-4 py-2">
                       {"เช่า"}
                     </td>
