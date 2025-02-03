@@ -87,9 +87,9 @@ export default function Quotation() {
     const worksheet = workbook.addWorksheet('Quotation');
 
     worksheet.pageSetup = {
-      orientation: 'portrait', 
-      fitToPage: true, 
-      fitToWidth: 1, 
+      orientation: 'portrait',
+      fitToPage: true,
+      fitToWidth: 1,
       fitToHeight: 1,
       paperSize: 9
     };
@@ -747,6 +747,7 @@ export default function Quotation() {
     payment3.alignment = { vertical: 'middle', horizontal: 'left' };
     payment3.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFADD8E6' } };
 
+    worksheet.unMergeCells('D38:H38'); 
     worksheet.mergeCells('D38:H38');
     const payment4 = worksheet.getCell('D38');
     payment4.value = 'สรุปยอดสำหรับหัก ณ ที่จ่าย';
