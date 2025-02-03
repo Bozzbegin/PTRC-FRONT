@@ -205,33 +205,6 @@ export function Outbound() {
     }
   };
 
-  // const handlePriceAPI = (id, value, isAssemble = false) => {
-  //   const parsedValue = parseFloat(value);
-  //   if (isAssemble) {
-  //     const index = confirmitemASM.findIndex((item) => item.id_asm === id);
-  //     if (index !== -1) {
-  //       const updatedConfirmItemASM = [...confirmitemASM];
-  //       updatedConfirmItemASM[index] = {
-  //         ...updatedConfirmItemASM[index],
-  //         assemble_price: parsedValue,
-  //       };
-  //       setConfirmitemASM(updatedConfirmItemASM);
-  //     }
-
-  //   } else {
-
-  //     const index = confirmitem.findIndex((item) => item.id === id);
-  //     if (index !== -1) {
-  //       const updatedConfirmItem = [...confirmitem];
-  //       updatedConfirmItem[index] = {
-  //         ...updatedConfirmItem[index],
-  //         price: parsedValue,
-  //       };
-  //       setConfirmitem(updatedConfirmItem);
-  //     }
-  //   }
-  // };
-
   const handlePriceAPI = (id, value, isAssemble = false) => {
     const parsedValue = parseFloat(value);
 
@@ -244,8 +217,8 @@ export function Outbound() {
           assemble_price: parsedValue,
         };
         setConfirmitemASM(updatedConfirmItemASM);
-        saveToLocalStorage();
       }
+
     } else {
       const index = confirmitem.findIndex((item) => item.id === id);
       if (index !== -1) {
@@ -255,11 +228,11 @@ export function Outbound() {
           price: parsedValue,
         };
         setConfirmitem(updatedConfirmItem);
-        saveToLocalStorage();
+
       }
     }
   };
-
+  
   const handleDeleteItem = (isAssemble, id) => {
     if (isAssemble) {
       const updatedConfirmItemASM = confirmitemASM.filter((item) => item.id_asm !== id);
@@ -435,12 +408,7 @@ export function Outbound() {
         assemble_service_price: [],
       };
 
-
     const reserveData = { ...existingReserveData };
-
-    if (existingReserveData.price.length === 0) {
-      reserveData.price = [];
-    }
 
     reserveData.code = [];
     reserveData.product_name = [];
@@ -476,9 +444,8 @@ export function Outbound() {
         reserveData.code.push(item.code || "");
         reserveData.product_id.push(String(item.id || ""));
         reserveData.product_name.push(String(item.name || ""));
-        // const existingPrice = existingReserveData.price.length > 0 ? existingReserveData.price : [];
-        reserveData.price.push(String(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0)));
-        // reserveData.price.push(existingPrice.length > 0 ? existingPrice[0] : String(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0)));
+        const existingPrice = existingReserveData.price.length > 0 ? existingReserveData.price : [];
+        reserveData.price.push(existingPrice.length > 0 ? existingPrice[0] : String(day_length >= 30 ? (item.price30D || 0) : day_length < 30 ? (item.price3D || 0) : (item.price || 0)));
         reserveData.price_damage.push(String(item.price_damage || 0));
         reserveData.quantity.push(String(item.amount || 0));
         reserveData.size.push(item.size || "");
@@ -488,6 +455,13 @@ export function Outbound() {
         reserveData.type.push(item.type === "ขาย" ? "1" : "2");
       }
     });
+
+    const storedItems = {
+      confirmitem,
+      confirmitemASM,
+    };
+    
+    localStorage.setItem("items", JSON.stringify(storedItems));
 
     const totalPrice = calculateTotalPrice();
     const vat = calculateVAT(totalPrice);
@@ -717,6 +691,7 @@ export function Outbound() {
           setReceiptNumber(newReceiptNumber);
           setData(res.data.data.receip_number);
         }
+        
       }).catch(() => {
         const currentYear = (new Date().getFullYear() + 543).toString().slice(-2);
         const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, "0");
@@ -4278,12 +4253,8 @@ export function Outbound() {
                                     : formatNumber(confirmitem.find(i => i.id === item.id)?.price || (day_length >= 30 ? item.price30D : item.price3D) || 0)
                                   }
                                   min={0}
-                                  // onChange={(e) => {
-                                  //   let newValue = e.target.value;
-                                  //   handlePriceAPI(item.isAssemble ? item.id_asm : item.id, newValue, item.isAssemble);
-                                  // }}
                                   onChange={(e) => {
-                                    let newValue = Math.max(0, Number(e.target.value)); // ป้องกันค่าติดลบ
+                                    let newValue = e.target.value;
                                     handlePriceAPI(item.isAssemble ? item.id_asm : item.id, newValue, item.isAssemble);
                                   }}
                                 />
