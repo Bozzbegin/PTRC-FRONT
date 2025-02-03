@@ -260,10 +260,15 @@ export function Outbound() {
 
     }
 
-    const reserve = [
+    const savedItems = JSON.parse(localStorage.getItem("items"));
+    const storedItems = savedItems || { confirmitem: [], confirmitemASM: [] };
 
+    const reserve = [
       combinedItems.reduce(
         (acc, item) => {
+          const storedItem = storedItems.confirmitem.find(i => i.id === item.id) || {};
+          const storedItemPrice = storedItem.price || (day_length >= 30 ? item.price30D : (day_length < 30 ? item.price3D : item.price));
+
           if (item.isAssemble) {
             acc.assemble.push(String(item.id_asm));
             acc.assemble_quantity.push(String(item.amountASM));
@@ -274,7 +279,8 @@ export function Outbound() {
           } else {
             acc.code.push(item.code || "");
             acc.product_id.push(String(item.id));
-            acc.price.push(day_length >= 30 ? String(item.price30D) : day_length < 30 ? String(item.price3D) : item.price);
+            // acc.price.push(day_length >= 30 ? String(item.price30D) : day_length < 30 ? String(item.price3D) : item.price);
+            acc.price.push(String(storedItemPrice));
             acc.quantity.push(String(item.amount));
             acc.size.push(item.size || "");
             acc.type.push(item.type === "เช่า" ? "0" : "1");
@@ -2365,10 +2371,10 @@ export function Outbound() {
 
     const retrievedData = localStorage.getItem("outboundData");
     const outboundData = JSON.parse(retrievedData);
-    
+
     const PriceList = localStorage.getItem("items");
     const PriceLocal = JSON.parse(PriceList);
-    
+
     combinedItems.map((item, index) => (
       item.index = index + 1,
       item.price = item.price_damage
@@ -2992,7 +2998,7 @@ export function Outbound() {
         productCell.value = `${formatNumber(finalPrice)} `;
         productCell.font = { size: 13, name: 'Angsana New' };
         productCell.alignment = { vertical: 'middle', horizontal: 'right' };
-     
+
         if (ListProductAll.assemble && ListProductAll.assemble_price.length === ListProductAll.assemble_quantity.length) {
           ListProductAll.assemble_price.forEach((assemblePrice, assembleIndex) => {
 
@@ -3004,7 +3010,7 @@ export function Outbound() {
             assembleCell.value = `${formatNumber(finalPriceAssemble)} `;
             assembleCell.font = { size: 13, name: 'Angsana New' };
             assembleCell.alignment = { vertical: 'middle', horizontal: 'right' };
-    
+
           });
         }
 
