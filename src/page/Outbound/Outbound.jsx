@@ -232,7 +232,7 @@ export function Outbound() {
       }
     }
   };
-  
+
   const handleDeleteItem = (isAssemble, id) => {
     if (isAssemble) {
       const updatedConfirmItemASM = confirmitemASM.filter((item) => item.id_asm !== id);
@@ -460,7 +460,7 @@ export function Outbound() {
       confirmitem,
       confirmitemASM,
     };
-    
+
     localStorage.setItem("items", JSON.stringify(storedItems));
 
     const totalPrice = calculateTotalPrice();
@@ -667,6 +667,9 @@ export function Outbound() {
     const retrievedData = localStorage.getItem("outboundData");
     const outboundData = JSON.parse(retrievedData);
 
+    const PriceList = localStorage.getItem("items");
+    const PriceLocal = JSON.parse(PriceList);
+
     combinedItems.map((item, index) => (
       item.index = index + 1,
       item.price = item.price_damage
@@ -691,7 +694,7 @@ export function Outbound() {
           setReceiptNumber(newReceiptNumber);
           setData(res.data.data.receip_number);
         }
-        
+
       }).catch(() => {
         const currentYear = (new Date().getFullYear() + 543).toString().slice(-2);
         const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, "0");
@@ -949,6 +952,8 @@ export function Outbound() {
     indexNumber.alignment = { vertical: 'middle', horizontal: 'center' };
 
     const ListProductAll = outboundData.reserve[0];
+    const PriceLocalTrue = PriceLocal.confirmitem;
+
     const Indexplus = 28;
 
     let currentIndex = 1;
@@ -1130,8 +1135,9 @@ export function Outbound() {
 
       worksheet.mergeCells(`J${rowNumber}`);
       const productCell = worksheet.getCell(`J${rowNumber}`);
+      const price = PriceLocalTrue[index].price;
 
-      productCell.value = `${formatNumber(product)} `;
+      productCell.value = `${formatNumber(price)} `;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -1257,13 +1263,14 @@ export function Outbound() {
       const price = parseFloat(product);
       const quantity = parseFloat(ListProductAll.quantity[index]);
       const date = parseFloat(outboundData.date);
+      const priceTrue = PriceLocalTrue[index].price;
 
-      if (!isNaN(price) && !isNaN(quantity) && !isNaN(date)) {
+      if (!isNaN(priceTrue) && !isNaN(quantity) && !isNaN(date)) {
         let rowNumber = 28 + index;
 
         worksheet.mergeCells(`M${rowNumber}`);
         const productCell = worksheet.getCell(`M${rowNumber}`);
-        const finalPrice = price * date * quantity;
+        const finalPrice = priceTrue * date * quantity;
         totalFinalPrice1 += finalPrice;
 
         productCell.value = `${formatNumber(finalPrice)} `;
@@ -1327,7 +1334,8 @@ export function Outbound() {
       const rowNumber = 28 + index;
       worksheet.mergeCells(`M${rowNumber}`);
       const productCell = worksheet.getCell(`M${rowNumber}`);
-      productCell.value = `${formatNumber(parseFloat((product.quantity * product.price) * data.date))} `;
+      const priceTrue = PriceLocalTrue[index].price;
+      productCell.value = `${formatNumber(parseFloat((product.quantity * priceTrue) * data.date))} `;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
     });
@@ -2357,7 +2365,10 @@ export function Outbound() {
 
     const retrievedData = localStorage.getItem("outboundData");
     const outboundData = JSON.parse(retrievedData);
-
+    
+    const PriceList = localStorage.getItem("items");
+    const PriceLocal = JSON.parse(PriceList);
+    
     combinedItems.map((item, index) => (
       item.index = index + 1,
       item.price = item.price_damage
@@ -2632,6 +2643,7 @@ export function Outbound() {
     conditionValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const ListProductAll = outboundData.reserve[0];
+    const PriceLocalTrue = PriceLocal.confirmitem;
     const Indexplus = 30;
 
     let currentIndex = 1;
@@ -2843,8 +2855,9 @@ export function Outbound() {
 
       worksheet.mergeCells(`J${rowNumber}`);
       const productCell = worksheet.getCell(`J${rowNumber}`);
+      const priceTrue = PriceLocalTrue[index].price;
 
-      productCell.value = `${formatNumber(product)} `;
+      productCell.value = `${formatNumber(priceTrue)} `;
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -2966,19 +2979,20 @@ export function Outbound() {
       const price = parseFloat(product);
       const quantity = parseFloat(ListProductAll.quantity[index]);
       const date = parseFloat(outboundData.date);
+      const priceTrue = PriceLocalTrue[index].price;
 
-      if (!isNaN(price) && !isNaN(quantity) && !isNaN(date)) {
+      if (!isNaN(priceTrue) && !isNaN(quantity) && !isNaN(date)) {
         let rowNumber = 30 + index;
 
         worksheet.mergeCells(`M${rowNumber}`);
         const productCell = worksheet.getCell(`M${rowNumber}`);
-        const finalPrice = price * date * quantity;
+        const finalPrice = priceTrue * date * quantity;
         totalFinalPrice1 += finalPrice;
 
         productCell.value = `${formatNumber(finalPrice)} `;
         productCell.font = { size: 13, name: 'Angsana New' };
         productCell.alignment = { vertical: 'middle', horizontal: 'right' };
-        console.log(totalFinalPrice1)
+     
         if (ListProductAll.assemble && ListProductAll.assemble_price.length === ListProductAll.assemble_quantity.length) {
           ListProductAll.assemble_price.forEach((assemblePrice, assembleIndex) => {
 
@@ -2990,7 +3004,7 @@ export function Outbound() {
             assembleCell.value = `${formatNumber(finalPriceAssemble)} `;
             assembleCell.font = { size: 13, name: 'Angsana New' };
             assembleCell.alignment = { vertical: 'middle', horizontal: 'right' };
-            console.log(totalFinalPrice2)
+    
           });
         }
 
