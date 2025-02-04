@@ -707,7 +707,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
       Swal.fire({
         icon: "error",
         title: "เกิดข้อผิดพลาด",
-        text: error.message,
+        text: "กรุณาเลือกวันที่ส่ง"
       });
     } finally {
       setIsExporting(false); // เมื่อเสร็จการส่งออก ให้ปลดล็อกปุ่ม
