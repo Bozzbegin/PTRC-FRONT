@@ -813,7 +813,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
               {currentStatus === 'hire' && (
                 <p className="mb-2">
                   <strong className="text-gray-700">วันที่ส่งสินค้า : </strong><span className="ms-2"></span>
-                  {formatDateModal(modalProductDetails.reserve_out)}
+                  {formatDateModal(modalProductDetails.actual_out)}
                 </p>
               )}
 
@@ -822,7 +822,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                 <p className="mb-2">
                   <strong className="text-gray-700">วันที่ครบกำหนดคืนสินค้า: </strong><span className="ms-2"></span>
                   {formatDateModal(new Date(
-                    (new Date(modalProductDetails.reserve_out).getTime() + 1 * 24 * 60 * 60 * 1000) + modalProductDetails.date * 24 * 60 * 60 * 1000
+                    (new Date(modalProductDetails.actual_out).getTime() + 0 * 24 * 60 * 60 * 1000) + modalProductDetails.date * 24 * 60 * 60 * 1000
                   )
                   )}
                 </p>
@@ -896,7 +896,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                           )
                           )} <span>-</span><span></span>
                           {formatDateModal(new Date(
-                            (new Date(modalProductDetails.actual_out).getTime() + 1 * 24 * 60 * 60 * 1000) + modalProductDetails.date * 24 * 60 * 60 * 1000
+                            (new Date(modalProductDetails.actual_out).getTime() + 0 * 24 * 60 * 60 * 1000) + modalProductDetails.date * 24 * 60 * 60 * 1000
                           )
                           )}
                         </div>
