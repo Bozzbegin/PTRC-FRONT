@@ -706,8 +706,8 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
       console.error("Error exporting data:", error);
       Swal.fire({
         icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "กรุณาเลือกวันที่ส่ง"
+        title: "กรุณาเลือกวันที่ส่งของ",
+
       });
     } finally {
       setIsExporting(false); // เมื่อเสร็จการส่งออก ให้ปลดล็อกปุ่ม
