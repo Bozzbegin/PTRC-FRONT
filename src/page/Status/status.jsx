@@ -315,6 +315,7 @@ const StatusProduct = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setDateExport(null);
   };
 
 
@@ -505,14 +506,83 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [assemble, setAssemble] = useState(false);
   const [isExporting, setIsExporting] = useState(false); // สำหรับการล็อกปุ่ม
   const [isExportingText, setIsExportingText] = useState("ส่งออกสินค้า"); // ข้อความในปุ่ม
+  const [DateExport, setDateExport] = useState(null);
+  const [startDate, setStartDate] = useState(null); // กำหนด startDate
+  const [endDate, setEndDate] = useState(null);
+  const [rawDate, setRawDate] = useState(null);
+  const [formattedDate, setFormattedDate] = useState("");
 
-  const formatDateModal = (dateString) => {
-    const date = new Date(dateString);
+
+
+  const formatDateModal = (selectedDate) => {
+    const date = new Date(selectedDate);
     const buddhistYear = date.getFullYear() + 543;
     return format(date, "d MMMM yyyy", { locale: th }).replace(/[\d]{4}/, buddhistYear);
   };
 
+  // แปลงจาก yyyy-mm-dd เป็น dd/mm/yyyy
+  const formatToDDMMYYYY = (dateString) => {
+    console.log("before", dateString);
+
+    const [year, month, day] = dateString.split("-"); // แยกปี, เดือน, วัน
+    return `${day}/${month}/${year}`; // จัดรูปแบบใหม่เป็น dd/mm/yyyy
+  };
+
+  // ฟังก์ชันแปลงวันที่เป็นวัน/เดือน/ปี ภาษาไทย
+  const formatDateToThai = (date) => {
+    const months = [
+      'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+      'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+    ];
+
+    const d = new Date(date);
+    const day = d.getDate().toString().padStart(2, '0');  // วัน
+    const month = months[d.getMonth()];  // เดือน
+    const year = d.getFullYear() + 543;  // ปีไทย (เพิ่ม 543)
+
+    return `${day} ${month} ${year}`;
+  };
+
+  const handleDateExport = (event) => {
+    const selectedDate = event.target.value; // ค่าที่เลือกในรูปแบบ yyyy-mm-dd
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+
+    // Combine date and time into `YYYY-MM-DD HH:MM:SS`
+    const formattedDateTime = `${selectedDate} ${hours}:${minutes}:${seconds}`;
+
+    // Set to state (if using React)
+    setDateExport(formattedDateTime);
+    console.log(formattedDateTime);
+
+    const nextDay = new Date(selectedDate);
+    const formatted = formatDateToThai(selectedDate);
+    // ตั้งค่าวันที่เริ่มเช่า (วันถัดไปจากวันที่เลือก)
+    nextDay.setDate(nextDay.getDate() + 1);
+    const formattedStartDate = formatDateToThai(nextDay); // ฟังก์ชันที่แปลงวันที่เป็นรูปแบบไทย
+    setStartDate(formattedStartDate);
+
+
+    // คำนวณวันสิ้นสุดเช่า (เพิ่มจำนวนวันที่จาก modalProductDetails.date)
+    const endDateCalculated = new Date(nextDay);
+    endDateCalculated.setDate(endDateCalculated.getDate() + (modalProductDetails.date) - 1); // เพิ่มจำนวนวันที่ตาม modalProductDetails.date
+    const formattedEndDate = formatDateToThai(endDateCalculated);
+    setEndDate(formattedEndDate);
+
+
+
+    setRawDate(formatted);
+    console.log("test", formatted);
+
+
+
+  };
+
+
   useEffect(() => {
+    
     if (isModalOpen) {
       const fetchData = async () => {
         try {
@@ -547,7 +617,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
       fetchData();
     }
   }, [isModalOpen, itemId]);
-
+  
   if (!isModalOpen) return null;
 
 
@@ -590,6 +660,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           total_price: productData?.total_price_out?.toString() || "0",
           reserve_id: reserveId || "",
           payment: payMent || 0,
+          actual_out: DateExport,
           outbound: [
             {
               code: Array.isArray(dataProduct?.code) ? dataProduct.code : [],
@@ -730,25 +801,26 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
               </p>
             )}
 
-            <div className="w-1/2 mt-4">
+            <div className="w-3/4 mt-4">
 
               {currentStatus === 'reserve' && (
                 <p className="mb-2">
-                  <strong className="text-gray-700">วันที่จองสินค้า : </strong>{" "}
+                  <strong className="text-gray-700">วันที่จองสินค้า : </strong> <span className="ms-2"></span>
                   {formatDateModal(modalProductDetails.reserve_out)}
                 </p>
               )}
 
               {currentStatus === 'hire' && (
                 <p className="mb-2">
-                  <strong className="text-gray-700">วันที่ส่งสินค้า : </strong>{" "}
+                  <strong className="text-gray-700">วันที่ส่งสินค้า : </strong><span className="ms-2"></span>
                   {formatDateModal(modalProductDetails.reserve_out)}
                 </p>
               )}
 
+
               {currentStatus === 'return' && (
                 <p className="mb-2">
-                  <strong className="text-gray-700">วันที่ครบกำหนดคืนสินค้า: </strong>{" "}
+                  <strong className="text-gray-700">วันที่ครบกำหนดคืนสินค้า: </strong><span className="ms-2"></span>
                   {formatDateModal(new Date(
                     (new Date(modalProductDetails.reserve_out).getTime() + 1 * 24 * 60 * 60 * 1000) + modalProductDetails.date * 24 * 60 * 60 * 1000
                   )
@@ -758,40 +830,130 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
               {currentStatus === 'continue' && (
                 <p className="mb-2">
-                  <strong className="text-gray-700">วันที่เช่าต่อสินค้า : </strong>{" "}
+                  <strong className="text-gray-700">วันที่เช่าต่อสินค้า : </strong>{" "}<span className="ms-2"></span>
                   {formatDateModal(modalProductDetails.reserve_out)}
                 </p>
               )}
 
               <div className="flex items-center space-x-4 mb-2">
-                <strong className="text-gray-700"> จำนวนวันที่เช่า : </strong>{" "}
-                {modalProductDetails.date + " วัน " + "(" + formatDateModal(new Date(new Date(modalProductDetails.reserve_out).getTime() + 1 * 24 * 60 * 60 * 1000)) + " - " +
-                  formatDateModal(
-                    new Date(
-                      (new Date(modalProductDetails.reserve_out).getTime() + 1 * 24 * 60 * 60 * 1000) +
-                      (modalProductDetails.date - 1) * 24 * 60 * 60 * 1000 // 🔥 ลบ 1 วัน
-                    )
-                  )
-                  + ")"}
+                <strong className="text-gray-700"> จำนวนวันที่เช่า : </strong>{" "}<span className="ms-1"></span>
+                {modalProductDetails.date + " วัน "}
               </div>
+              <div>
 
-              <div className="flex items-center space-x-4 mb-2">
-                <p>
-                  <strong className="text-gray-700"> ชื่อผู้ติดต่อ : </strong>
-                  {modalProductDetails.customer_name ? modalProductDetails.customer_name : "-"}
-                </p>
               </div>
-              <div className="flex items-center space-x-4 mb-2">
-                <p>
-                  <strong className="text-gray-700"> ชื่อบริษัท : </strong>
-                  {modalProductDetails.company_name ? modalProductDetails.company_name : "-"}
-                </p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <p>
-                  <strong className="text-gray-700"> ที่อยู่ : </strong>
-                  {modalProductDetails.address ? modalProductDetails.address : "-"}
-                </p>
+              {modalProductDetails.status === 'reserve' && (
+                <div className="flex items-center space-x-4 mb-2">
+                  <strong className="text-gray-700">เลือกวันส่ง: </strong>
+                  <input
+                    type="date"
+                    className="text-md"
+                    value={rawDate}
+                    onChange={handleDateExport}
+                  />
+                  <span>{rawDate ? `วันที่ที่เลือก: ${rawDate}` : "ยังไม่ได้เลือกวันที่"}</span>
+                </div>
+              )}
+
+              <div>
+                <>
+                  {modalProductDetails.status === 'reserve' ? <><div className="flex items-center space-x-4 mb-2">
+                    <strong className="text-gray-700">สัญญาเช่า: </strong><span className="ms-2"></span>
+                    {startDate ? (
+                      <>
+                        {startDate} <span>-</span> <span></span>{endDate ? endDate : "คำนวณวันสิ้นสุด"}
+                      </>
+                    ) : (
+                      "เลือกวันส่งก่อน"
+                    )}
+                  </div>
+
+                    <div className="flex items-center space-x-4 mb-2">
+                      <p>
+                        <strong className="text-gray-700"> ชื่อผู้ติดต่อ : </strong> <span className="ms-2"></span>
+                        {modalProductDetails.customer_name ? modalProductDetails.customer_name : "-"}
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-4 mb-2">
+                      <p>
+                        <strong className="text-gray-700"> ชื่อบริษัท : </strong> <span className="ms-2"></span>
+                        {modalProductDetails.company_name ? modalProductDetails.company_name : "-"}
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <p>
+                        <strong className="text-gray-700"> ที่อยู่ : </strong> <span className="ms-2"></span>
+                        {modalProductDetails.address ? modalProductDetails.address : "-"}
+                      </p>
+                    </div>
+                  </>
+                    : <>
+                      {modalProductDetails.status === 'hire' ? <>
+                        <div className="flex items-center space-x-4 mb-2">
+                          <strong className="text-gray-700">สัญญาเช่า: </strong><span className="ms-2"></span>
+                          {formatDateModal(new Date(
+                            (new Date(modalProductDetails.actual_out).getTime() + 1 * 24 * 60 * 60 * 1000)
+                          )
+                          )} <span>-</span><span></span>
+                          {formatDateModal(new Date(
+                            (new Date(modalProductDetails.actual_out).getTime() + 1 * 24 * 60 * 60 * 1000) + modalProductDetails.date * 24 * 60 * 60 * 1000
+                          )
+                          )}
+                        </div>
+
+                        <div className="flex items-center space-x-4 mb-2">
+                          <p>
+                            <strong className="text-gray-700"> ชื่อผู้ติดต่อ : </strong> <span className="ms-2"></span>
+                            {modalProductDetails.customer_name ? modalProductDetails.customer_name : "-"}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-4 mb-2">
+                          <p>
+                            <strong className="text-gray-700"> ชื่อบริษัท : </strong> <span className="ms-2"></span>
+                            {modalProductDetails.company_name ? modalProductDetails.company_name : "-"}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                          <p>
+                            <strong className="text-gray-700"> ที่อยู่ : </strong> <span className="ms-2"></span>
+                            {modalProductDetails.address ? modalProductDetails.address : "-"}
+                          </p>
+                        </div>
+                      </>
+                        : <>
+                          <div className="flex items-center space-x-4 mb-2">
+                            <strong className="text-gray-700">สัญญาเช่า: </strong><span className="ms-2"></span>
+                            {modalProductDetails ? (
+                              <>
+                                {startDate} <span>-</span> <span></span>{endDate ? endDate : "คำนวณวันสิ้นสุด"}
+                              </>
+                            ) : (
+                              "เลือกวันส่งก่อน"
+                            )}
+                          </div>
+
+                          <div className="flex items-center space-x-4 mb-2">
+                            <p>
+                              <strong className="text-gray-700"> ชื่อผู้ติดต่อ : </strong> <span className="ms-2"></span>
+                              {modalProductDetails.customer_name ? modalProductDetails.customer_name : "-"}
+                            </p>
+                          </div>
+                          <div className="flex items-center space-x-4 mb-2">
+                            <p>
+                              <strong className="text-gray-700"> ชื่อบริษัท : </strong> <span className="ms-2"></span>
+                              {modalProductDetails.company_name ? modalProductDetails.company_name : "-"}
+                            </p>
+                          </div>
+                          <div className="flex items-center space-x-4">
+                            <p>
+                              <strong className="text-gray-700"> ที่อยู่ : </strong> <span className="ms-2"></span>
+                              {modalProductDetails.address ? modalProductDetails.address : "-"}
+                            </p>
+                          </div>
+                        </>}
+                    </>
+                  }
+                </>
               </div>
 
             </div>
