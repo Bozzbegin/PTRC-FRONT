@@ -653,6 +653,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
         const newOutbound = {
           customer_name: productData?.customer_name || "",
+          company_name: productData?.company_name || "",
           place_name: productData?.place_name || "",
           address: productData?.address || "",
           date: productData?.date || "",
