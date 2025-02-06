@@ -582,7 +582,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
 
   useEffect(() => {
-    
+
     if (isModalOpen) {
       const fetchData = async () => {
         try {
@@ -617,7 +617,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
       fetchData();
     }
   }, [isModalOpen, itemId]);
-  
+
   if (!isModalOpen) return null;
 
 
@@ -887,6 +887,13 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                         {modalProductDetails.address ? modalProductDetails.address : "-"}
                       </p>
                     </div>
+                    <div className="flex items-center space-x-4">
+                      <p>
+                        <strong className="text-gray-700"> หน้างาน : </strong> <span className="ms-2"></span>
+                        {modalProductDetails.place_name ? modalProductDetails.place_name : "-"}
+                      </p>
+                    </div>
+
                   </>
                     : <>
                       {modalProductDetails.status === 'hire' ? <>
@@ -920,6 +927,12 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                             {modalProductDetails.address ? modalProductDetails.address : "-"}
                           </p>
                         </div>
+                        <div className="flex items-center space-x-4">
+                          <p>
+                            <strong className="text-gray-700"> หน้างาน : </strong> <span className="ms-2"></span>
+                            {modalProductDetails.place_name ? modalProductDetails.place_name : "-"}
+                          </p>
+                        </div>
                       </>
                         : <>
                           <div className="flex items-center space-x-4 mb-2">
@@ -939,6 +952,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                               {modalProductDetails.customer_name ? modalProductDetails.customer_name : "-"}
                             </p>
                           </div>
+
                           <div className="flex items-center space-x-4 mb-2">
                             <p>
                               <strong className="text-gray-700"> ชื่อบริษัท : </strong> <span className="ms-2"></span>
@@ -951,6 +965,13 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                               {modalProductDetails.address ? modalProductDetails.address : "-"}
                             </p>
                           </div>
+                          <div className="flex items-center space-x-4">
+                            <p>
+                              <strong className="text-gray-700"> หน้างาน : </strong> <span className="ms-2"></span>
+                              {modalProductDetails.place_name ? modalProductDetails.place_name : "-"}
+                            </p>
+                          </div>
+
                         </>}
                     </>
                   }
