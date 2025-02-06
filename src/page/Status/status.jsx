@@ -993,41 +993,41 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
               <div className="relative">
                 <div className="absolute inset-0 bg-[url('https://example.com/path-to-your-image.png')] bg-no-repeat bg-center bg-contain opacity-20"></div>
                 <div className="relative z-10">
-                  <h1>
-                    <div className="">
-                      <table className="w-full border-collapse border shadow-sm">
-                        <thead className="bg-blue-300 text-gray-700">
-                          <tr>
-                            <th className="border p-2">จำนวน</th>
-                            <th className="border p-2">ชื่อสินค้า</th>
-                            <th className="border p-2">ขนาด</th>
+                  <table className="w-full text-center border-collapse">
+                    <thead className="sticky top-0 bg-blue-300 z-10 text-[#133E87] font-bold h-[40px] ">
+                      <tr>
+                        <th className="p-2 rounded-tl-md w-1/3">จำนวน</th>
+                        <th className=" p-2 w-1/3">ชื่อสินค้า</th>
+                        <th className=" p-2 rounded-tr-md w-1/3">ขนาด</th>
+                      </tr>
+                    </thead>
+                  </table>
+                  <div className="overflow-y-auto max-h-[250px] border-gray-300">
+                    <table className="w-full text-center border-collapse">
+                      <tbody>
+                        {modalProductDetails.products.map((product, index) => (
+                          <tr key={product.product_id} className="hover:bg-gray-50 transition duration-200">
+                            <td className="border p-2 w-1/3 text-center">
+                              {product.quantity} {product.unit ? product.unit : product.unit_asm}
+                            </td>
+                            <td className="border p-2 w-1/3 text-center">
+                              {modalProductDetails.quotation_type === "with_assembled"
+                                ? product.assemble_name || `${product.name} (${product.code})`  // ถ้ามี assemble_name ให้ใช้ assemble_name ถ้าไม่มีก็ใช้ name
+                                : `${product.name} (${product.code})`}
+                            </td>
+                            <td className="border p-2 w-1/3 text-center">
+                              {product.size}
+                              {modalProductDetails.quotation_type === "with_assembled" && product.description
+                                ? ` ${product.description}`  // แสดง description ในกรณีที่เป็น "with_assembled" และมี description
+                                : ""}
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody className="overflow-y-auto max-h-64">
-                          {modalProductDetails.products.map((product, index) => (
-                            <tr key={product.product_id} className="hover:bg-gray-50 transition duration-200">
-                              <td className="border p-2 text-center">
-                                {product.quantity} {product.unit ? product.unit : product.unit_asm}
-                              </td>
-                              <td className="border p-2 text-center">
-                                {modalProductDetails.quotation_type === "with_assembled"
-                                  ? product.assemble_name || `${product.name} (${product.code})`  // ถ้ามี assemble_name ให้ใช้ assemble_name ถ้าไม่มีก็ใช้ name
-                                  : `${product.name} (${product.code})`}
-                              </td>
-                              <td className="border p-2 text-center">
-                                {product.size}
-                                {modalProductDetails.quotation_type === "with_assembled" && product.description
-                                  ? ` ${product.description}`  // แสดง description ในกรณีที่เป็น "with_assembled" และมี description
-                                  : ""}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-
-                      </table>
-                    </div>
-                  </h1>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+
               </div>
 
 
