@@ -315,8 +315,13 @@ const StatusProduct = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setDateExport(null);
+    // Add a slight delay to ensure state updates before reloading the page
+    setTimeout(() => {
+      window.location.reload();
+    }, 100); // Delay in milliseconds
   };
+
+
 
 
 
