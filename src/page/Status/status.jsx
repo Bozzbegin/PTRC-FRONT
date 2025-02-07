@@ -20,6 +20,7 @@ const StatusProduct = () => {
   const [filteredStatus, setFilteredStatus] = useState([]);
   const [selectMode, setSelectMode] = useState(false); // ควบคุมการแสดง Checkbox
   const [Id_status, setId_status] = useState([]); // เก็บค่า ID ที่เลือก
+  const [selectStatus, setSelectStatus] = useState("");
 
   // ฟังก์ชันจัดการการเลือก Checkbox
   const handleSelectStatus = (id) => {
@@ -191,18 +192,15 @@ const StatusProduct = () => {
   };
 
 
-
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAllStatus = async () => {
       try {
         const token = localStorage.getItem("token");
-
         if (!token) {
           throw new Error("Token not found");
         }
 
         const url = "http://192.168.195.75:5000/v1/product/status/status";
-
         const response = await axios.get(url, {
           headers: {
             Authorization: token,
@@ -213,7 +211,7 @@ const StatusProduct = () => {
 
         if (response.data.code === 200) {
           setStatus(response.data.data["Status Product"]);
-          setFilteredStatus(response.data.data["Status Product"]);
+          setFilteredStatus(response.data.data["Status Product"]); // ใช้สำหรับกรอง
         } else {
           throw new Error(response.data.message);
         }
@@ -222,8 +220,51 @@ const StatusProduct = () => {
       }
     };
 
-    fetchData();
-  }, []);
+    fetchAllStatus();
+  }, []); // ✅ โหลดข้อมูลทั้งหมด **ครั้งเดียว**
+
+
+  useEffect(() => {
+    const fetchFilteredStatus = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!selectStatus) {
+          setFilteredStatus(status); // ถ้าไม่เลือกอะไรให้แสดงข้อมูลทั้งหมด
+          console.error("❌ Token not found! User is not authenticated.");
+          return;
+        }
+
+
+        if (!token) {
+          throw new Error("Token not found");
+        }
+
+
+        const url = "http://192.168.195.75:5000/v1/product/status/select-status";
+
+
+        const response = await axios.get(url, {
+          params: { selectStatus }, 
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+        },
+        });
+
+        if (response.data.code === 200) {
+          setFilteredStatus(response.data.data["Status Product"]); // ✅ กรองตามที่เลือก
+        } else {
+          throw new Error(response.data.message);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+      }
+    };
+
+    fetchFilteredStatus();
+  }, [selectStatus, status]); // ✅ ทำงานเมื่อ selectStatus เปลี่ยน
+
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -260,40 +301,44 @@ const StatusProduct = () => {
 
   useEffect(() => {
     handleSearch(); // เรียกค้นหาทุกครั้งที่มีการเปลี่ยนแปลงในฟิลด์ค้นหา
-  }, [transactionDate, receiptNumber, branchName, receiptNumberOut]);
+  }, [transactionDate, receiptNumber, branchName, receiptNumberOut, selectStatus]);
 
   const handleSearch = () => {
-
     const filtered = status.filter((item) => {
-      // กรองข้อมูลตามเลขที่ใบเสร็จ
+      // 🔹 กรองตามเลขที่ใบเสร็จ
       const matchesReceiptNumber =
         !receiptNumber || item.export_number?.toLowerCase().includes(receiptNumber.toLowerCase().trim());
 
       const matchesReceiptNumberOut =
-        !receiptNumberOut || item.export_number_out?.toLowerCase().includes(receiptNumber.toLowerCase().trim());
+        !receiptNumberOut || item.export_number_out?.toLowerCase().includes(receiptNumberOut.toLowerCase().trim());
 
-      // กรองข้อมูลตามวันที่
-      const matchesTransactionDate =
-        !transactionDate || formatDate(item.created_at) === transactionDate; // เปรียบเทียบวันที่ในรูปแบบ yyyy-mm-dd
+      // 🔹 กรองตามวันที่ (ใช้ Date Object เปรียบเทียบ YYYY-MM-DD)
+      const matchesTransactionDate = !transactionDate || (() => {
+        const dateFromAPI = new Date(item.created_at).toISOString().split("T")[0];
+        return dateFromAPI === transactionDate;
+      })();
 
-      // กรองข้อมูลตามสาขา
+      // 🔹 กรองตามสถานะ (API อาจใช้ key `status` แทน `selectStatus`)
+      const matchesSelectStatus =
+        !selectStatus || item.status?.toLowerCase().includes(selectStatus.toLowerCase().trim());
+
+      // 🔹 กรองตามสาขา
       const matchesBranchName =
         !branchName || item.branch_name?.toLowerCase().includes(branchName.toLowerCase().trim());
 
-      return matchesReceiptNumber && matchesTransactionDate && matchesBranchName && matchesReceiptNumberOut;
+      return matchesReceiptNumber && matchesTransactionDate && matchesBranchName && matchesReceiptNumberOut && matchesSelectStatus;
     });
 
+    // 🔹 เรียงลำดับตามวันที่ (ล่าสุดก่อน)
     const sortedFiltered = filtered.sort((a, b) => {
-      // เรียงลำดับตามวันที่ (จากล่าสุดไปเก่าสุด)
       const dateA = new Date(a.created_at);
       const dateB = new Date(b.created_at);
-      if (dateA > dateB) return -1; // ถ้า A ใหม่กว่า B, ให้ A ขึ้นมาก่อน
-      if (dateA < dateB) return 1; // ถ้า B ใหม่กว่า A, ให้ B ขึ้นมาก่อน
-      return 0; // ถ้าเท่ากัน, ไม่ต้องทำการเรียง
+      return dateB - dateA; // ✅ ใช้การลบแทน if-else
     });
 
-    setFilteredStatus(sortedFiltered); // ตั้งค่าผลลัพธ์ที่กรองและเรียงแล้ว
+    setFilteredStatus(sortedFiltered);
   };
+
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -328,18 +373,18 @@ const StatusProduct = () => {
   return (
     <div className="w-full h-[90%] flex overflow-auto no-scrollbar">
       <div className="w-full h-full flex flex-col gap-4">
-        <div className="w-full flex items-start justify-start gap-4">
+        <div className="w-full flex items-start justify-start gap-2">
           <div className="flex items-center gap-2">
-            <span className="r-2 font-bold text-xl text-sky-800">สาขา :</span>
+            <span className="r-2 font-bold text-md text-sky-800">สาขา </span>
             <div
-              className="h-10 w-[220px] rounded-md border border-gray-500 p-2 flex items-center"
+              className="ml-6 h-10 w-[180px] rounded-md border border-gray-500 p-2 flex items-center"
               style={{ overflow: "visible", color: "black" }}
             >
               {/* <input
                 type="text"
                 value={branchName || ""}
                 onChange={(e) => setBranchName(e.target.value)}
-                className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+                className="ml-6 h-10 w-[180px] rounded-md border border-gray-500 p-2"
                 placeholder="ค้นหาสาขา"
               /> */}
 
@@ -347,42 +392,64 @@ const StatusProduct = () => {
             </div>
           </div>
           <div className="flex items-center">
-            <span className="pr-2 pl-5 font-bold text-xl text-sky-800">
-              เลขที่ใบเสร็จ :
+            <span className=" ml-3 font-bold text-md text-sky-800">
+              เลขที่ใบเสร็จ
             </span>
+            
             <input
               type="text"
               value={receiptNumber || ""}
               onChange={(e) => setReceiptNumber(e.target.value)}
               onKeyUp={handleSearch}  // ค้นหาเมื่อพิมพ์
-              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+              className="ml-6 h-10 w-[180px] rounded-md border border-gray-500 p-2"
               placeholder="ค้นหาเลขที่ใบเสร็จ"
             />
           </div>
           <div className="flex items-center">
-            <span className="pr-2 pl-5 font-bold text-xl text-sky-800">
-              เลขที่ใบส่งค้า :
+            <span className=" ml-3 font-bold text-md text-sky-800">
+              เลขที่ใบส่งค้า
             </span>
+            
             <input
               type="text"
               value={receiptNumberOut || ""}
               onChange={(e) => setReceiptNumberOut(e.target.value)}
               onKeyUp={handleSearch}  // ค้นหาเมื่อพิมพ์
-              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+              className="ml-6 h-10 w-[180px] rounded-md border border-gray-500 p-2"
               placeholder="ค้นหาเลขที่ใบส่งสินค้า"
             />
           </div>
           <div className="flex items-center">
-            <span className="pr-2 pl-5 font-bold text-xl text-sky-800">
-              วันที่ทำรายการ :
+            <span className=" ml-3 font-bold text-md text-sky-800">
+              วันที่ทำรายการ
             </span>
+            
             <input
               type="date"
               value={transactionDate || ""}
               onChange={(e) => setTransactionDate(e.target.value)}
               onKeyUp={handleSearch}  // ค้นหาเมื่อพิมพ์
-              className="h-10 w-[220px] rounded-md border border-gray-500 p-2"
+              className="ml-6 h-10 w-[180px] rounded-md border border-gray-500 p-2"
             />
+          </div>
+          <div className="flex items-center">
+            <span className=" ml-3 font-bold text-md text-sky-800">
+              สถานะคำสั่งซื้อ
+            </span>
+            <select
+              value={selectStatus}
+              onChange={(e) => {
+                setSelectStatus(e.target.value);
+                handleSearch(); // ✅ อัปเดตผลลัพธ์ทันที
+              }}
+              className="ml-6 h-10 w-[180px] rounded-md border border-gray-500 p-2"
+            >
+              <option value="">เลือกสถานะ</option>
+              <option value="reserve">จอง</option>
+              <option value="cancel">ยกเลิก</option>
+              <option value="hire">กำลังเช่า</option>
+              <option value="late">เลยกำหนด</option>
+            </select>
           </div>
         </div>
 
@@ -448,7 +515,7 @@ const StatusProduct = () => {
                       ) : item.status === "return" ? (
                         <div className="text-blue-500 font-bold">คืนสินค้าครบแล้ว</div>
                       ) : item.status === "late" ? (
-                        <div className="text-white bg-red-300 rounded-md font-bold">เลยกำหนด</div>
+                        <div className="text-white bg-red-500 rounded-md font-bold w-3/4 ml-5">เลยกำหนด</div>
                       ) : item.status === "continue" ? (
                         "เช่าต่อ"
                       ) : (
