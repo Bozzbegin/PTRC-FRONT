@@ -24,7 +24,17 @@ const Login = () => {
     };
 
     const confirm_login = async () => {
+
+        if (!datauser.username.trim() || !datauser.password.trim()) {
+            Swal.fire({
+                icon: 'warning',
+                text: 'กรุณากรอกชื่อผู้ใช้เเละรหัสผ่าน',
+                confirmButtonText: 'ตกลง'
+            });
+        }
+
         setLoading(true); // เริ่มการโหลด
+
         try {
             const response = await axios.post('http://192.168.195.75:5000/auth/login', {
                 username: datauser.username,
@@ -46,7 +56,7 @@ const Login = () => {
                 // แสดง SweetAlert เมื่อสำเร็จ
                 Swal.fire({
                     icon: "success",
-                    text: "Login success",
+                    text: "เข้าสู่ระบบสำเร็จ",
                     confirmButtonText: 'ตกลง'
                 }).then(() => {
                     // เปลี่ยนเส้นทางไปหน้า /
@@ -56,7 +66,7 @@ const Login = () => {
                 // ถ้าไม่พบ token ใน response ให้แสดง error message
                 Swal.fire({
                     icon: 'error',
-                    text: "Login failed",
+                    text: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
                     confirmButtonText: "ตกลง"
                 });
             }
@@ -70,6 +80,12 @@ const Login = () => {
             });
         } finally {
             setLoading(false); // สิ้นสุดการโหลด
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            confirm_login();
         }
     };
 
@@ -98,6 +114,7 @@ const Login = () => {
                                 id='username'
                                 className='w-full p-1 outline-none border-2 border-blue-800 mt-1 rounded-lg'
                                 onChange={changedata}
+                                onKeyDown={handleKeyDown}
                             />
                         </div>
 
@@ -110,6 +127,7 @@ const Login = () => {
                                 id="password"
                                 className='w-full p-1 outline-none border-2 border-blue-800 mt-1 rounded-lg'
                                 onChange={changedata}
+                                onKeyDown={handleKeyDown}
                             />
                         </div>
 
@@ -131,6 +149,7 @@ const Login = () => {
                         <button
                             className='bg-[#133E87] text-white w-4/6 p-2 rounded-lg'
                             onClick={confirm_login}
+                            // onKeyDown={(e) => e.key === 'Enter' && confirm_login()}
                             disabled={loading} // ปิดการใช้งานปุ่มเมื่อกำลังโหลด
                         >
                             {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
