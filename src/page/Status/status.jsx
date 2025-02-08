@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { da, th } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList } from "recharts";
 
 const StatusProduct = () => {
   const [status, setStatus] = useState([]);
@@ -21,6 +22,7 @@ const StatusProduct = () => {
   const [selectMode, setSelectMode] = useState(false); // ควบคุมการแสดง Checkbox
   const [Id_status, setId_status] = useState([]); // เก็บค่า ID ที่เลือก
   const [selectStatus, setSelectStatus] = useState("");
+  const [report, setReport] = useState(false);
 
   // ฟังก์ชันจัดการการเลือก Checkbox
   const handleSelectStatus = (id) => {
@@ -32,6 +34,7 @@ const StatusProduct = () => {
       }
     });
   };
+
   const handleRserve = async () => {
     if (Id_status.length === 0) {
       Swal.fire({
@@ -244,12 +247,12 @@ const StatusProduct = () => {
 
 
         const response = await axios.get(url, {
-          params: { selectStatus }, 
+          params: { selectStatus },
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
             "x-api-key": "1234567890abcdef",
-        },
+          },
         });
 
         if (response.data.code === 200) {
@@ -339,7 +342,6 @@ const StatusProduct = () => {
     setFilteredStatus(sortedFiltered);
   };
 
-
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -366,18 +368,33 @@ const StatusProduct = () => {
     }, 100); // Delay in milliseconds
   };
 
+  const handleReport = () => {
+    setReport(!report);
+  }
 
+  const data = [
+    { name: "(K)", จำนวน: 150, C: 0, N: 0, P: 0 },
+    { name: "(C)", จำนวน: 0, C: 100, N: 0, P: 0 },
+    { name: "(N)", จำนวน: 0, C: 0, N: 80, P: 0 },
+    { name: "(P)", จำนวน: 0, C: 0, N: 0, P: 300 },
+  ];
 
-
+  const CustomLabel = ({ x, y, value }) => {
+    return (
+      <text x={x} y={y} dy={15} fontSize={12} textAnchor="middle" fill="#000">
+        {value > 0 ? `${value} ใบ` : ""}
+      </text>
+    );
+  };
 
   return (
     <div className="w-full h-[90%] flex overflow-auto no-scrollbar">
       <div className="w-full h-full flex flex-col gap-4">
         <div className="w-full flex items-start justify-start gap-2">
           <div className="flex items-center gap-2">
-            <span className="r-2 font-bold text-md text-sky-800">สาขา </span>
+            <span className="r-2 font-bold text-md text-sky-800">สาขา :</span>
             <div
-              className="ml-6 h-10 w-[180px] rounded-md border border-gray-500 p-2 flex items-center"
+              className=" h-10 w-[180px] rounded-md border border-gray-500 p-2 flex items-center"
               style={{ overflow: "visible", color: "black" }}
             >
               {/* <input
@@ -393,48 +410,48 @@ const StatusProduct = () => {
           </div>
           <div className="flex items-center">
             <span className=" ml-3 font-bold text-md text-sky-800">
-              เลขที่ใบเสร็จ
+              เลขที่ PO / ใบสัญญาเช่า :
             </span>
-            
+
             <input
               type="text"
               value={receiptNumber || ""}
               onChange={(e) => setReceiptNumber(e.target.value)}
               onKeyUp={handleSearch}  // ค้นหาเมื่อพิมพ์
-              className="ml-6 h-10 w-[180px] rounded-md border border-gray-500 p-2"
-              placeholder="ค้นหาเลขที่ใบเสร็จ"
+              className="ml-2 h-10 w-[180px] rounded-md border border-gray-500 p-2"
+              placeholder="ค้นหาเลขที่ PO / ใบสัญญาเช่า"
             />
           </div>
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <span className=" ml-3 font-bold text-md text-sky-800">
-              เลขที่ใบส่งค้า
+              เลขที่ใบส่งค้า :
             </span>
-            
+
             <input
               type="text"
               value={receiptNumberOut || ""}
               onChange={(e) => setReceiptNumberOut(e.target.value)}
               onKeyUp={handleSearch}  // ค้นหาเมื่อพิมพ์
-              className="ml-6 h-10 w-[180px] rounded-md border border-gray-500 p-2"
+              className="ml-2 h-10 w-[180px] rounded-md border border-gray-500 p-2"
               placeholder="ค้นหาเลขที่ใบส่งสินค้า"
             />
-          </div>
+          </div> */}
           <div className="flex items-center">
             <span className=" ml-3 font-bold text-md text-sky-800">
-              วันที่ทำรายการ
+              วันที่ทำรายการ :
             </span>
-            
+
             <input
               type="date"
               value={transactionDate || ""}
               onChange={(e) => setTransactionDate(e.target.value)}
               onKeyUp={handleSearch}  // ค้นหาเมื่อพิมพ์
-              className="ml-6 h-10 w-[180px] rounded-md border border-gray-500 p-2"
+              className="ml-2 h-10 w-[180px] rounded-md border border-gray-500 p-2"
             />
           </div>
           <div className="flex items-center">
             <span className=" ml-3 font-bold text-md text-sky-800">
-              สถานะคำสั่งซื้อ
+              สถานะคำสั่งซื้อ :
             </span>
             <select
               value={selectStatus}
@@ -442,7 +459,7 @@ const StatusProduct = () => {
                 setSelectStatus(e.target.value);
                 handleSearch(); // ✅ อัปเดตผลลัพธ์ทันที
               }}
-              className="ml-6 h-10 w-[180px] rounded-md border border-gray-500 p-2"
+              className="ml-2 h-10 w-[180px] rounded-md border border-gray-500 p-2"
             >
               <option value="">เลือกสถานะ</option>
               <option value="reserve">จอง</option>
@@ -451,11 +468,13 @@ const StatusProduct = () => {
               <option value="late">เลยกำหนด</option>
             </select>
           </div>
+
         </div>
 
         {filteredStatus.length === 0 ? (
           <p className="text-center text-2xl mt-10">ไม่พบรายการสินค้า</p>
         ) : (
+
           <div className="row-span-11 overflow-auto no-scrollbar">
             <div className="flex justify-end mb-2">
               <button
@@ -478,16 +497,49 @@ const StatusProduct = () => {
                       className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
                     >
                       เปลี่ยนเป็นจอง ({Id_status.length})
-                    </button></div>
-
+                    </button>
+                  </div>
                 </div>
               )}
+              <div className="ms-4">
+                <button
+                  onClick={handleReport}
+                  className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition"
+                >
+                  {report ? 'ปิด' : 'จำนวนใบสัญญาเช่า'}
+                </button>
+              </div>
             </div>
+
+            {report && (
+              <div style={{ width: "100%", height: 300 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={data} barSize={50}>
+                    <XAxis dataKey="name" />
+                    <Tooltip />
+                    <Legend />
+
+                    <Bar dataKey="จำนวน" fill="#FF69B4" name="(K) โคกขาม">
+                      <LabelList dataKey="จำนวน" content={<CustomLabel />} />
+                    </Bar>
+                    <Bar dataKey="C" fill="#32CD32" name="(C) ชลบุรี">
+                      <LabelList dataKey="C" content={<CustomLabel />} />
+                    </Bar>
+                    <Bar dataKey="N" fill="#FFA500" name="(N) นพวงศ์">
+                      <LabelList dataKey="N" content={<CustomLabel />} />
+                    </Bar>
+                    <Bar dataKey="P" fill="#1E90FF" name="(P) VAT-ทุกสาขา">
+                      <LabelList dataKey="P" content={<CustomLabel />} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
 
             <table className="table-auto w-full border-collapse">
               <thead className="bg-blue-200 border-l-2 h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
                 <tr>
-                  <th className="px-4 py-2 border-l-2 rounded-tl-lg rounded-br-sm">เลขที่ใบเสร็จ</th>
+                  <th className="px-4 py-2 border-l-2 rounded-tl-lg rounded-br-sm">เลขที่ PO/สัญญาเช่า</th>
                   <th className="px-4 py-2 border-l-2">วันที่ทำรายการ</th>
                   <th className="px-4 py-2 border-l-2">นามลูกค้า/ชื่อบริษัท</th>
                   <th className="px-4 py-2 border-l-2">รูปแบบ</th>
@@ -507,7 +559,7 @@ const StatusProduct = () => {
                     </td>
                     <td className="text-center text-xl border-l-2 px-4 py-2">
                       {item.status === "reserve" ? (
-                        <div className="text-yellow-400 font-bold">จอง</div>
+                        <div className="text-orange-400 font-bold">จอง</div>
                       ) : item.status === "cancel" ? (
                         <div className="text-red-500 font-bold">ยกเลิก</div>
                       ) : item.status === "hire" ? (
