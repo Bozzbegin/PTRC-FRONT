@@ -211,6 +211,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
               className="w-full border border-gray-300 rounded-md p-2"
               value={keysearchItem}
               onChange={(e) => handleSearchByCode(e.target.value)}
+              
             />
 
           </div>

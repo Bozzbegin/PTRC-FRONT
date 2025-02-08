@@ -22,11 +22,11 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
         setProducts(res.data.data);
       }
     });
-    
+
   }, []);
 
-  const filteritem_Search = () => {
-    const itemFilter = products.filter(item => item.code.includes(keysearchItem));
+  const filteritem_Search = (searchTerm) => {
+    const itemFilter = products.filter(item => item.code.toLowerCase().includes(searchTerm.toLowerCase()));
     setProducts_search(itemFilter);
   };
 
@@ -43,7 +43,7 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
       if (existingItemIndex !== -1) {
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex] = { ...item, amount: parsedAmount, price: item.price3D || 0, isAssemble: false };
-       
+
         return updatedItems;
       } else {
         return [...prevItems, { ...item, amount: parsedAmount, price: item.price3D || 0, isAssemble: false }];
@@ -61,13 +61,12 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
       });
       return;
     }
-  
+
     const itemsToConfirm = confirm_items.length > 0 ? confirm_items : ititialData;
-  
+
     confirm(confirm_items);
     close(itemsToConfirm.length);
   };
-  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-20 z-50">
@@ -80,19 +79,23 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
         </div>
 
         {/* Search */}
-        <div className="flex items-center justify-around w-3/4">
+        <div className="flex items-center w-3/4 justify-center">
           <span className="text-black font-bold">รหัสสินค้า :</span>
           <div className="p-4 w-2/4">
             <input
               type="text"
               placeholder="รหัสสินค้า"
               className="w-full  border border-gray-300 rounded-md p-2"
-              onChange={(e) => setkeysearchItem(e.target.value)}
+              onChange={(e) => {
+                setkeysearchItem(e.target.value);
+                filteritem_Search(e.target.value); 
+              }}
+              value={keysearchItem}
             />
           </div>
-          <button className="bg-blue-900 hover:bg-blue-800 w-1/4 p-2 rounded-md text-white" onClick={filteritem_Search}>
+          {/* <button className="bg-blue-900 hover:bg-blue-800 w-1/4 p-2 rounded-md text-white" onClick={filteritem_Search}>
             ค้นหา
-          </button>
+          </button> */}
         </div>
 
         {/* Table */}

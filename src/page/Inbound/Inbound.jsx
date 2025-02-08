@@ -4,7 +4,6 @@ import axios from 'axios'
 import { Modal } from 'antd';
 import { Modal_Inbound } from './Model_Inbound';
 import Swal from 'sweetalert2';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList } from "recharts";
 
 export function Inbound() {
     const [products, setProducts] = useState([])
@@ -127,21 +126,6 @@ export function Inbound() {
         setDataconfirm([])
     };
 
-    // const data = [
-    //     { name: "(K)", จำนวน: 150, C: 0, N: 0, P: 0 },
-    //     { name: "(C)", จำนวน: 0, C: 100, N: 0, P: 0 },
-    //     { name: "(N)", จำนวน: 0, C: 0, N: 80, P: 0 },
-    //     { name: "(P)", จำนวน: 0, C: 0, N: 0, P: 300 },
-    // ];
-
-    // const CustomLabel = ({ x, y, value }) => {
-    //     return (
-    //         <text x={x} y={y} dy={15} fontSize={12} textAnchor="middle" fill="#000">
-    //             {value > 0 ? `${value} ใบ` : ""}
-    //         </text>
-    //     );
-    // };
-
     return (
         <div className='w-full h-[90%] mt-5'>
 
@@ -183,30 +167,6 @@ export function Inbound() {
                                 <i className="fa-solid fa-plus mr-2 "></i>เพิ่มสินค้า
                             </button>
                         </div>
-
-                        {/* <div style={{ width: "100%", height: 300 }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={data} barSize={50}>
-                                    <XAxis dataKey="name" />
-                                    <Tooltip />
-                                    <Legend />
-
-                                    <Bar dataKey="จำนวน" fill="#FF69B4" name="(K) โคกขาม">
-                                        <LabelList dataKey="จำนวน" content={<CustomLabel />} />
-                                    </Bar>
-                                    <Bar dataKey="C" fill="#32CD32" name="(C) ชลบุรี">
-                                        <LabelList dataKey="C" content={<CustomLabel />} />
-                                    </Bar>
-                                    <Bar dataKey="N" fill="#FFA500" name="(N) นพวงศ์">
-                                        <LabelList dataKey="N" content={<CustomLabel />} />
-                                    </Bar>
-                                    <Bar dataKey="P" fill="#1E90FF" name="(P) VAT">
-                                        <LabelList dataKey="P" content={<CustomLabel />} />
-                                    </Bar>
-
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div> */}
 
                     </div>
 
