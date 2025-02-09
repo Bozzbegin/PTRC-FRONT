@@ -196,7 +196,7 @@ export function ReturnItem() {
                                     <td className="text-center w-[20%] py-2 border-l-2 border-r-2">
                                         {items.status === 'late' ? (
                                             <button className="bg-red-500   pt-2 pb-2 w-24 rounded-lg text-white  "
-                                                onClick={() => handleOpenModal(items.id, 'red')}
+                                                onClick={() => handleOpenModal(items.id, 'green')}
                                             >เลยกำหนด</button>
                                         ) : items.status === 'hire' || items.status === 'continue' ? (
                                             <>
