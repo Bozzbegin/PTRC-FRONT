@@ -82,6 +82,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
         if (response.status === 200) {
           setASMProducts(response.data.data);
         }
+        
       } catch (error) {
         console.error("Error fetching ASM products:", error);
       } finally {
@@ -99,6 +100,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
     );
     setProducts_search(itemFilter);
   };
+
   const handleSearchByCode = (assemble_name) => {
     setkeysearchItem(assemble_name);
 
@@ -160,6 +162,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
           id_asm: item.id,
         };
         return updatedItems;
+
       } else {
         return [
           ...prevItems,
