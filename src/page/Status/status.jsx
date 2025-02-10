@@ -599,10 +599,10 @@ const StatusProduct = () => {
                     <Bar dataKey="C" fill="#32CD32" name="(C) ชลบุรี">
                       <LabelList dataKey="C" content={<CustomLabel />} />
                     </Bar>
-                    <Bar dataKey="N" fill="#FFA500" name="(N) นพวงศ์">
+                    <Bar dataKey="N" fill="#1E90FF" name="(N) นพวงศ์">
                       <LabelList dataKey="N" content={<CustomLabel />} />
                     </Bar>
-                    <Bar dataKey="P" fill="#1E90FF" name="(P) VAT-ทุกสาขา">
+                    <Bar dataKey="P" fill="#FFA500" name="(P) VAT-ทุกสาขา">
                       <LabelList dataKey="P" content={<CustomLabel />} />
                     </Bar>
                   </BarChart>
