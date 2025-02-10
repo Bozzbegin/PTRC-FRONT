@@ -9,6 +9,7 @@ import axios from 'axios';
 export default function Sidebar() {
   const [f_name, setF_name] = useState('')
   const [position, setPosition] = useState('')
+  const [locationPic, setLocationPic] = useState('https://static.thairath.co.th/media/4DQpjUtzLUwmJZZO80itzS42aLeUYNffMhzh75BcRd0d.jpg')
 
   const location = useLocation();
   const navigate = useNavigate()
@@ -40,6 +41,7 @@ export default function Sidebar() {
       if (res.status === 200) {
         setF_name(res.data.data.first_name)
         setPosition(res.data.data.position)
+        setLocationPic(res.data.data.picture_location ? res.data.data.picture_location : "https://static.thairath.co.th/media/4DQpjUtzLUwmJZZO80itzS42aLeUYNffMhzh75BcRd0d.jpg");
       }
     })
   }, [])
@@ -56,11 +58,11 @@ export default function Sidebar() {
         <div className="flex flex-col items-end h-5/6">
           <div className=" h-1/6 w-full flex items-center justify-center p-4">
             <div className="bg-[#CBDCEB] h-full flex justify-around items-center gap-2 w-full rounded-md p-6">
-              <div className="hidden xl:block w-10 h-10 rounded-full overflow-hidden">
+              <div className="hidden xl:block w-16 h-16 rounded-full overflow-hidden">
                 <img
-                  src="https://static.thairath.co.th/media/4DQpjUtzLUwmJZZO80itzS42aLeUYNffMhzh75BcRd0d.jpg"
+                  src={locationPic}
                   alt="profile"
-                  className="w-10 h-10 object-cover hidden xl:block"
+                  className="w-16 h-16 object-cover hidden xl:block"
                 />
               </div>
 

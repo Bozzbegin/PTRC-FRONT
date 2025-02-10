@@ -25,7 +25,7 @@ export function Home() {
                             src={item.imageSrc} 
                             alt={item.title} 
                             style={{ width: `${item.width}px`, height: `${item.height}px` }}
-                            className="object-contain flex flex-col justify-center items-center" // ใช้ mt-2 เพื่อให้มีระยะห่างจากข้อความ
+                            className="object-contain flex flex-col justify-center items-center" 
                         />
                         <p className="text-xl flex justify-center items-center font-bold text-sky-900 pb-5">
                             {item.title}
