@@ -354,6 +354,20 @@ export default function Quotation() {
       }
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+      if (product.productsASM && product.productsASM.length > 0) {
+
+        product.productsASM.forEach((productASM, asmIndex) => {
+          const subRowNumber = rowNumber + (asmIndex + 1);
+          worksheet.mergeCells(`B${subRowNumber}:C${subRowNumber}`);
+          const subProductCell = worksheet.getCell(`B${subRowNumber}`);
+
+          subProductCell.value = `${index + 1}.${asmIndex + 1} ${productASM.name_asm}`;
+          subProductCell.font = { size: 13, name: 'Angsana New' };
+          subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+        });
+      }
+
     });
 
     products.forEach((product, index) => {
@@ -367,9 +381,25 @@ export default function Quotation() {
       } else if (product.assemble_name) {
         productCell.value = `${product.description ? product.description : "-"}`;
       }
+
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+      if (product.productsASM && product.productsASM.length > 0) {
+
+        product.productsASM.forEach((productASM, asmIndex) => {
+          const subRowNumber = rowNumber + (asmIndex + 1);
+          worksheet.mergeCells(`D${subRowNumber}:E${subRowNumber}`);
+          const subProductCell = worksheet.getCell(`D${subRowNumber}`);
+
+          subProductCell.value = `${productASM.size_asm}`;
+          subProductCell.font = { size: 13, name: 'Angsana New' };
+          subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+        });
+      }
+
     });
+    
 
     // products.forEach((product, index) => {
     //   const rowNumber = 30 + index;
@@ -390,6 +420,7 @@ export default function Quotation() {
       const rowNumber = 30 + index;
       worksheet.mergeCells(`H${rowNumber}:I${rowNumber}`);
       const productCell = worksheet.getCell(`H${rowNumber}`);
+      
       if (assemble === 'with_assembled' && product.name && product.assemble_name) {
         productCell.value = `${product.quantity} ${product.unit}`;
       } else if (product.name) {
@@ -397,8 +428,23 @@ export default function Quotation() {
       } else if (product.assemble_name) {
         productCell.value = `${product.quantity} ${product.unit_asm}`;
       }
+
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+      if (product.productsASM && product.productsASM.length > 0) {
+
+        product.productsASM.forEach((productASM, asmIndex) => {
+          const subRowNumber = rowNumber + (asmIndex + 1);
+          worksheet.mergeCells(`H${subRowNumber}:I${subRowNumber}`);
+          const subProductCell = worksheet.getCell(`H${subRowNumber}`);
+
+          subProductCell.value = `${productASM.quantity_asm} ${productASM.unit_asm}`;
+          subProductCell.font = { size: 13, name: 'Angsana New' };
+          subProductCell.alignment = { vertical: 'middle', horizontal: 'center' };
+        });
+      }
+
     });
 
     const pricePerDay = worksheet.getCell('J29');
@@ -419,6 +465,7 @@ export default function Quotation() {
       }
       productCell.font = { size: 13, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
+      
     });
 
     const numberDay = worksheet.getCell('K29');
