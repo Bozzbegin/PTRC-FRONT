@@ -23,6 +23,10 @@ const StatusProduct = () => {
   const [Id_status, setId_status] = useState([]); // เก็บค่า ID ที่เลือก
   const [selectStatus, setSelectStatus] = useState("");
   const [report, setReport] = useState(false);
+  const [amountHire, setAmountHire] = useState(0);
+  const [amountHireK, setAmountHireK] = useState(0);
+  const [amountHireC, setAmountHireC] = useState(0);
+  const [amountHireN, setAmountHireN] = useState(0);
 
   // ฟังก์ชันจัดการการเลือก Checkbox
   const handleSelectStatus = (id) => {
@@ -231,20 +235,17 @@ const StatusProduct = () => {
     const fetchFilteredStatus = async () => {
       try {
         const token = localStorage.getItem("token");
+
         if (!selectStatus) {
-          setFilteredStatus(status); // ถ้าไม่เลือกอะไรให้แสดงข้อมูลทั้งหมด
-          console.error("❌ Token not found! User is not authenticated.");
+          setFilteredStatus(status);
           return;
         }
-
 
         if (!token) {
           throw new Error("Token not found");
         }
 
-
         const url = "http://192.168.195.75:5000/v1/product/status/select-status";
-
 
         const response = await axios.get(url, {
           params: { selectStatus },
@@ -256,7 +257,7 @@ const StatusProduct = () => {
         });
 
         if (response.data.code === 200) {
-          setFilteredStatus(response.data.data["Status Product"]); // ✅ กรองตามที่เลือก
+          setFilteredStatus(response.data.data["Status Product"]);
         } else {
           throw new Error(response.data.message);
         }
@@ -368,15 +369,88 @@ const StatusProduct = () => {
     }, 100); // Delay in milliseconds
   };
 
-  const handleReport = () => {
+  const handleReport = async () => {
     setReport(!report);
-  }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("Token not found");
+      }
+
+      const url = "http://192.168.195.75:5000/v1/product/status/amount-vat";
+      const url_k = "http://192.168.195.75:5000/v1/product/status/amount-nvat-k";
+      const url_n = "http://192.168.195.75:5000/v1/product/status/amount-nvat-n";
+      const url_c = "http://192.168.195.75:5000/v1/product/status/amount-nvat-c";
+
+      const [response, response_k, response_n, response_c] = await Promise.all([
+        axios.get(url, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          },
+        }),
+        axios.get(url_k, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          },
+        }),
+        axios.get(url_n, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          },
+        }),
+        axios.get(url_c, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+            "x-api-key": "1234567890abcdef",
+          },
+        }),
+      ]);
+
+      if (response.data.code === 200) {
+        setAmountHire(response.data.data);
+      } else {
+        throw new Error(response.data.message);
+      }
+
+      if (response_k.data.code === 200) {
+        setAmountHireK(response_k.data.data);
+      } else {
+        throw new Error(response_k.data.message);
+      }
+
+      if (response_c.data.code === 200) {
+        setAmountHireC(response_c.data.data);
+      } else {
+        throw new Error(response_c.data.message);
+      }
+
+      if (response_n.data.code === 200) {
+        setAmountHireN(response_n.data.data);
+      } else {
+        throw new Error(response_n.data.message);
+      }
+
+    } catch (error) {
+      console.error("Error fetching:", error);
+      setError(error.message);
+    }
+  };
+
 
   const data = [
-    { name: "(K)", จำนวน: 150, C: 0, N: 0, P: 0 },
-    { name: "(C)", จำนวน: 0, C: 100, N: 0, P: 0 },
-    { name: "(N)", จำนวน: 0, C: 0, N: 80, P: 0 },
-    { name: "(P)", จำนวน: 0, C: 0, N: 0, P: 300 },
+    { name: "(K)", จำนวน: amountHireK, C: 0, N: 0, P: 0 },
+    { name: "(C)", จำนวน: 0, C: amountHireC, N: 0, P: 0 },
+    { name: "(N)", จำนวน: 0, C: 0, N: amountHireN, P: 0 },
+    { name: "(P)", จำนวน: 0, C: 0, N: 0, P: amountHire }
   ];
 
   const CustomLabel = ({ x, y, value }) => {

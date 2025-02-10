@@ -425,7 +425,6 @@ export function Outbound() {
       assemble_price_damage: [],
       assemble_service_price: [],
     };
-    console.log("combinedItems before save:", combinedItems);
 
     combinedItems.forEach((item) => {
       if (item.isAssemble) {
@@ -4123,7 +4122,7 @@ export function Outbound() {
                               <input
                                 type="number"
                                 className="px-2 py-2 text-center w-[100px] border border-black rounded-md"
-                                value={day_length >= 30 ? formatNumber(item.price30D) || formatNumber(item.price) : formatNumber(item.price3D) || formatNumber(item.price)}
+                                value={item.isAssemble === true ? formatNumber(item.assemble_price) : day_length >= 30 ? formatNumber(item.price30D) || formatNumber(item.price) : formatNumber(item.price3D) || formatNumber(item.price)}
                                 min={0}
                                 onChange={(e) => handlePriceAPI(item.isAssemble ? item.id_asm : item.id, e.target.value, item.isAssemble)}
                               />
