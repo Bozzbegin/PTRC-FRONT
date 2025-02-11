@@ -13,6 +13,7 @@ export default function Quotation() {
   const [products, setProducts] = useState([]);
   const [expiryDate, setExpiryDate] = useState('');
   const [assemble, setAssemble] = useState(false);
+  const [productASMs, setProductASMs] = useState([]);
 
   useEffect(() => {
     if (!id) return;
@@ -32,6 +33,8 @@ export default function Quotation() {
           setData(res.data.data);
           setProducts(res.data.data.products);
           setAssemble(res.data.data.quotation_type);
+          setProductASMs(res.data.data.productASMs);
+
           const createDate = new Date(res.data.data.reserve_out);
           const expiryDate = new Date(createDate);
           // expiryDate.setDate(createDate.getDate() + 2 + data.date);
@@ -393,61 +396,149 @@ export default function Quotation() {
     listName.font = { size: 14, bold: true, name: 'Angsana New' };
     listName.alignment = { vertical: 'middle', horizontal: 'center' };
 
+    let rowNumber = 28
+    let orderIndex = 1;
+
     products.forEach((product, index) => {
-      const rowNumber = 28 + index;
+      // const rowNumber = 28 + index;
       worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
       const productCell = worksheet.getCell(`B${rowNumber}`);
-      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
-        productCell.value = `${product.name} (${product.assemble_name})`;
-      } else if (product.name) {
-        productCell.value = product.name;
-      } else if (product.assemble_name) {
-        productCell.value = product.assemble_name;
+
+      if (product.name) {
+        productCell.value = `${product.name}`;
       }
+
       productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
 
-      if (product.productsASM && product.productsASM.length > 0) {
+      rowNumber++;
+      orderIndex++;
 
-        product.productsASM.forEach((productASM, asmIndex) => {
-          const subRowNumber = rowNumber + (asmIndex + 1);
-          worksheet.mergeCells(`B${subRowNumber}:C${subRowNumber}`);
-          const subProductCell = worksheet.getCell(`B${subRowNumber}`);
+      // if (product.productsASM && product.productsASM.length > 0) {
 
-          subProductCell.value = `${index + 1}.${asmIndex + 1} ${productASM.name_asm}`;
-          subProductCell.font = { size: 13, name: 'Angsana New' };
-          subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
-        });
-      }
+      //   product.productsASM.forEach((productASM, asmIndex) => {
+      //     const subRowNumber = rowNumber + (asmIndex + 1);
+      //     worksheet.mergeCells(`B${subRowNumber}:C${subRowNumber}`);
+      //     const subProductCell = worksheet.getCell(`B${subRowNumber}`);
+
+      //     subProductCell.value = `${index + 1}.${asmIndex + 1} ${productASM.name_asm}`;
+      //     subProductCell.font = { size: 13, name: 'Angsana New' };
+      //     subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+      //   });
+      // }
 
     });
+
+    if (productASMs) {
+
+      productASMs.forEach((asm, asmIndex) => {
+
+        worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
+        const asmNameCell = worksheet.getCell(`B${rowNumber}`);
+        const productCell = worksheet.getCell(`A${rowNumber}`);
+
+        productCell.value = `${orderIndex + 1 - 1}`;
+        asmNameCell.value = asm.assemble_name;
+
+        asmNameCell.font = { size: 14, name: 'Angsana New' };
+        asmNameCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+        productCell.font = { size: 14, name: 'Angsana New' };
+        productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        worksheet.mergeCells(`H${rowNumber}:I${rowNumber}`);
+        const asmCell = worksheet.getCell(`H${rowNumber}`);
+
+        asmCell.value = `${asm.quantity} ${asm.unit_asm}`;
+        asmCell.font = { size: 14, name: 'Angsana New' };
+        asmCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
+        const subProductCell = worksheet.getCell(`D${rowNumber}`);
+
+        subProductCell.value = `${asm.description}`;
+        subProductCell.font = { size: 14, name: 'Angsana New' };
+        subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+        worksheet.mergeCells(`K${rowNumber}`);
+        const productCellDate = worksheet.getCell(`K${rowNumber}`);
+
+        productCellDate.value = `${data.date}`;
+        productCellDate.font = { size: 14, name: 'Angsana New' };
+        productCellDate.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        worksheet.mergeCells(`J${rowNumber}`);
+        const productCellPerDay = worksheet.getCell(`J${rowNumber}`);
+
+        productCellPerDay.value = "-";
+        productCellPerDay.font = { size: 14, name: 'Angsana New' };
+        productCellPerDay.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        worksheet.mergeCells(`L${rowNumber}`);
+        const productCellPriceDamage = worksheet.getCell(`L${rowNumber}`);
+
+        productCellPriceDamage.value = "-";
+        productCellPriceDamage.font = { size: 14, name: 'Angsana New' };
+        productCellPriceDamage.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        worksheet.mergeCells(`M${rowNumber}`);
+        const productCellTotalPrice = worksheet.getCell(`M${rowNumber}`);
+        productCellTotalPrice.value = "-";
+        productCellTotalPrice.font = { size: 14, name: 'Angsana New' };
+        productCellTotalPrice.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        rowNumber++;
+        let subIndex = 1;
+        orderIndex++;
+
+        if (asm.productsASM && asm.productsASM.length > 0) {
+          asm.productsASM.forEach((subAsm, subIndex) => {
+
+            worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
+            const subAsmCell = worksheet.getCell(`B${rowNumber}`);
+
+            worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
+            const subProductCell = worksheet.getCell(`D${rowNumber}`);
+
+            subAsmCell.value = `${orderIndex - 1}.${subIndex + 1} ${subAsm.name_asm}`;
+            subAsmCell.font = { size: 13, name: 'Angsana New' };
+
+            subProductCell.value = `${subAsm.size_asm}`;
+            subProductCell.font = { size: 13, name: 'Angsana New' };
+            subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+            rowNumber++;
+            subIndex++;
+          });
+        }
+
+      });
+
+    }
 
     products.forEach((product, index) => {
       const rowNumber = 28 + index;
       worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
       const productCell = worksheet.getCell(`D${rowNumber}`);
-      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
-        productCell.value = `${product.size} (${product.description})`;
-      } else if (product.name) {
-        productCell.value = `${product.size ? product.size : "-"}`;
-      } else if (product.assemble_name) {
-        productCell.value = `${product.description ? product.description : "-"}`;
+      if (product.name) {
+        productCell.value = `${product.size}`;
       }
+
       productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
 
-      if (product.productsASM && product.productsASM.length > 0) {
+      // if (product.productsASM && product.productsASM.length > 0) {
 
-        product.productsASM.forEach((productASM, asmIndex) => {
-          const subRowNumber = rowNumber + (asmIndex + 1);
-          worksheet.mergeCells(`D${subRowNumber}:E${subRowNumber}`);
-          const subProductCell = worksheet.getCell(`D${subRowNumber}`);
+      //   product.productsASM.forEach((productASM, asmIndex) => {
+      //     const subRowNumber = rowNumber + (asmIndex + 1);
+      //     worksheet.mergeCells(`D${subRowNumber}:E${subRowNumber}`);
+      //     const subProductCell = worksheet.getCell(`D${subRowNumber}`);
 
-          subProductCell.value = `${productASM.size_asm}`;
-          subProductCell.font = { size: 13, name: 'Angsana New' };
-          subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
-        });
-      }
+      //     subProductCell.value = `${productASM.size_asm}`;
+      //     subProductCell.font = { size: 13, name: 'Angsana New' };
+      //     subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+      //   });
+      // }
 
     });
 
@@ -470,28 +561,26 @@ export default function Quotation() {
       const rowNumber = 28 + index;
       worksheet.mergeCells(`H${rowNumber}:I${rowNumber}`);
       const productCell = worksheet.getCell(`H${rowNumber}`);
-      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+
+      if (product.name) {
         productCell.value = `${product.quantity} ${product.unit}`;
-      } else if (product.name) {
-        productCell.value = `${product.quantity}  ${product.unit ? product.unit : ""}`;
-      } else if (product.assemble_name) {
-        productCell.value = `${product.quantity} ${product.unit_asm}`;
       }
+
       productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
-      if (product.productsASM && product.productsASM.length > 0) {
+      // if (product.productsASM && product.productsASM.length > 0) {
 
-        product.productsASM.forEach((productASM, asmIndex) => {
-          const subRowNumber = rowNumber + (asmIndex + 1);
-          worksheet.mergeCells(`H${subRowNumber}:I${subRowNumber}`);
-          const subProductCell = worksheet.getCell(`H${subRowNumber}`);
+      //   product.productsASM.forEach((productASM, asmIndex) => {
+      //     const subRowNumber = rowNumber + (asmIndex + 1);
+      //     worksheet.mergeCells(`H${subRowNumber}:I${subRowNumber}`);
+      //     const subProductCell = worksheet.getCell(`H${subRowNumber}`);
 
-          subProductCell.value = `${productASM.quantity_asm} ${productASM.unit_asm}`;
-          subProductCell.font = { size: 13, name: 'Angsana New' };
-          subProductCell.alignment = { vertical: 'middle', horizontal: 'center' };
-        });
-      }
+      //     subProductCell.value = `${productASM.quantity_asm} ${productASM.unit_asm}`;
+      //     subProductCell.font = { size: 13, name: 'Angsana New' };
+      //     subProductCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      //   });
+      // }
 
     });
 

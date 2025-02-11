@@ -13,6 +13,7 @@ export default function Quotation() {
   const [data, setData] = useState([]);
   const [products, setProducts] = useState([]);
   const [assemble, setAssemble] = useState(false);
+  const [productASMs, setProductASMs] = useState([]);
 
   useEffect(() => {
 
@@ -33,6 +34,9 @@ export default function Quotation() {
           setData(res.data.data);
           setProducts(res.data.data.products);
           setAssemble(res.data.data.quotation_type);
+          setProductASMs(res.data.data.productASMs);
+          console.log(res.data.data.productASMs);
+
           const createDate = new Date(res.data.data.reserve_out);
           const expiryDate = new Date(createDate);
           expiryDate.setDate(createDate.getDate() + 7);
@@ -336,65 +340,150 @@ export default function Quotation() {
     listName.font = { size: 14, bold: true, name: 'Angsana New' };
     listName.alignment = { vertical: 'middle', horizontal: 'center' };
 
+    let rowNumber = 28
+    let orderIndex = 1;
+
     products.forEach((product, index) => {
-      const rowNumber = 28 + index;
+      // const rowNumber = 28 + index;
       worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
       const productCell = worksheet.getCell(`B${rowNumber}`);
 
-      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
-        productCell.value = `${product.name} (${product.assemble_name})`;
-      } else if (product.name) {
-        productCell.value = product.name;
-      } else if (product.assemble_name) {
-        productCell.value = product.assemble_name;
+      if (product.name) {
+        productCell.value = `${product.name}`;
       }
 
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
 
-      if (product.productsASM && product.productsASM.length > 0) {
+      rowNumber++;
+      orderIndex++;
 
-        product.productsASM.forEach((productASM, asmIndex) => {
-          const subRowNumber = rowNumber + (asmIndex + 1);
-          worksheet.mergeCells(`B${subRowNumber}:C${subRowNumber}`);
-          const subProductCell = worksheet.getCell(`B${subRowNumber}`);
+      // if (product.productsASM && product.productsASM.length > 0) {
 
-          subProductCell.value = `${index + 1}.${asmIndex + 1} ${productASM.name_asm}`;
-          subProductCell.font = { size: 13, name: 'Angsana New' };
-          subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
-        });
-      }
+      //   product.productsASM.forEach((productASM, asmIndex) => {
+      //     const subRowNumber = rowNumber + (asmIndex + 1);
+      //     worksheet.mergeCells(`B${subRowNumber}:C${subRowNumber}`);
+      //     const subProductCell = worksheet.getCell(`B${subRowNumber}`);
+
+      //     subProductCell.value = `${index + 1}.${asmIndex + 1} ${productASM.name_asm}`;
+      //     subProductCell.font = { size: 13, name: 'Angsana New' };
+      //     subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+      //   });
+      // }
 
     });
+
+    if (productASMs) {
+
+      productASMs.forEach((asm, asmIndex) => {
+
+        worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
+        const asmNameCell = worksheet.getCell(`B${rowNumber}`);
+        const productCell = worksheet.getCell(`A${rowNumber}`);
+
+        productCell.value = `${orderIndex + 1 - 1}`;
+        asmNameCell.value = asm.assemble_name;
+
+        asmNameCell.font = { size: 14, name: 'Angsana New' };
+        asmNameCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+        productCell.font = { size: 14, name: 'Angsana New' };
+        productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        worksheet.mergeCells(`H${rowNumber}:I${rowNumber}`);
+        const asmCell = worksheet.getCell(`H${rowNumber}`);
+
+        asmCell.value = `${asm.quantity} ${asm.unit_asm}`;
+        asmCell.font = { size: 14, name: 'Angsana New' };
+        asmCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
+        const subProductCell = worksheet.getCell(`D${rowNumber}`);
+
+        subProductCell.value = `${asm.description}`;
+        subProductCell.font = { size: 14, name: 'Angsana New' };
+        subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+        worksheet.mergeCells(`K${rowNumber}`);
+        const productCellDate = worksheet.getCell(`K${rowNumber}`);
+
+        productCellDate.value = `${data.date}`;
+        productCellDate.font = { size: 14, name: 'Angsana New' };
+        productCellDate.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        worksheet.mergeCells(`J${rowNumber}`);
+        const productCellPerDay = worksheet.getCell(`J${rowNumber}`);
+
+        productCellPerDay.value = `${formatNumber(asm.price) ? formatNumber(asm.price) : "-"} `;
+        productCellPerDay.font = { size: 14, name: 'Angsana New' };
+        productCellPerDay.alignment = { vertical: 'middle', horizontal: 'right' };
+
+        worksheet.mergeCells(`L${rowNumber}`);
+        const productCellPriceDamage = worksheet.getCell(`L${rowNumber}`);
+
+        productCellPriceDamage.value = `${formatNumber(asm.assemble_price_damage) ? formatNumber(asm.assemble_price_damage) : "-"} `;
+        productCellPriceDamage.font = { size: 14, name: 'Angsana New' };
+        productCellPriceDamage.alignment = { vertical: 'middle', horizontal: 'right' };
+
+        worksheet.mergeCells(`M${rowNumber}`);
+        const productCellTotalPrice = worksheet.getCell(`M${rowNumber}`);
+
+        productCellTotalPrice.value = `${formatNumber(parseFloat((asm.quantity * asm.price) * data.date))} `;
+        productCellTotalPrice.font = { size: 14, name: 'Angsana New' };
+        productCellTotalPrice.alignment = { vertical: 'middle', horizontal: 'right' };
+
+        rowNumber++;
+        let subIndex = 1;
+        orderIndex++;
+
+        if (asm.productsASM && asm.productsASM.length > 0) {
+          asm.productsASM.forEach((subAsm, subIndex) => {
+
+            worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
+            const subAsmCell = worksheet.getCell(`B${rowNumber}`);
+
+            worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
+            const subProductCell = worksheet.getCell(`D${rowNumber}`);
+
+            subAsmCell.value = `${orderIndex - 1}.${subIndex + 1} ${subAsm.name_asm}`;
+            subAsmCell.font = { size: 13, name: 'Angsana New' };
+
+            subProductCell.value = `${subAsm.size_asm}`;
+            subProductCell.font = { size: 13, name: 'Angsana New' };
+            subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+            rowNumber++;
+            subIndex++;
+          });
+        }
+
+      });
+
+    }
 
     products.forEach((product, index) => {
       const rowNumber = 28 + index;
       worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
       const productCell = worksheet.getCell(`D${rowNumber}`);
-
-      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
-        productCell.value = `${product.size} (${product.description})`;
-      } else if (product.name) {
-        productCell.value = `${product.size ? product.size : "-"}`;
-      } else if (product.assemble_name) {
-        productCell.value = `${product.description ? product.description : "-"}`;
+      if (product.name) {
+        productCell.value = `${product.size}`;
       }
 
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'left' };
 
-      if (product.productsASM && product.productsASM.length > 0) {
+      // if (product.productsASM && product.productsASM.length > 0) {
 
-        product.productsASM.forEach((productASM, asmIndex) => {
-          const subRowNumber = rowNumber + (asmIndex + 1);
-          worksheet.mergeCells(`D${subRowNumber}:E${subRowNumber}`);
-          const subProductCell = worksheet.getCell(`D${subRowNumber}`);
+      //   product.productsASM.forEach((productASM, asmIndex) => {
+      //     const subRowNumber = rowNumber + (asmIndex + 1);
+      //     worksheet.mergeCells(`D${subRowNumber}:E${subRowNumber}`);
+      //     const subProductCell = worksheet.getCell(`D${subRowNumber}`);
 
-          subProductCell.value = `${productASM.size_asm}`;
-          subProductCell.font = { size: 13, name: 'Angsana New' };
-          subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
-        });
-      }
+      //     subProductCell.value = `${productASM.size_asm}`;
+      //     subProductCell.font = { size: 13, name: 'Angsana New' };
+      //     subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+      //   });
+      // }
 
     });
 
@@ -404,7 +493,7 @@ export default function Quotation() {
     //   const productCell = worksheet.getCell(`F${rowNumber}`);
     //   productCell.value = `${product.unit ? product.unit : "-"}`;
     //   productCell.font = { size: 13, name: 'Angsana New' };
-    //   productCell.alignment = { vertical: 'middle', horizontal: 'left' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'left' }; 
     // });
 
     worksheet.mergeCells('H27:I27');
@@ -418,29 +507,25 @@ export default function Quotation() {
       worksheet.mergeCells(`H${rowNumber}:I${rowNumber}`);
       const productCell = worksheet.getCell(`H${rowNumber}`);
 
-      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+      if (product.name) {
         productCell.value = `${product.quantity} ${product.unit}`;
-      } else if (product.name) {
-        productCell.value = `${product.quantity}  ${product.unit ? product.unit : ""}`;
-      } else if (product.assemble_name) {
-        productCell.value = `${product.quantity} ${product.unit_asm}`;
       }
 
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
-      if (product.productsASM && product.productsASM.length > 0) {
+      // if (product.productsASM && product.productsASM.length > 0) {
 
-        product.productsASM.forEach((productASM, asmIndex) => {
-          const subRowNumber = rowNumber + (asmIndex + 1);
-          worksheet.mergeCells(`H${subRowNumber}:I${subRowNumber}`);
-          const subProductCell = worksheet.getCell(`H${subRowNumber}`);
+      //   product.productsASM.forEach((productASM, asmIndex) => {
+      //     const subRowNumber = rowNumber + (asmIndex + 1);
+      //     worksheet.mergeCells(`H${subRowNumber}:I${subRowNumber}`);
+      //     const subProductCell = worksheet.getCell(`H${subRowNumber}`);
 
-          subProductCell.value = `${productASM.quantity_asm} ${productASM.unit_asm}`;
-          subProductCell.font = { size: 13, name: 'Angsana New' };
-          subProductCell.alignment = { vertical: 'middle', horizontal: 'center' };
-        });
-      }
+      //     subProductCell.value = `${productASM.quantity_asm} ${productASM.unit_asm}`;
+      //     subProductCell.font = { size: 13, name: 'Angsana New' };
+      //     subProductCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      //   });
+      // }
 
     });
 
@@ -453,18 +538,9 @@ export default function Quotation() {
       const rowNumber = 28 + index;
       worksheet.mergeCells(`J${rowNumber}`);
       const productCell = worksheet.getCell(`J${rowNumber}`);
-
-      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
-        productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
-      } else if (product.name) {
-        productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
-      } else if (product.assemble_name) {
-        productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
-      }
-
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
-
     });
 
     const numberDay = worksheet.getCell('K27');
@@ -479,7 +555,6 @@ export default function Quotation() {
       productCell.value = `${data.date}`;
       productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'center' };
-
     });
 
     const priceDamage = worksheet.getCell('L27');
@@ -491,19 +566,9 @@ export default function Quotation() {
       const rowNumber = 28 + index;
       worksheet.mergeCells(`L${rowNumber}`);
       const productCell = worksheet.getCell(`L${rowNumber}`);
-      productCell.value = `${(product.price_damage ? formatNumber(product.price_damage) : "-")} `;
-
-      if (assemble === 'with_assembled' && product.name && product.assemble_name) {
-        productCell.value = `${product.price ? formatNumber(product.price) : "-"}  ${product.assemble_price_damage ? formatNumber(product.assemble_price_damage) : "-"} `;
-      } else if (product.name) {
-        productCell.value = `${(product.price_damage ? formatNumber(product.price_damage) : "-")} `;
-      } else if (product.assemble_name) {
-        productCell.value = `${product.assemble_price_damage ? formatNumber(product.assemble_price_damage) : "-"} `;
-      }
-
-      productCell.font = { size: 13, name: 'Angsana New' };
+      productCell.value = `${product.price ? formatNumber(product.price) : "-"} `;
+      productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
-
     });
 
     const finalPrice = worksheet.getCell('M27');
@@ -511,16 +576,359 @@ export default function Quotation() {
     finalPrice.font = { size: 14, bold: true, name: 'Angsana New' };
     finalPrice.alignment = { vertical: 'middle', horizontal: 'center' };
 
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
+    //   const productCell = worksheet.getCell(`B${rowNumber}`);
+    //   if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+    //     productCell.value = `${product.name} (${product.assemble_name})`;
+    //   } else if (product.name) {
+    //     productCell.value = product.name;
+    //   } else if (product.assemble_name) {
+    //     productCell.value = product.assemble_name;
+    //   }
+    //   productCell.font = { size: 13, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+    //   if (product.productsASM && product.productsASM.length > 0) {
+
+    //     product.productsASM.forEach((productASM, asmIndex) => {
+    //       const subRowNumber = rowNumber + (asmIndex + 1);
+    //       worksheet.mergeCells(`B${subRowNumber}:C${subRowNumber}`);
+    //       const subProductCell = worksheet.getCell(`B${subRowNumber}`);
+
+    //       subProductCell.value = `${index + 1}.${asmIndex + 1} ${productASM.name_asm}`;
+    //       subProductCell.font = { size: 13, name: 'Angsana New' };
+    //       subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+    //     });
+    //   }
+
+    // });
+
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
+    //   const productCell = worksheet.getCell(`D${rowNumber}`);
+    //   if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+    //     productCell.value = `${product.size} (${product.description})`;
+    //   } else if (product.name) {
+    //     productCell.value = `${product.size ? product.size : "-"}`;
+    //   } else if (product.assemble_name) {
+    //     productCell.value = `${product.description ? product.description : "-"}`;
+    //   }
+    //   productCell.font = { size: 13, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+    //   if (product.productsASM && product.productsASM.length > 0) {
+
+    //     product.productsASM.forEach((productASM, asmIndex) => {
+    //       const subRowNumber = rowNumber + (asmIndex + 1);
+    //       worksheet.mergeCells(`D${subRowNumber}:E${subRowNumber}`);
+    //       const subProductCell = worksheet.getCell(`D${subRowNumber}`);
+
+    //       subProductCell.value = `${productASM.size_asm}`;
+    //       subProductCell.font = { size: 13, name: 'Angsana New' };
+    //       subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+    //     });
+    //   }
+    // });
+
+    // // products.forEach((product, index) => {
+    // //   const rowNumber = 28 + index;
+    // //   worksheet.mergeCells(`F${rowNumber}`);
+    // //   const productCell = worksheet.getCell(`F${rowNumber}`);
+    // //   productCell.value = `${product.unit ? product.unit : "-"}`;
+    // //   productCell.font = { size: 13, name: 'Angsana New' };
+    // //   productCell.alignment = { vertical: 'middle', horizontal: 'left' };
+    // // });
+
+    // worksheet.mergeCells('H27:I27');
+    // const amout = worksheet.getCell('H27');
+    // amout.value = 'จำนวน';
+    // amout.font = { size: 14, bold: true, name: 'Angsana New' };
+    // amout.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`H${rowNumber}:I${rowNumber}`);
+    //   const productCell = worksheet.getCell(`H${rowNumber}`);
+    //   if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+    //     productCell.value = `${product.quantity} ${product.unit}`;
+    //   } else if (product.name) {
+    //     productCell.value = `${product.quantity}  ${product.unit ? product.unit : ""}`;
+    //   } else if (product.assemble_name) {
+    //     productCell.value = `${product.quantity} ${product.unit_asm}`;
+    //   }
+    //   productCell.font = { size: 13, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    //   if (product.productsASM && product.productsASM.length > 0) {
+
+    //     product.productsASM.forEach((productASM, asmIndex) => {
+    //       const subRowNumber = rowNumber + (asmIndex + 1);
+    //       worksheet.mergeCells(`H${subRowNumber}:I${subRowNumber}`);
+    //       const subProductCell = worksheet.getCell(`H${subRowNumber}`);
+
+    //       subProductCell.value = `${productASM.quantity_asm} ${productASM.unit_asm}`;
+    //       subProductCell.font = { size: 13, name: 'Angsana New' };
+    //       subProductCell.alignment = { vertical: 'middle', horizontal: 'center' };
+    //     });
+    //   }
+    // });
+
+    // const pricePerDay = worksheet.getCell('J27');
+    // pricePerDay.value = 'ค่าเช่า / วัน';
+    // pricePerDay.font = { size: 14, bold: true, name: 'Angsana New' };
+    // pricePerDay.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`J${rowNumber}`);
+    //   const productCell = worksheet.getCell(`J${rowNumber}`);
+    //   if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+    //     productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
+    //   } else if (product.name) {
+    //     productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
+    //   } else if (product.assemble_name) {
+    //     productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
+    //   }
+    //   productCell.font = { size: 13, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'right' };
+    // });
+
+    // const numberDay = worksheet.getCell('K27');
+    // numberDay.value = 'จำนวนวัน';
+    // numberDay.font = { size: 14, bold: true, name: 'Angsana New' };
+    // numberDay.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`K${rowNumber}`);
+    //   const productCell = worksheet.getCell(`K${rowNumber}`);
+    //   productCell.value = `${data.date}`;
+    //   productCell.font = { size: 14, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+    // });
+
+    // const priceDamage = worksheet.getCell('L27');
+    // priceDamage.value = 'ค่าปรับสินค้า / ชิ้น';
+    // priceDamage.font = { size: 14, bold: true, name: 'Angsana New' };
+    // priceDamage.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`L${rowNumber}`);
+    //   const productCell = worksheet.getCell(`L${rowNumber}`);
+    //   productCell.value = `${(product.price_damage ? formatNumber(product.price_damage) : "-")} `;
+    //   if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+    //     productCell.value = `${product.price ? formatNumber(product.price) : "-"}  ${product.assemble_price_damage ? formatNumber(product.assemble_price_damage) : "-"} `;
+    //   } else if (product.name) {
+    //     productCell.value = `${(product.price_damage ? formatNumber(product.price_damage) : "-")} `;
+    //   } else if (product.assemble_name) {
+    //     productCell.value = `${product.assemble_price_damage ? formatNumber(product.assemble_price_damage) : "-"} `;
+    //   }
+    //   productCell.font = { size: 13, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'right' };
+    // });
+
+    // const finalPrice = worksheet.getCell('M27');
+    // finalPrice.value = 'จำนวนเงินรวม';
+    // finalPrice.font = { size: 14, bold: true, name: 'Angsana New' };
+    // finalPrice.alignment = { vertical: 'middle', horizontal: 'center' };
+
     const total_Price_Out = products.reduce((sum, product) => {
       return sum + (product.quantity * product.price * data.date);
     }, 0);
+
+    const total_Price_Out_ASM = productASMs.reduce((sum, product) => {
+      return sum + (product.quantity * product.price * data.date);
+    }, 0);
+
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
+    //   const productCell = worksheet.getCell(`B${rowNumber}`);
+
+    //   if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+    //     productCell.value = `${product.name} (${product.assemble_name})`;
+    //   } else if (product.name) {
+    //     productCell.value = product.name;
+    //   } else if (product.assemble_name) {
+    //     productCell.value = product.assemble_name;
+    //   }
+
+    //   productCell.font = { size: 13, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+    //   if (product.productsASM && product.productsASM.length > 0) {
+
+    //     product.productsASM.forEach((productASM, asmIndex) => {
+    //       const subRowNumber = rowNumber + (asmIndex + 1);
+    //       worksheet.mergeCells(`B${subRowNumber}:C${subRowNumber}`);
+    //       const subProductCell = worksheet.getCell(`B${subRowNumber}`);
+
+    //       subProductCell.value = `${index + 1}.${asmIndex + 1} ${productASM.name_asm}`;
+    //       subProductCell.font = { size: 13, name: 'Angsana New' };
+    //       subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+    //     });
+    //   }
+
+    // });
+
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`D${rowNumber}:E${rowNumber}`);
+    //   const productCell = worksheet.getCell(`D${rowNumber}`);
+
+    //   if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+    //     productCell.value = `${product.size} (${product.description})`;
+    //   } else if (product.name) {
+    //     productCell.value = `${product.size ? product.size : "-"}`;
+    //   } else if (product.assemble_name) {
+    //     productCell.value = `${product.description ? product.description : "-"}`;
+    //   }
+
+    //   productCell.font = { size: 13, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+    //   if (product.productsASM && product.productsASM.length > 0) {
+
+    //     product.productsASM.forEach((productASM, asmIndex) => {
+    //       const subRowNumber = rowNumber + (asmIndex + 1);
+    //       worksheet.mergeCells(`D${subRowNumber}:E${subRowNumber}`);
+    //       const subProductCell = worksheet.getCell(`D${subRowNumber}`);
+
+    //       subProductCell.value = `${productASM.size_asm}`;
+    //       subProductCell.font = { size: 13, name: 'Angsana New' };
+    //       subProductCell.alignment = { vertical: 'middle', horizontal: 'left' };
+    //     });
+    //   }
+
+    // });
+
+    // // products.forEach((product, index) => {
+    // //   const rowNumber = 28 + index;
+    // //   worksheet.mergeCells(`F${rowNumber}`);
+    // //   const productCell = worksheet.getCell(`F${rowNumber}`);
+    // //   productCell.value = `${product.unit ? product.unit : "-"}`;
+    // //   productCell.font = { size: 13, name: 'Angsana New' };
+    // //   productCell.alignment = { vertical: 'middle', horizontal: 'left' };
+    // // });
+
+    // worksheet.mergeCells('H27:I27');
+    // const amout = worksheet.getCell('H27');
+    // amout.value = 'จำนวน';
+    // amout.font = { size: 14, bold: true, name: 'Angsana New' };
+    // amout.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`H${rowNumber}:I${rowNumber}`);
+    //   const productCell = worksheet.getCell(`H${rowNumber}`);
+
+    //   if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+    //     productCell.value = `${product.quantity} ${product.unit}`;
+    //   } else if (product.name) {
+    //     productCell.value = `${product.quantity}  ${product.unit ? product.unit : ""}`;
+    //   } else if (product.assemble_name) {
+    //     productCell.value = `${product.quantity} ${product.unit_asm}`;
+    //   }
+
+    //   productCell.font = { size: 13, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    //   if (product.productsASM && product.productsASM.length > 0) {
+
+    //     product.productsASM.forEach((productASM, asmIndex) => {
+    //       const subRowNumber = rowNumber + (asmIndex + 1);
+    //       worksheet.mergeCells(`H${subRowNumber}:I${subRowNumber}`);
+    //       const subProductCell = worksheet.getCell(`H${subRowNumber}`);
+
+    //       subProductCell.value = `${productASM.quantity_asm} ${productASM.unit_asm}`;
+    //       subProductCell.font = { size: 13, name: 'Angsana New' };
+    //       subProductCell.alignment = { vertical: 'middle', horizontal: 'center' };
+    //     });
+    //   }
+
+    // });
+
+    // const pricePerDay = worksheet.getCell('J27');
+    // pricePerDay.value = 'ค่าเช่า / วัน';
+    // pricePerDay.font = { size: 14, bold: true, name: 'Angsana New' };
+    // pricePerDay.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`J${rowNumber}`);
+    //   const productCell = worksheet.getCell(`J${rowNumber}`);
+
+    //   if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+    //     productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
+    //   } else if (product.name) {
+    //     productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
+    //   } else if (product.assemble_name) {
+    //     productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
+    //   }
+
+    //   productCell.font = { size: 13, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'right' };
+
+    // });
+
+    // const numberDay = worksheet.getCell('K27');
+    // numberDay.value = 'จำนวนวัน';
+    // numberDay.font = { size: 14, bold: true, name: 'Angsana New' };
+    // numberDay.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`K${rowNumber}`);
+    //   const productCell = worksheet.getCell(`K${rowNumber}`);
+    //   productCell.value = `${data.date}`;
+    //   productCell.font = { size: 14, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // });
+
+    // const priceDamage = worksheet.getCell('L27');
+    // priceDamage.value = 'ค่าปรับสินค้า / ชิ้น';
+    // priceDamage.font = { size: 14, bold: true, name: 'Angsana New' };
+    // priceDamage.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // products.forEach((product, index) => {
+    //   const rowNumber = 28 + index;
+    //   worksheet.mergeCells(`L${rowNumber}`);
+    //   const productCell = worksheet.getCell(`L${rowNumber}`);
+    //   productCell.value = `${(product.price_damage ? formatNumber(product.price_damage) : "-")} `;
+
+    //   if (assemble === 'with_assembled' && product.name && product.assemble_name) {
+    //     productCell.value = `${product.price ? formatNumber(product.price) : "-"}  ${product.assemble_price_damage ? formatNumber(product.assemble_price_damage) : "-"} `;
+    //   } else if (product.name) {
+    //     productCell.value = `${(product.price_damage ? formatNumber(product.price_damage) : "-")} `;
+    //   } else if (product.assemble_name) {
+    //     productCell.value = `${product.assemble_price_damage ? formatNumber(product.assemble_price_damage) : "-"} `;
+    //   }
+
+    //   productCell.font = { size: 13, name: 'Angsana New' };
+    //   productCell.alignment = { vertical: 'middle', horizontal: 'right' };
+
+    // });
+
+    // const finalPrice = worksheet.getCell('M27');
+    // finalPrice.value = 'จำนวนเงินรวม';
+    // finalPrice.font = { size: 14, bold: true, name: 'Angsana New' };
+    // finalPrice.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    // const total_Price_Out = products.reduce((sum, product) => {
+    //   return sum + (product.quantity * product.price * data.date);
+    // }, 0);
 
     const move_price = Number(data.move_price) || 0;
     const shipping_cost = Number(data.shipping_cost) || 0;
     const discount1 = Number(data.discount) || 0;
     const guarantee_price = Number(data.guarantee_price) || 0;
 
-    const total_Price_Discount = (total_Price_Out + move_price + shipping_cost) - discount1;
+    const total_Price_Discount = ((total_Price_Out + (total_Price_Out_ASM ? total_Price_Out_ASM : 0)) + move_price + shipping_cost) - discount1;
     const finalTotalPrice = (total_Price_Discount * 0.07) + guarantee_price + total_Price_Discount;
 
     products.forEach((product, index) => {
@@ -619,13 +1027,18 @@ export default function Quotation() {
     const totalPrice = products.reduce((sum, product) => {
       return sum + (product.quantity * product.price * data.date);
     }, 0);
+
+    const totalPriceASM = productASMs.reduce((sum, product) => {
+      return sum + (product.quantity * product.price * data.date);
+    }, 0);
+
     const totalPriceOut = worksheet.getCell('K61');
     totalPriceOut.value = ' รวมเงิน';
     totalPriceOut.font = { size: 13, name: 'Angsana New' };
     totalPriceOut.alignment = { vertical: 'middle', horizontal: 'left' };
 
     const totalPriceOutValue = worksheet.getCell('M61');
-    totalPriceOutValue.value = `${formatNumber(totalPrice)} `;
+    totalPriceOutValue.value = `${formatNumber(totalPrice + (totalPriceASM ? totalPriceASM : 0))} `;
     totalPriceOutValue.font = { size: 13, name: 'Angsana New' };
     totalPriceOutValue.alignment = { vertical: 'middle', horizontal: 'right' };
 
@@ -754,11 +1167,11 @@ export default function Quotation() {
     payment5.alignment = { vertical: 'middle', horizontal: 'left' };
     payment5.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
 
-    const newPrice = (totalPrice - discount1) * 0.05;
-    const totalNewPrice = (totalPrice - discount1) - newPrice;
+    const newPrice = ((totalPrice + (totalPriceASM ? totalPriceASM : 0)) - discount1) * 0.05;
+    const totalNewPrice = ((totalPrice + (totalPriceASM ? totalPriceASM : 0)) - discount1) - newPrice;
 
     const payment51 = worksheet.getCell('F49');
-    payment51.value = formatNumber(totalPrice - (discount1));
+    payment51.value = formatNumber((totalPrice + (totalPriceASM ? totalPriceASM : 0)) - (discount1));
     payment51.font = { size: 11, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' } };
     payment51.alignment = { vertical: 'middle', horizontal: 'right' };
     payment51.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFDAB9' } };
