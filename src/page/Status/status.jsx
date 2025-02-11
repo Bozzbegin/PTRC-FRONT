@@ -718,8 +718,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
       [id_asm]: !prev[id_asm],
     }));
   };
-=======
-  const [openDropdowns, setOpenDropdowns] = useState({});
+
 
 
   const formatDateModal = (selectedDate) => {
@@ -789,12 +788,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   };
 
 
-  const toggleDropdown = (id_asm) => {
-    setOpenDropdowns((prev) => ({
-      ...prev,
-      [id_asm]: !prev[id_asm],
-    }));
-  };
+
   useEffect(() => {
 
     if (isModalOpen) {
@@ -1247,7 +1241,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
                               <td className="border p-2 text-center">{productASM.description}</td>
 
-                              <td className="border p-2 w-1/3 text-center">{productASM.description}</td>
+                            
 
                             </tr>
 
