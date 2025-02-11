@@ -25,7 +25,7 @@ export function TableItem({
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token not found");
 
-      let url = "http://192.168.195.75:5000/v1/product/stock/all-product";
+      let url = "http://192.168.195.75:5000/v1/product/stock/all";
       if (branchId && branchId !== "") {
         url = `http://192.168.195.75:5000/v1/product/stock/product-bybranch/${branchId}`;
       }

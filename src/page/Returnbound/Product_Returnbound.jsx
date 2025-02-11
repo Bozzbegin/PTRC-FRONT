@@ -14,7 +14,7 @@ export default function ProductReturn({ id }) {
   useEffect(() => {
     const fetchData = async () => {
       if (!id || hasFetched) return;
-  
+
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -27,12 +27,12 @@ export default function ProductReturn({ id }) {
             },
           }
         );
-  
+
         const data = response.data;
-  
+
         if (data.status) {
           setOutboundId(data.option.outbound_id);
-  
+
           const normalProducts = data.option.return_logs.map((log) => ({
             id: log.product_id,
             type: "normal",
@@ -42,33 +42,33 @@ export default function ProductReturn({ id }) {
             remaining_quantity: log.borrowed_quantity - log.return_quantity - log.return_damage,
             unit: log.unit
           }));
-  
+
           // เช็คว่า return_assemble_logs เป็น null หรือไม่
           const assembledProducts = data.option.return_assemble_logs
             ? data.option.return_assemble_logs.map((log) => ({
-                id: log.assemble_id,
-                type: "assemble",
-                assemble_name: log.assemble_name || `สินค้าประกอบ ID: ${log.assemble_id}`,
-                borrowed_quantity: log.assemble_quantity_borrow,
-                remaining_quantity: log.assemble_quantity_borrow - log.assemble_quantity_return,
-                descriptionASM: log.description || "ไม่มีคำอธิบาย", // เพิ่มส่วนนี้เพื่อเก็บคำอธิบาย
-                unit_asm: log.unit_asm,
-                product_details: log.product_id.split(",").map((id, index) => ({
-                  product_id: id,
-                  product_names: log.product_names.split(",")[index],
-                  borrowed_quantity: parseInt(log.product_quantity_borrow.split(",")[index]),
-                  return_quantity: parseInt(log.product_quantity_return.split(",")[index]),
-                  remaining_quantityASM:
-                    parseInt(log.product_quantity_borrow.split(",")[index]) -
-                    parseInt(log.product_quantity_return.split(",")[index]) - 
-                    parseInt(log.return_damage.split(",")[index]),
-                })),
-              }))
+              id: log.assemble_id,
+              type: "assemble",
+              assemble_name: log.assemble_name || `สินค้าประกอบ ID: ${log.assemble_id}`,
+              borrowed_quantity: log.assemble_quantity_borrow,
+              remaining_quantity: log.assemble_quantity_borrow - log.assemble_quantity_return,
+              descriptionASM: log.description || "ไม่มีคำอธิบาย", // เพิ่มส่วนนี้เพื่อเก็บคำอธิบาย
+              unit_asm: log.unit_asm,
+              product_details: log.product_id.split(",").map((id, index) => ({
+                product_id: id,
+                product_names: log.product_names.split(",")[index],
+                borrowed_quantity: parseInt(log.product_quantity_borrow.split(",")[index]),
+                return_quantity: parseInt(log.product_quantity_return.split(",")[index]),
+                remaining_quantityASM:
+                  parseInt(log.product_quantity_borrow.split(",")[index]) -
+                  parseInt(log.product_quantity_return.split(",")[index]) -
+                  parseInt(log.return_damage.split(",")[index]),
+              })),
+            }))
             : []; // กรณีที่ไม่มีสินค้าประกอบ, ให้เป็น array ว่าง
-  
+
           const combinedData = [...normalProducts, ...assembledProducts];
           setProductData(combinedData);
-  
+
           const initialReturnData = {};
           combinedData.forEach((item) => {
             if (item.type === "assemble") {
@@ -89,7 +89,7 @@ export default function ProductReturn({ id }) {
               };
             }
           });
-  
+
           setReturnData(initialReturnData);
           setHasFetched(true);
         } else {
@@ -102,10 +102,10 @@ export default function ProductReturn({ id }) {
         setIsLoading(false);
       }
     };
-  
+
     fetchData();
   }, [id, hasFetched]);
-  
+
 
   const handleInputChange = (productId, field, value, assembleId = null) => {
     const key = assembleId ? `assemble_${assembleId}_${productId}` : `normal_${productId}`;
@@ -164,7 +164,7 @@ export default function ProductReturn({ id }) {
 
   const renderNormalProducts = (item) => {
     const isFullyReturned = item.remaining_quantity === 0;
-  
+
     return (
       <tr key={item.id} className="border-b">
         {[item.product_name, item.code, item.borrowed_quantity, item.remaining_quantity].map(
@@ -177,7 +177,7 @@ export default function ProductReturn({ id }) {
             type="checkbox"
             checked={returnData[`normal_${item.id}`]?.return_all || false}
             onChange={(e) => handleReturnAllForNormalProduct(item.id, e.target.checked)}
-            className="w-5 h-5 cursor-pointer"
+            className="w-5 h-4 cursor-pointer"
             disabled={isFullyReturned}
           />
         </td>
@@ -204,7 +204,7 @@ export default function ProductReturn({ id }) {
       </tr>
     );
   };
-  
+
   const renderAssembledProducts = (item) => (
     <React.Fragment key={item.id}>
       <tr className="border-b">
@@ -235,7 +235,7 @@ export default function ProductReturn({ id }) {
                   onChange={(e) =>
                     handleReturnAllForProductDetail(item.id, detail.product_id, e.target.checked)
                   }
-                  className="w-5 h-5 cursor-pointer"
+                  className="w-5 h-4 cursor-pointer"
                   disabled={isFullyReturned}
                 />
               </td>
@@ -248,7 +248,7 @@ export default function ProductReturn({ id }) {
                       handleInputChange(detail.product_id, field, e.target.value, item.id)
                     }
                     disabled={isFullyReturned}
-                    className="w-24 border rounded px-2 py-1 text-center"
+                    className="w-24 border rounded px-2 py-1 text-center h"
                   />
                 </td>
               ))}
@@ -259,7 +259,7 @@ export default function ProductReturn({ id }) {
                   onChange={(e) =>
                     handleInputChange(detail.product_id, "description", e.target.value, item.id)
                   }
-                  className="w-40 border rounded px-2 py-1 text-center"
+                  className="w-40 border rounded px-2 h-3/4 text-center"
                   disabled={isFullyReturned}
                 />
               </td>
@@ -268,15 +268,15 @@ export default function ProductReturn({ id }) {
         })}
     </React.Fragment>
   );
-  
-  
-  
 
 
-  
 
 
- 
+
+
+
+
+
 
   const handleReturnSubmit = async () => {
     try {
@@ -292,18 +292,18 @@ export default function ProductReturn({ id }) {
                 ),
                 ...(returnData[`assemble_${item.id}_${detail.product_id}`]?.damage_quantity
                   ? {
-                      damage_quantity: parseInt(
-                        returnData[`assemble_${item.id}_${detail.product_id}`]?.damage_quantity
-                      ),
-                    }
+                    damage_quantity: parseInt(
+                      returnData[`assemble_${item.id}_${detail.product_id}`]?.damage_quantity
+                    ),
+                  }
                   : {}),
                 description:
                   returnData[`assemble_${item.id}_${detail.product_id}`]?.description || "",
               };
-  
+
               return returnEntry;
             });
-  
+
             return {
               assemble_id: item.id,
               product_returns: productReturns,
@@ -316,21 +316,21 @@ export default function ProductReturn({ id }) {
               return_quantity: parseInt(returnData[`normal_${item.id}`]?.return_quantity || 0),
               ...(returnData[`normal_${item.id}`]?.damage_quantity
                 ? {
-                    damage_quantity: parseInt(returnData[`normal_${item.id}`]?.damage_quantity),
-                  }
+                  damage_quantity: parseInt(returnData[`normal_${item.id}`]?.damage_quantity),
+                }
                 : {}),
               description: returnData[`normal_${item.id}`]?.description || "",
               return_all: false,
             };
-  
+
             return returnEntry;
           }
         }),
       };
-  
+
       console.log("Payload ที่ส่งไปยัง API:", payload);
       const token = localStorage.getItem("token");
-  
+
       const response = await axios.post(
         "http://192.168.195.75:5000/v1/product/return/return-product",
         payload,
@@ -342,7 +342,7 @@ export default function ProductReturn({ id }) {
           },
         }
       );
-  
+
       if (response.status === 200) {
         // แสดง SweetAlert เมื่อคืนสินค้าสำเร็จ
         Swal.fire({
@@ -353,7 +353,7 @@ export default function ProductReturn({ id }) {
         }).then(() => {
           // ปิด Modal (ปรับการปิด Modal ตามที่ใช้งาน เช่น setModalOpen(false))
           // setModalOpen(false); // หากใช้ React State สำหรับ Modal
-  
+
           // รีเฟรชหน้า
           window.location.reload();
         });
@@ -369,11 +369,11 @@ export default function ProductReturn({ id }) {
       console.error("เกิดข้อผิดพลาดในการคืนสินค้า:", error);
     }
   };
-  
-  
-  
-  
-  
+
+
+
+
+
   if (isLoading) {
     return <div>กำลังโหลดข้อมูล...</div>;
   }
@@ -383,24 +383,23 @@ export default function ProductReturn({ id }) {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-semibold mb-6 text-center">รายละเอียดสินค้า</h1>
-      <div className="overflow-x-auto bg-white">
+    <div className="container p-6 h-screen flex flex-col">
+      {/* ส่วนของตาราง */}
+      <div className="flex-grow overflow-y-auto max-h-[300px] border-gray-300 rounded-lg">
         <table className="min-w-full table-auto border-collapse border border-gray-300">
-          <thead className="bg-blue-300 border-xl text-lg">
+          <thead className="bg-blue-300 text-lg sticky top-0 z-10">
             <tr>
-              <th className="px-4 py-2  text-center align-middle">ชื่อสินค้า</th>
-              <th className="px-4 py-2 text-center align-middle">รายละเอียด/รหัส</th>
-              <th className="px-4 py-2 text-center align-middle">เช่าไป</th>
-              <th className="px-4 py-2 text-center align-middle">เหลือคืน</th>
-              <th className="px-4 py-2 text-center align-middle">คืนทั้งหมด</th>
-              <th className="px-2 py-2 text-center align-middle">จำนวนที่คืน</th>
-              <th className="px-4 py-2 text-center align-middle">จำนวนที่เสียหาย</th>
-              <th className="px-4 py-2 text-center align-middle">คำอธิบาย</th>
+              <th className="px-4 py-2 text-center">ชื่อสินค้า</th>
+              <th className="px-4 py-2 text-center">รายละเอียด/รหัส</th>
+              <th className="px-4 py-2 text-center">เช่าไป</th>
+              <th className="px-4 py-2 text-center">เหลือคืน</th>
+              <th className="px-4 py-2 text-center">คืนทั้งหมด</th>
+              <th className="px-4 py-2 text-center">จำนวนที่คืน</th>
+              <th className="px-4 py-2 text-center">จำนวนที่เสียหาย</th>
+              <th className="px-4 py-2 text-center">คำอธิบาย</th>
             </tr>
           </thead>
-
-          <tbody className="bg-white text-lg">
+          <tbody className="bg-gray-200 text-lg">
             {productData.map((item) =>
               item.type === "normal"
                 ? renderNormalProducts(item)
@@ -409,13 +408,19 @@ export default function ProductReturn({ id }) {
           </tbody>
         </table>
       </div>
-      <div className="flex justify-center mt-4">
-        <button onClick={handleReturnSubmit} className="bg-blue-500 text-white px-6 py-2 rounded shadow">
+  
+      {/* ปุ่มอยู่ด้านล่าง */}
+      <div className="mt-4 flex justify-center">
+        <button
+          onClick={handleReturnSubmit}
+          className="bg-blue-500 text-white px-6 py-2 rounded shadow"
+        >
           คืนสินค้า
-          
         </button>
       </div>
     </div>
   );
+  
+
 }
 
