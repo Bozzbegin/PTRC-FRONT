@@ -14,6 +14,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
   const [showCreateASM, setShowCreateASM] = useState(false);
   const [showEditASM, setShowEditASM] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
+  const [detailASM, setDetailASM] = useState([]);
 
   const toggleCreateASM = () => {
     setShowCreateASM(!showCreateASM);
@@ -81,8 +82,11 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
         );
         if (response.status === 200) {
           setASMProducts(response.data.data);
+          response.data.data.forEach(item => {
+            setDetailASM(item.products)
+          });
         }
-        
+
       } catch (error) {
         console.error("Error fetching ASM products:", error);
       } finally {
@@ -138,11 +142,28 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
     }
   };
 
-
   const select_Item = (item, amountASM) => {
     const parsedAmountASM = parseInt(amountASM, 10) || 0;
 
+    const productDetails = [];
+
+    detailASM.forEach((item) => {
+      const productDetail = {
+        code_asm: String(item.code_asm || ""),
+        name_asm: String(item.name_asm || ""),
+        price3D_asm: String(item.price3D_asm || 0),
+        price30D_asm: String(item.price30D_asm || 0),
+        price_damage_asm: String(item.price_damage_asm || 0),
+        product_id_asm: String(item.product_id_asm || ""),
+        quantity_asm: String(item.quantity_asm || ""),
+        size_asm: String(item.size_asm || 0),
+      };
+
+      productDetails.push(productDetail);
+    });
+
     setConfirm_item((prevItems) => {
+
       if (parsedAmountASM === 0) {
         return prevItems.filter((i) => i.id_asm !== item.id);
       }
@@ -160,10 +181,13 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
           amountASM: parsedAmountASM,
           isAssemble: true,
           id_asm: item.id,
+          products: [productDetails]
         };
+
         return updatedItems;
 
       } else {
+
         return [
           ...prevItems,
           {
@@ -176,10 +200,14 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
             amountASM: parsedAmountASM,
             isAssemble: true,
             id_asm: item.id,
+            products: [productDetails]
           },
-        ];
+        ]
+
       }
+
     });
+
   };
 
   const confirm_itemASM = () => {
@@ -214,7 +242,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
               className="w-full border border-gray-300 rounded-md p-2"
               value={keysearchItem}
               onChange={(e) => handleSearchByCode(e.target.value)}
-              
+
             />
 
           </div>

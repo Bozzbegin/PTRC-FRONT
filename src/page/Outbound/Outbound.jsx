@@ -436,6 +436,8 @@ export function Outbound() {
         reserveData.unit_asm.push(String(item.unit_asm || ""));
         reserveData.assemble_price_damage.push(String(item.assemble_price_damage || 0));
         reserveData.assemble_service_price.push(String(item.assemble_service_price || 0));
+        reserveData.assemble_price_damage.push(String(item.assemble_price_damage || 0));
+
       } else {
         reserveData.code.push(item.code || "");
         reserveData.product_id.push(String(item.id || ""));
@@ -523,7 +525,7 @@ export function Outbound() {
     alldata_default,
     formData,
     quantitySum,
-    combinedItems,
+    combinedItems
   ]);
 
   const calculateTotalPrice = () => {
@@ -569,6 +571,7 @@ export function Outbound() {
     setQuantitySum(0);
 
     localStorage.removeItem("outboundData");
+    localStorage.removeItem("confirmitemASM");
     localStorage.removeItem("confirmitem");
     localStorage.removeItem("formData");
 
@@ -641,6 +644,7 @@ export function Outbound() {
           unit_asm: reserveData.unit_asm[index],
           assemble_price_damage: parseFloat(reserveData.assemble_price_damage[index]),
           assemble_service_price: parseFloat(reserveData.assemble_service_price[index]),
+          productsASM: reserveData.products
         }));
 
         setConfirmitem(confirmItems);
@@ -992,6 +996,20 @@ export function Outbound() {
 
         });
       }
+
+      if (ListProductAll.assemble_name) {
+
+        ListProductAll.productsASM.forEach((productASM, asmIndex) => {
+          const subRowNumber = rowNumber + (asmIndex + 1);
+          worksheet.mergeCells(`H${subRowNumber}:I${subRowNumber}`);
+          const subProductCell = worksheet.getCell(`H${subRowNumber}`);
+
+          subProductCell.value = `${combinedItems[index].products.name_asm}`;
+          subProductCell.font = { size: 13, name: 'Angsana New' };
+          subProductCell.alignment = { vertical: 'middle', horizontal: 'center' };
+        });
+      }
+
     });
 
     ListProductAll.size.forEach((product, index) => {
