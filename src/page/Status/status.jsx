@@ -1220,7 +1220,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                     </table>
                   </div>
                 </div>
-
               </div>
 
 
