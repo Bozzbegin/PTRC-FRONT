@@ -710,7 +710,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [rawDate, setRawDate] = useState(null);
   const [formattedDate, setFormattedDate] = useState("");
 
-
+  const [openDropdowns, setOpenDropdowns] = useState({});
 
   const formatDateModal = (selectedDate) => {
     const date = new Date(selectedDate);
@@ -779,6 +779,12 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   };
 
 
+  const toggleDropdown = (id_asm) => {
+    setOpenDropdowns((prev) => ({
+      ...prev,
+      [id_asm]: !prev[id_asm],
+    }));
+  };
   useEffect(() => {
 
     if (isModalOpen) {
@@ -1198,23 +1204,53 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                   <div className="overflow-y-auto max-h-[250px] border-gray-300">
                     <table className="w-full text-center border-collapse">
                       <tbody>
-                        {modalProductDetails.products.map((product, index) => (
+                        {/* แสดงสินค้าหลัก */}
+                        {modalProductDetails.products?.map((product) => (
                           <tr key={product.product_id} className="hover:bg-gray-50 transition duration-200">
                             <td className="border p-2 w-1/3 text-center">
                               {product.quantity} {product.unit ? product.unit : product.unit_asm}
                             </td>
                             <td className="border p-2 w-1/3 text-center">
                               {modalProductDetails.quotation_type === "with_assembled"
-                                ? product.assemble_name || `${product.name} (${product.code})`  // ถ้ามี assemble_name ให้ใช้ assemble_name ถ้าไม่มีก็ใช้ name
+                                ? product.assemble_name || `${product.name} (${product.code})`
                                 : `${product.name} (${product.code})`}
                             </td>
-                            <td className="border p-2 w-1/3 text-center">
-                              {product.size}
-                              {modalProductDetails.quotation_type === "with_assembled" && product.description
-                                ? ` ${product.description}`  // แสดง description ในกรณีที่เป็น "with_assembled" และมี description
-                                : ""}
-                            </td>
+                            <td className="border p-2 w-1/3 text-center">{product.size}</td>
                           </tr>
+                        ))}
+
+                        {/* แสดงสินค้าประกอบ (Assemblies) */}
+                        {modalProductDetails.productASMs?.map((productASM) => (
+                          <React.Fragment key={productASM.id_asm}>
+                            {/* สินค้าประกอบหลัก */}
+                            <tr
+                              className="bg-gray-100 hover:bg-gray-200 transition duration-200 cursor-pointer"
+                              onClick={() => toggleDropdown(productASM.id_asm)}
+                            >
+                              <td className="border p-2 w-1/3 text-center">
+                                {productASM.quantity} {productASM.unit_asm}
+                              </td>
+                              <td className="border p-2 text-center font-bold flex items-center justify-center">
+                                {productASM.assemble_name}
+                                <span className="ml-2">{openDropdowns[productASM.id_asm] ? "▲" : "▼"}</span>
+                              </td>
+                              <td className="border p-2 w-1/3 text-center">{productASM.description}</td>
+                            </tr>
+
+                            {/* แสดงสินค้าภายใน Assemblies แบบ Dropdown */}
+                            {openDropdowns[productASM.id_asm] &&
+                              productASM.productsASM?.map((asmProduct) => (
+                                <tr key={asmProduct.product_id_asm} className="bg-gray-50">
+                                  <td className="border p-2 w-1/3 text-center">
+                                    {asmProduct.quantity_asm} {asmProduct.unit_asm}
+                                  </td>
+                                  <td className="border p-2 w-1/3 text-center">
+                                    {asmProduct.name_asm}
+                                  </td>
+                                  <td className="border p-2 w-1/3 text-center">{asmProduct.size_asm}</td>
+                                </tr>
+                              ))}
+                          </React.Fragment>
                         ))}
                       </tbody>
                     </table>
