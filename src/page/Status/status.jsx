@@ -711,12 +711,17 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [formattedDate, setFormattedDate] = useState("");
   const [openDropdowns, setOpenDropdowns] = useState({});
 
+
   const toggleDropdown = (id_asm) => {
     setOpenDropdowns((prev) => ({
       ...prev,
       [id_asm]: !prev[id_asm],
     }));
   };
+=======
+  const [openDropdowns, setOpenDropdowns] = useState({});
+
+
   const formatDateModal = (selectedDate) => {
     const date = new Date(selectedDate);
     const buddhistYear = date.getFullYear() + 543;
@@ -784,6 +789,12 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   };
 
 
+  const toggleDropdown = (id_asm) => {
+    setOpenDropdowns((prev) => ({
+      ...prev,
+      [id_asm]: !prev[id_asm],
+    }));
+  };
   useEffect(() => {
 
     if (isModalOpen) {
@@ -1233,7 +1244,11 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                                 {productASM.assemble_name}
                                 <span className="ml-2">{openDropdowns[productASM.id_asm] ? "▲" : "▼"}</span>
                               </td>
+
                               <td className="border p-2 text-center">{productASM.description}</td>
+
+                              <td className="border p-2 w-1/3 text-center">{productASM.description}</td>
+
                             </tr>
 
                             {/* แสดงสินค้าภายใน Assemblies แบบ Dropdown */}
