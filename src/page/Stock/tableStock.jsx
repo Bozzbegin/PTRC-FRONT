@@ -20,16 +20,16 @@ export function TableItem({
   const fetchProductDetails = async (branchId) => {
     setIsLoading(true);
     setError(null);
-
+  
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token not found");
-
+  
       let url = "http://192.168.195.75:5000/v1/product/stock/all";
       if (branchId && branchId !== "") {
         url = `http://192.168.195.75:5000/v1/product/stock/product-bybranch/${branchId}`;
       }
-
+  
       const response = await axios.get(url, {
         headers: {
           Authorization: token,
@@ -37,28 +37,43 @@ export function TableItem({
           "x-api-key": "1234567890abcdef",
         },
       });
-
-      if (response.data && response.data.data) {
-        const { product_samutsakhon, product_chonburi, product_pathumthani } = response.data.data;
-
-        // 🟢 รวมสินค้าทั้งหมดจากทุกสาขา
-        const allProductDetails = [
-          ...product_samutsakhon.map((item) => ({ ...item, branch_name: "สมุทรสาคร (โคกขาม)" })),
-          ...product_chonburi.map((item) => ({ ...item, branch_name: "ชลบุรี (บ้านเก่า)" })),
-          ...product_pathumthani.map((item) => ({ ...item, branch_name: "ปทุมธานี (นพวงศ์)" }))
-        ];
-
-        setProductDetails(allProductDetails);
-      } else {
-        throw new Error("Data is not in expected format");
+  
+      if (!response.data || !response.data.data) {
+        throw new Error("Invalid API response");
       }
+  
+      const responseData = response.data.data;
+  
+      let allProductDetails = [];
+  
+      if (Array.isArray(responseData)) {
+        // 🔹 Case: `product-bybranch` returns an array
+        allProductDetails = responseData.map((item) => ({
+          ...item,
+          branch_name: branchId === "1" ? "สมุทรสาคร (โคกขาม)"
+            : branchId === "2" ? "ชลบุรี (บ้านเก่า)"
+            : branchId === "3" ? "ปทุมธานี (นพวงศ์)"
+            : "ไม่ทราบสาขา",
+        }));
+      } else {
+        // 🔹 Case: `all-product` returns an object with branch keys
+        const { product_samutsakhon, product_chonburi, product_pathumthani } = responseData;
+        
+        allProductDetails = [
+          ...(product_samutsakhon || []).map((item) => ({ ...item, branch_name: "สมุทรสาคร (โคกขาม)" })),
+          ...(product_chonburi || []).map((item) => ({ ...item, branch_name: "ชลบุรี (บ้านเก่า)" })),
+          ...(product_pathumthani || []).map((item) => ({ ...item, branch_name: "ปทุมธานี (นพวงศ์)" })),
+        ];
+      }
+  
+      setProductDetails(allProductDetails);
     } catch (error) {
       setError(error.message);
     } finally {
       setIsLoading(false);
     }
   };
-
+  
   useEffect(() => {
     fetchProductDetails(selectedBranch);
   }, [selectedBranch]);
