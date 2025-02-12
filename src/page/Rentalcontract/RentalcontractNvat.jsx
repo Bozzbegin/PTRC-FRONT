@@ -459,20 +459,20 @@ export default function Quotation() {
 
         productCellPerDay.value = `${formatNumber(asm.price) ? formatNumber(asm.price) : "-"} `;
         productCellPerDay.font = { size: 14, name: 'Angsana New' };
-        productCellPerDay.alignment = { vertical: 'middle', horizontal: 'center' };
+        productCellPerDay.alignment = { vertical: 'middle', horizontal: 'right' };
 
         worksheet.mergeCells(`L${rowNumber}`);
         const productCellPriceDamage = worksheet.getCell(`L${rowNumber}`);
 
         productCellPriceDamage.value = `${formatNumber(asm.assemble_price_damage) ? formatNumber(asm.assemble_price_damage) : "-"} `;
         productCellPriceDamage.font = { size: 14, name: 'Angsana New' };
-        productCellPriceDamage.alignment = { vertical: 'middle', horizontal: 'center' };
+        productCellPriceDamage.alignment = { vertical: 'middle', horizontal: 'right' };
 
         worksheet.mergeCells(`M${rowNumber}`);
         const productCellTotalPrice = worksheet.getCell(`M${rowNumber}`);
         productCellTotalPrice.value = `${formatNumber(parseFloat((asm.quantity * asm.price) * data.date))} `;
         productCellTotalPrice.font = { size: 14, name: 'Angsana New' };
-        productCellTotalPrice.alignment = { vertical: 'middle', horizontal: 'center' };
+        productCellTotalPrice.alignment = { vertical: 'middle', horizontal: 'right' };
 
         rowNumber++;
         let subIndex = 1;
@@ -565,7 +565,7 @@ export default function Quotation() {
       const productCell = worksheet.getCell(`J${rowNumber}`);
       productCell.value = `${formatNumber(product.price) ? formatNumber(product.price) : "-"} `;
       productCell.font = { size: 14, name: 'Angsana New' };
-      productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      productCell.alignment = { vertical: 'middle', horizontal: 'right' };
     });
 
     const numberDay = worksheet.getCell('K29');
@@ -591,9 +591,9 @@ export default function Quotation() {
       const rowNumber = 30 + index;
       worksheet.mergeCells(`L${rowNumber}`);
       const productCell = worksheet.getCell(`L${rowNumber}`);
-      productCell.value = `${product.price ? formatNumber(product.price) : "-"} `;
+      productCell.value = `${product.price_damage ? formatNumber(product.price_damage) : "-"} `;
       productCell.font = { size: 14, name: 'Angsana New' };
-      productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      productCell.alignment = { vertical: 'middle', horizontal: 'right' };
     });
 
     const finalPrice = worksheet.getCell('M29');
@@ -607,7 +607,7 @@ export default function Quotation() {
       const productCell = worksheet.getCell(`M${rowNumber}`);
       productCell.value = `${formatNumber(parseFloat((product.quantity * product.price) * data.date))} `;
       productCell.font = { size: 14, name: 'Angsana New' };
-      productCell.alignment = { vertical: 'middle', horizontal: 'center' };
+      productCell.alignment = { vertical: 'middle', horizontal: 'right' };
     });
 
     // products.forEach((product, index) => {
