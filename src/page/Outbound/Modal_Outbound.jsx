@@ -8,6 +8,7 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
   const [products_search, setProducts_search] = useState([]);
   const [keysearchItem, setkeysearchItem] = useState('');
   const [confirm_items, setConfirm_item] = useState(ititialData || []);
+  const [fillterProduct, setFillterProduct] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -24,6 +25,63 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
     });
 
   }, []);
+
+  const handleSearchByCode = (code) => {
+    setSearchCode(code);
+
+    if (code.trim() === "") {
+
+        const token = localStorage.getItem("token");
+
+        axios
+            .get("http://192.168.195.75:5000/v1/product/outbound/products", {
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                    "x-api-key": "1234567890abcdef",
+                },
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    setProducts(res.data.data);
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching products:", error);
+            });
+
+    } else {
+
+        const filtered = products
+            .filter((product) => {
+                const searchText = code.toLowerCase();
+                return (
+                    product.code.toLowerCase().includes(searchText) ||
+                    product.name.toLowerCase().includes(searchText)
+                );
+            })
+            .sort((a, b) => {
+                const searchText = code.toLowerCase();
+                const aCodeIndex = a.code.toLowerCase().indexOf(searchText);
+                const bCodeIndex = b.code.toLowerCase().indexOf(searchText);
+                const aNameIndex = a.name.toLowerCase().indexOf(searchText);
+                const bNameIndex = b.name.toLowerCase().indexOf(searchText);
+
+                if (aCodeIndex !== -1 && bCodeIndex !== -1) {
+                    return aCodeIndex - bCodeIndex;
+                } else if (aCodeIndex !== -1) {
+                    return -1;
+                } else if (bCodeIndex !== -1) {
+                    return 1;
+                } else {
+                    return aNameIndex - bNameIndex;
+                }
+            });
+
+        setProducts(filtered);
+
+    }
+};
 
   const filteritem_Search = (searchTerm) => {
     const itemFilter = products.filter(item => item.code.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -87,8 +145,10 @@ export function Modal_Outbound({ close, confirm, ititialData }) {
               placeholder="รหัสสินค้า"
               className="w-full  border border-gray-300 rounded-md p-2"
               onChange={(e) => {
+             
                 setkeysearchItem(e.target.value);
                 filteritem_Search(e.target.value); 
+                handleSearchByCode(e.target.value);
               }}
               value={keysearchItem}
             />
