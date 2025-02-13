@@ -504,6 +504,7 @@ export function Outbound() {
     };
 
     localStorage.setItem("outboundData", JSON.stringify(outboundData));
+    console.log("Data saved to localStorage", outboundData);
   };
 
   useEffect(() => {
@@ -654,6 +655,7 @@ export function Outbound() {
           unit_asm: reserveData.unit_asm[index],
           assemble_price_damage: parseFloat(reserveData.assemble_price_damage[index]),
           assemble_service_price: parseFloat(reserveData.assemble_service_price[index]),
+          productsASM: reserveData.productsASM || []
         }));
 
         setConfirmitem(confirmItems);
@@ -2705,7 +2707,7 @@ export function Outbound() {
     pricePerDay.font = { size: 14, bold: true, name: 'Angsana New' };
     pricePerDay.alignment = { vertical: 'middle', horizontal: 'center' };
 
-    ListProductAll.price_damage.forEach((product, index) => {
+    ListProductAll.price.forEach((product, index) => {
       let rowNumber = 30 + index;
 
       worksheet.mergeCells(`J${rowNumber}`);

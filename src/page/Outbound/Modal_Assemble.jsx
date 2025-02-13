@@ -150,23 +150,6 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
   const select_Item = (item, amountASM) => {
     const parsedAmountASM = parseInt(amountASM, 10) || 0;
 
-    // const productDetails = [];
-
-    // detailASM.forEach((item) => {
-    //   const productDetail = {
-    //     code_asm: String(item.code_asm || ""),
-    //     name_asm: String(item.name_asm || ""),
-    //     price3D_asm: String(item.price3D_asm || 0),
-    //     price30D_asm: String(item.price30D_asm || 0),
-    //     price_damage_asm: String(item.price_damage_asm || 0),
-    //     product_id_asm: String(item.product_id_asm || ""),
-    //     quantity_asm: String(item.quantity_asm || ""),
-    //     size_asm: String(item.size_asm || 0),
-    //   };
-
-    //   productDetails.push(productDetail);
-    // });
-
     const productDetails = (detailASM[item.id] || []).map(product => ({
       code_asm: String(product.code_asm || ""),
       name_asm: String(product.name_asm || ""),
@@ -177,6 +160,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
       quantity_asm: String(product.quantity_asm || ""),
       size_asm: String(product.size_asm || 0),
     }));
+    console.log(productDetails);
 
     setConfirm_item((prevItems) => {
 
