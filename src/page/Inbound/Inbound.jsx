@@ -139,14 +139,14 @@ export function Inbound() {
                             <span className="col-span-1 grid justify-end pr-2">
                                 สาขา :
                             </span>
-                            <select name="" id="" className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500  pl-2 " >
+                            <div className='border border-gray-500 col-span-3 w-[80%] rounded-lg h-10 flex justify-start items-center text-lg pl-4'>{products.branch_name}</div>
+                            {/* <select name="" id="" className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500  pl-2 " >
                                 <option value="" >{products.branch_name}</option>
-                            </select>
+                            </select> */}
                         </div>
                         <div className='grid justify-end items-center grid-cols-4 pt-10 '>
                             <span className="col-span-1 grid justify-end  pr-2">
                                 วันที่นำเข้าสินค้า :
-
                             </span>
                             <div className='border border-gray-500 col-span-3 w-[80%] rounded-lg h-10 flex justify-start items-center text-lg pl-4'>{formattedDate}</div>
                         </div>
