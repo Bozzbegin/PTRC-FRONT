@@ -13,7 +13,6 @@ export function Modal_ReturnGreen({ close, data }) {
       setSelectedProductId(data[0].id);
     }
 
-    
   }, [data]);
 
   const resetState = () => {
