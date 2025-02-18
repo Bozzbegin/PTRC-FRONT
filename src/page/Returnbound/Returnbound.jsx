@@ -166,7 +166,7 @@ export function ReturnItem() {
                     <table className="table-auto w-full border-collapse ">
                         <thead className='bg-blue-200 border-l-2  h-14 text-sky-800 text-lg sticky top-0 rounded-lg '>
                             <tr>
-                                <th className=" px-4 border-l-2  py-2 rounded-tl-lg border-white">ลำดับ</th>
+                                <th className=" px-4 border-l-2  py-2 rounded-tl-lg border-white">ลำดับที่</th>
                                 <th className=" px-6 border-l-2  py-2">สาขา</th>
                                 <th className=" px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
                                 <th className=" px-4 border-l-2 py-2">วันที่ทำรายการ</th>

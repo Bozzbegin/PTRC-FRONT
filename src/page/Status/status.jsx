@@ -198,7 +198,6 @@ const StatusProduct = () => {
     }
   };
 
-
   useEffect(() => {
     const fetchAllStatus = async () => {
       try {
@@ -229,7 +228,6 @@ const StatusProduct = () => {
 
     fetchAllStatus();
   }, []); // ✅ โหลดข้อมูลทั้งหมด **ครั้งเดียว**
-
 
   useEffect(() => {
     const fetchFilteredStatus = async () => {
@@ -268,7 +266,6 @@ const StatusProduct = () => {
 
     fetchFilteredStatus();
   }, [selectStatus, status]); // ✅ ทำงานเมื่อ selectStatus เปลี่ยน
-
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -445,7 +442,6 @@ const StatusProduct = () => {
     }
   };
 
-
   const data = [
     { name: "(K)", จำนวน: amountHireK, C: 0, N: 0, P: 0 },
     { name: "(C)", จำนวน: 0, C: amountHireC, N: 0, P: 0 },
@@ -611,7 +607,7 @@ const StatusProduct = () => {
             )}
 
             <table className="table-auto w-full border-collapse">
-              <thead className="bg-blue-200 border-l-2 h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
+              <thead className="bg-blue-200 border-l-2 h-14 text-sky-800 text-lg sticky top-0 rounded-lg">
                 <tr>
                   <th className="px-4 py-2 border-l-2 rounded-tl-lg rounded-br-sm ">ลำดับที่</th>
                   <th className="px-4 py-2 border-l-2 ">เลขที่ PO/สัญญาเช่า</th>
@@ -713,15 +709,12 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   const [formattedDate, setFormattedDate] = useState("");
   const [openDropdowns, setOpenDropdowns] = useState({});
 
-
   const toggleDropdown = (id_asm) => {
     setOpenDropdowns((prev) => ({
       ...prev,
       [id_asm]: !prev[id_asm],
     }));
   };
-
-
 
   const formatDateModal = (selectedDate) => {
     const date = new Date(selectedDate);
@@ -781,8 +774,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
   };
 
-
-
   useEffect(() => {
 
     if (isModalOpen) {
@@ -821,7 +812,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
   }, [isModalOpen, itemId]);
 
   if (!isModalOpen) return null;
-
 
   const handleExportClick = async () => {
     if (!modalProductDetails || !modalProductDetails.products) {
@@ -917,7 +907,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
       setIsExportingText("ส่งออกสินค้า"); // เปลี่ยนข้อความกลับมาเป็น "ส่งออกสินค้า"
     }
   };
-
 
   const handleShowAlert = () => {
     setShowAlert(true);
@@ -1182,7 +1171,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
             </div>
 
-
             <div className="mt-4 ">
               <h3 className="text-lg font-semibold text-gray-700 mb-2">
                 รายการสินค้า
@@ -1232,11 +1220,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                                 {productASM.assemble_name}
                                 <span className="ml-2">{openDropdowns[productASM.id_asm] ? "▲" : "▼"}</span>
                               </td>
-
                               <td className="border p-2 text-center">{productASM.description}</td>
-
-
-
                             </tr>
 
                             {/* แสดงสินค้าภายใน Assemblies แบบ Dropdown */}
@@ -1253,13 +1237,14 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
                                 </tr>
                               ))}
                           </React.Fragment>
+
                         ))}
+
                       </tbody>
                     </table>
                   </div>
                 </div>
               </div>
-
 
             </div>
 
@@ -1286,7 +1271,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
               <span className="fa-solid fa-file-export"></span>
               <span>{isExportingText}</span> {/* เปลี่ยนข้อความของปุ่ม */}
             </button>
-
 
           </div>
         )}
