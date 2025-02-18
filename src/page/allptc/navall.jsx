@@ -11,7 +11,6 @@ export function NavStock() {
 
   // Define the onSelectProduct function
   const onSelectProduct = (productId) => {
-    console.log(productId);
     setProductId(productId);
     setIsModalOpen(true);
   };

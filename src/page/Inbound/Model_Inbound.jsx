@@ -42,7 +42,6 @@ export function Modal_Inbound({ close, confirm }) {
     //   confirm(formData);
     //   close();
     // }
-    console.log(formData);
     confirm(formData);
     close();
   };

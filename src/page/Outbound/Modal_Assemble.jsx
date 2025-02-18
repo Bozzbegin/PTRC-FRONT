@@ -160,7 +160,6 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
       quantity_asm: String(product.quantity_asm || ""),
       size_asm: String(product.size_asm || 0),
     }));
-    console.log(productDetails);
 
     setConfirm_item((prevItems) => {
 

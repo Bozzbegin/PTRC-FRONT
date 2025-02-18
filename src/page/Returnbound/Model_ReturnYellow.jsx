@@ -3,24 +3,16 @@ import { Modal_ReturnItem } from "./Model_ReturnItem";
 
 export function Modal_ReturnYellow({ close, data }) {
 
-
-    console.log(data, "เหลืองมาแล้ว");
-
-
-
     const calculateNewDate = (actualOut, daysToAdd) => {
         if (!actualOut) {
-            console.error("actualOut is missing:", actualOut);
             return "วันที่ไม่พร้อมใช้งาน";
         }
         if (isNaN(daysToAdd)) {
-            console.error("daysToAdd is not a number:", daysToAdd);
             return "จำนวนวันไม่ถูกต้อง";
         }
 
         const actualOutDate = new Date(actualOut);
         if (isNaN(actualOutDate)) {
-            console.error("Cannot parse actualOut:", actualOut);
             return "รูปแบบวันที่ไม่ถูกต้อง";
         }
 

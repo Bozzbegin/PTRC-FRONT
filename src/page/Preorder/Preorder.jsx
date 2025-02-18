@@ -35,7 +35,6 @@ export default function Quotation() {
           setProducts(res.data.data.products);
           setAssemble(res.data.data.quotation_type);
           setProductASMs(res.data.data.productASMs);
-          console.log(res.data.data.productASMs);
 
           const createDate = new Date(res.data.data.reserve_out);
           const expiryDate = new Date(createDate);

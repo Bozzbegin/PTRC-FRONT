@@ -39,7 +39,6 @@ export function TableItem({
         },
       });
 
-      console.log(response.data);
       if (response.data && response.data.data) {
         setListAction(response.data.data);
       } else {

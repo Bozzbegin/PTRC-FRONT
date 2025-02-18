@@ -75,7 +75,6 @@ function Inventory() {
   }, [selectedBranch]);
 
   const handleEditClick = (id) => {
-    console.log(id)
     setEditingProductId(id);
     setIsModalOpen(true); // Open modal on edit
   };

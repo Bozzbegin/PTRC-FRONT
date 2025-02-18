@@ -91,7 +91,6 @@ function InventoryTable({ products, showEditIcons, onEditClick }) {
                 alt="Edit Icon"
                 className="w-6 h-6 cursor-pointer ms-2"
                 onClick={() => {
-                  console.log("Edit button clicked, ID:", item.id);
                   onEditClick(item.id);
                 }}
               />

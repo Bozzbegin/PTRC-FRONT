@@ -6,12 +6,8 @@ export function Modal_ReturnItem({ close, data }) {
     const [dataitem,setDataitem] = useState([])
     
      useEffect(() => {
-
         setDataitem(data[0].products,)
-        console.log(data[0].products,"Item");
      },[])
-
-     console.log(dataitem,'data')
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50">

@@ -5,17 +5,13 @@ export function Modal_ReturnRed({ close, data }) {
 
     const calculateNewDate = (actualOut, daysToAdd) => {
         if (!actualOut) {
-            console.error("actualOut is missing:", actualOut);
             return "วันที่ไม่พร้อมใช้งาน";
         }
         if (isNaN(daysToAdd)) {
-            console.error("daysToAdd is not a number:", daysToAdd);
             return "จำนวนวันไม่ถูกต้อง";
         }
-
         const actualOutDate = new Date(actualOut);
         if (isNaN(actualOutDate)) {
-            console.error("Cannot parse actualOut:", actualOut);
             return "รูปแบบวันที่ไม่ถูกต้อง";
         }
 
@@ -41,9 +37,6 @@ export function Modal_ReturnRed({ close, data }) {
     const handleVatChange = (e) => {
         setHasVat(e.target.value === "true");
     };
-
-    console.log([data], 'แดงมาแล้ว');
-
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50 ">

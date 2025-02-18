@@ -30,10 +30,8 @@ export function Inbound() {
     }, [])
 
     const handlePostData = () => {
-        console.log('Data being sent:', dataconfirm[0]);
 
         const token = localStorage.getItem('token')
-        console.log(token);
 
         axios.post('http://192.168.195.75:5000/v1/product/inbound/product', dataconfirm[0], {
             headers: {
@@ -42,9 +40,8 @@ export function Inbound() {
                 "x-api-key": "1234567890abcdef",
             },
         }).then((res) => {
-            console.log(res);
             if (res.status === 201) {
-                console.log(res);
+            
             } Swal.fire({
                 icon: "success",
                 text: "กรองข้อมูลสำเร็จ",
@@ -106,7 +103,6 @@ export function Inbound() {
     // กำหนดสถานะของ count
     const handleConfirm = (items) => {
         setCount(prevCount => prevCount + 1);  // เพิ่มค่า count ทีละ 1
-        console.log(items, '1');
         setDataconfirm((prevItems) => [...prevItems, { ...items, quantity: number.quantity }]);
 
     };
