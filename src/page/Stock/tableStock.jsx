@@ -108,7 +108,7 @@ export function TableItem({
         <table className="w-full table-auto border-collapse border shadow-sm">
           <thead className="bg-blue-200 text-blue-900 w-96 h-14">
             <tr>
-              <th className="border p-2 text-center">ลำดับที่</th>
+              <th className="border p-2 text-center rounded-tl-lg rounded-br-sm">ลำดับที่</th>
               <th className="border p-2 text-center">สาขา</th>
               <th className="border p-2 text-center">รหัสสินค้า</th>
               <th className="border p-2 text-center">ชื่อสินค้า</th>
@@ -116,7 +116,7 @@ export function TableItem({
               <th className="border p-2 text-center">จำนวนทั้งหมด</th>
               <th className="border p-2 text-center">จำนวนยอดจอง</th>
               <th className="border p-2 text-center">เปรียบเทียบสินค้า</th>
-              <th className="border p-2 text-center">เพิ่มสินค้า</th>
+              <th className="border p-2 text-center rounded-tr-lg rounded-br-sm">เพิ่มสินค้า</th>
             </tr>
           </thead>
           <tbody>

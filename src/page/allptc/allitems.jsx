@@ -147,7 +147,7 @@ export function TableItem({
               <th className="border p-2">วันที่ทำรายการ</th>
               <th className="border p-2">รายละเอียด</th>
               <th className="border p-2">ผู้ทำรายการ</th>
-              <th className="border p-2">เพิ่มเติม</th>
+              <th className="border p-2 rounded-tr-lg rounded-br-sm">เพิ่มเติม</th>
             </tr>
           </thead>
           <tbody>

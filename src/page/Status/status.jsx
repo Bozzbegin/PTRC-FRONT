@@ -613,7 +613,8 @@ const StatusProduct = () => {
             <table className="table-auto w-full border-collapse">
               <thead className="bg-blue-200 border-l-2 h-14 text-sky-800 text-xl sticky top-0 rounded-lg">
                 <tr>
-                  <th className="px-4 py-2 border-l-2 rounded-tl-lg rounded-br-sm">เลขที่ PO/สัญญาเช่า</th>
+                  <th className="px-4 py-2 border-l-2 rounded-tl-lg rounded-br-sm ">ลำดับที่</th>
+                  <th className="px-4 py-2 border-l-2 ">เลขที่ PO/สัญญาเช่า</th>
                   <th className="px-4 py-2 border-l-2">วันที่ทำรายการ</th>
                   <th className="px-4 py-2 border-l-2">นามลูกค้า/ชื่อบริษัท</th>
                   <th className="px-4 py-2 border-l-2">รูปแบบ</th>
@@ -625,6 +626,7 @@ const StatusProduct = () => {
               <tbody>
                 {filteredStatus.map((item, index) => (
                   <tr key={index} className="border-2">
+                    <td className="text-center border-l-2 px-4 py-2">{index + 1}</td>
                     <td className="text-center border-l-2 px-4 py-2">{item.export_number_out || item.export_number}</td>
                     <td className="text-center border-l-2 px-4 py-2">{formatDate(item.created_at)}</td>
                     <td className="text-start border-l-2 px-4 py-2">{item.customer_name ? item.customer_name : item.company_name}</td>
@@ -1233,7 +1235,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
                               <td className="border p-2 text-center">{productASM.description}</td>
 
-                            
+
 
                             </tr>
 
