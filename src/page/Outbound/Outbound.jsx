@@ -11,7 +11,7 @@ import thaiBahtText from 'thai-baht-text';
 import ExcelJS from 'exceljs';
 
 export function Outbound() {
-  
+
   const [branch, setBranch] = useState("");
   const [products, setProducts] = useState([]);
   const [name, setName] = useState("");
@@ -165,16 +165,16 @@ export function Outbound() {
     // resetForm();
     // || confirmitem.length === 0 || confirmitem.some((item) => !item.price && !item.price3D)
 
-    if (!day_length) {
+    // if (!day_length) {
 
-      Swal.fire({
-        icon: "warning",
-        text: "กรุณากรอกข้อมูลให้ครบถ้วน",
-        confirmButtonText: "ตกลง"
-      });
-      return;
+    //   Swal.fire({
+    //     icon: "warning",
+    //     text: "กรุณากรอกข้อมูลให้ครบถ้วน",
+    //     confirmButtonText: "ตกลง"
+    //   });
+    //   return;
 
-    }
+    // }
 
     const reserve = [
       combinedItems.reduce(
