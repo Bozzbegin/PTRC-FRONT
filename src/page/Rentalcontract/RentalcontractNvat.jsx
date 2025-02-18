@@ -291,9 +291,9 @@ export default function Quotation() {
 
     worksheet.mergeCells('M10:M13');
     const taxNumberValue = worksheet.getCell('M10');
-    taxNumberValue.value = `${data.branch_name === 'สมุทรสาคร ( โคกขาม )' ? 'K' + data.export_number :
-      data.branch_name === 'ชลบุรี ( บ้านเก่า )' ? 'C' + data.export_number :
-        data.branch_name === 'ปทุมธานี ( นพวงศ์ )' ? 'N' + data.export_number :
+    taxNumberValue.value = `${data.branch_name === 'สมุทรสาคร (โคกขาม)' ? 'K' + data.export_number :
+      data.branch_name === 'ชลบุรี (บ้านเก่า)' ? 'C' + data.export_number :
+        data.branch_name === 'ปทุมธานี (นพวงศ์)' ? 'N' + data.export_number :
           data.branch_name}`;
     taxNumberValue.font = { size: 13, name: 'Angsana New' };
     taxNumberValue.alignment = { vertical: 'middle', horizontal: 'left' };
