@@ -168,16 +168,16 @@ export function ReturnItem() {
                 <div className='row-span-11 overflow-auto no-scrollbar '>
 
                     <table className="table-auto w-full border-collapse ">
-                        <thead className='bg-blue-200 border-l-2  h-14 text-sky-800 text-xl sticky top-0 rounded-lg '>
+                        <thead className='bg-blue-200 border-l-2  h-14 text-sky-800 text-lg sticky top-0 rounded-lg '>
                             <tr>
                                 <th className=" px-4 border-l-2  py-2 rounded-tl-lg border-white">ลำดับ</th>
-                                <th className=" px-6 w-1/6 border-l-2  py-2">สาขา</th>
+                                <th className=" px-6 border-l-2  py-2">สาขา</th>
                                 <th className=" px-4 border-l-2  py-2">เลขที่ใบเสร็จ</th>
                                 <th className=" px-4 border-l-2 py-2">วันที่ทำรายการ</th>
                                 <th className=" px-4 border-l-2 py-2">นามลูกค้า/ชื่อบริษัท</th>
                                 <th className=" px-4 border-l-2 py-2">รูปแบบ</th>
                                 <th className=" px-4 border-l-2 py-2">สถานะ</th>
-                                <th className=" px-2 w-1/8 border-l-2 py-2 rounded-tr-lg">เพิ่มเติม</th>
+                                <th className=" px-2 border-l-2 py-2 rounded-tr-lg">เพิ่มเติม</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -193,7 +193,7 @@ export function ReturnItem() {
                                         ${items.status === 'late' ? 'text-red-500' : 'text-green-500'}`}>
                                         {items.status === 'late' ? 'เลยกำหนดส่งคืน' : 'รอส่งคืน'}
                                     </td>
-                                    <td className="text-center w-[20%] py-2 border-l-2 border-r-2">
+                                    <td className="text-center py-2 border-l-2 border-r-2">
                                         {items.status === 'late' ? (
                                             <button className="bg-red-500   pt-2 pb-2 w-24 rounded-lg text-white  "
                                                 onClick={() => handleOpenModal(items.id, 'green')}
