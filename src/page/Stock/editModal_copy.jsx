@@ -56,8 +56,7 @@ function EditModal({ isModalOpen, handleClose, id, branch_id }) {
       if (!token) throw new Error("Token not found");
 
       const url = `http://192.168.195.75:5000/v1/product/stock/product/${id}/${branch_id}`;
-      console.log("Fetching URL:", url);
-
+      
       const response = await axios.get(url, {
         headers: {
           Authorization: token,
@@ -139,8 +138,6 @@ function EditModal({ isModalOpen, handleClose, id, branch_id }) {
         return;
       }
       const url = `http://192.168.195.75:5000/v1/product/stock/update/${id}/${branch_id}`;
-      console.log("Submitting to URL:", url);
-      console.log("Payload:", payload);
 
       const response = await axios.put(url, payload, {
         headers: {

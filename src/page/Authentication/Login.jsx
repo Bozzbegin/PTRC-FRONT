@@ -48,7 +48,6 @@ const Login = () => {
             });
 
             // เพิ่มการตรวจสอบ response
-            console.log("Response data:", response.data);
 
             // Check if token is returned in the response
             if (response.status === 200 && response.data.data.token) {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 const EditModal = ({ isOpen, toggleModal, id }) => {
-  console.log(isOpen, toggleModal, id);
+
   const [itemData, setItemData] = useState(null);
-  console.log(isOpen);
+
   // ฟังก์ชันสำหรับดึงข้อมูลสินค้าโดยใช้ id
   useEffect(() => {
     // if (id) {

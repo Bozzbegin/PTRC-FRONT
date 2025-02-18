@@ -729,7 +729,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
   // แปลงจาก yyyy-mm-dd เป็น dd/mm/yyyy
   const formatToDDMMYYYY = (dateString) => {
-    console.log("before", dateString);
 
     const [year, month, day] = dateString.split("-"); // แยกปี, เดือน, วัน
     return `${day}/${month}/${year}`; // จัดรูปแบบใหม่เป็น dd/mm/yyyy
@@ -762,7 +761,6 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
 
     // Set to state (if using React)
     setDateExport(formattedDateTime);
-    console.log(formattedDateTime);
 
     const nextDay = new Date(selectedDate);
     const formatted = formatDateToThai(selectedDate);
@@ -771,19 +769,13 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
     const formattedStartDate = formatDateToThai(nextDay); // ฟังก์ชันที่แปลงวันที่เป็นรูปแบบไทย
     setStartDate(formattedStartDate);
 
-
     // คำนวณวันสิ้นสุดเช่า (เพิ่มจำนวนวันที่จาก modalProductDetails.date)
     const endDateCalculated = new Date(nextDay);
     endDateCalculated.setDate(endDateCalculated.getDate() + (modalProductDetails.date) - 1); // เพิ่มจำนวนวันที่ตาม modalProductDetails.date
     const formattedEndDate = formatDateToThai(endDateCalculated);
     setEndDate(formattedEndDate);
 
-
-
     setRawDate(formatted);
-    console.log("test", formatted);
-
-
 
   };
 

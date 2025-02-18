@@ -328,7 +328,6 @@ export default function ProductReturn({ id }) {
         }),
       };
 
-      console.log("Payload ที่ส่งไปยัง API:", payload);
       const token = localStorage.getItem("token");
 
       const response = await axios.post(

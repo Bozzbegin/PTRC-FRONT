@@ -56,14 +56,6 @@ export function Outbound() {
     }))
   ];
 
-  // const combinedItemsASM = [
-  //   ...confirmitemASM.map((item) => ({
-  //     ...item,
-  //     id_asm: item.id_asm,
-  //     isAssemble: true
-  //   }))
-  // ];
-
   const menu = [
     { title: "ชื่อผู้มาติดต่อ :", type: "text" },
     { title: "ชื่อบริษัท :", type: "text" },
@@ -372,7 +364,7 @@ export function Outbound() {
         const updatedItems = prevItems.map(item =>
           item.id_asm === id ? { ...item, assemble_price: parsedValue } : item
         );
-        localStorage.setItem("confirmitemASM", JSON.stringify(updatedItems));
+        //localStorage.setItem("confirmitemASM", JSON.stringify(updatedItems));
         return updatedItems;
       });
     } else {
@@ -387,7 +379,7 @@ export function Outbound() {
             }
             : item
         );
-        localStorage.setItem("confirmitem", JSON.stringify(updatedItems));
+        //localStorage.setItem("confirmitem", JSON.stringify(updatedItems));
         return updatedItems;
       });
     }
@@ -407,10 +399,10 @@ export function Outbound() {
   const saveToLocalStorage = () => {
 
     const savedOutboundData = localStorage.getItem("outboundData");
+    const savedOutboundDataASM = localStorage.getItem("confirmitemASM");
 
-    const existingReserveData = savedOutboundData
-      ? JSON.parse(savedOutboundData).reserve[0]
-      : null;
+    const existingReserveData = savedOutboundData ? JSON.parse(savedOutboundData).reserve[0] : null;
+    const prevConfirmASM = savedOutboundDataASM ? JSON.parse(savedOutboundDataASM) : null;
 
     const reserveData = {
       code: [],
@@ -432,7 +424,7 @@ export function Outbound() {
       unit: [],
       assemble_price_damage: [],
       assemble_service_price: [],
-      productsASM: []
+      productsASM: existingReserveData?.productsASM?.length ? existingReserveData.productsASM : prevConfirmASM || []
     };
 
     combinedItems.forEach((item) => {
@@ -504,7 +496,7 @@ export function Outbound() {
     };
 
     localStorage.setItem("outboundData", JSON.stringify(outboundData));
-    console.log("Data saved to localStorage", outboundData);
+    localStorage.setItem("confirmitemASM", JSON.stringify(confirmitemASM));
   };
 
   useEffect(() => {
@@ -643,7 +635,7 @@ export function Outbound() {
           unit: reserveData.unit[index],
           centimeter: reserveData.centimeter[index],
           meter: reserveData.meter[index],
-          type: reserveData.type[index] === "1" ? "ขาย" : "เช่า",
+          type: reserveData.type[index] === "1" ? "ขาย" : "เช่า"
         }));
 
         const confirmItemsASM = reserveData.assemble.map((id_asm, index) => ({
@@ -655,7 +647,7 @@ export function Outbound() {
           unit_asm: reserveData.unit_asm[index],
           assemble_price_damage: parseFloat(reserveData.assemble_price_damage[index]),
           assemble_service_price: parseFloat(reserveData.assemble_service_price[index]),
-          productsASM: reserveData.productsASM || []
+          productsASM: reserveData.productsASM[index]
         }));
 
         setConfirmitem(confirmItems);
@@ -669,6 +661,9 @@ export function Outbound() {
 
     const retrievedData = localStorage.getItem("outboundData");
     const outboundData = JSON.parse(retrievedData);
+    const retrievedDataASM = localStorage.getItem("confirmitemASM");
+    const outboundDataASM = JSON.parse(retrievedDataASM);
+
     const productNameLength = outboundData.reserve[0].product_name.length;
 
     combinedItems.map((item, index) => (
@@ -953,6 +948,7 @@ export function Outbound() {
     indexNumber.alignment = { vertical: 'middle', horizontal: 'center' };
 
     const ListProductAll = outboundData.reserve[0];
+
     const ListASMs = ListProductAll.productsASM;
     let totalFinalPrice2 = 0;
     const Indexplus = 28;
@@ -1005,9 +1001,9 @@ export function Outbound() {
 
     });
 
-    if (ListASMs) {
+    if (outboundDataASM) {
 
-      ListASMs.forEach((asm, asmIndex) => {
+      outboundDataASM.forEach((asm, asmIndex) => {
 
         worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
         const asmNameCell = worksheet.getCell(`B${rowNumber}`);

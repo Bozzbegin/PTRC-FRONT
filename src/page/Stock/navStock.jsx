@@ -11,7 +11,6 @@ export function NavStock() {
 
   // ฟังก์ชันเมื่อเลือกสินค้าจาก TableItem
   const onSelectProduct = (productId) => {
-    console.log(productId);
     setProductId(productId);
     setIsModalOpen(true);
   };

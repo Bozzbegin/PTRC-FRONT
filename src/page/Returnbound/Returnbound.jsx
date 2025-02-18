@@ -31,7 +31,6 @@ export function ReturnItem() {
         }).then((res) => {
             if (res.status === 200) {
                 setProducts(res.data.data)
-                console.log(res.data.data);
             }
 
         })
@@ -44,7 +43,6 @@ export function ReturnItem() {
         }).then((res) => {
             if (res.status === 200) {
                 setDataMenuReturn(res.data.data)
-                console.log("dot", res.data.data);
             }
         })
 
@@ -75,7 +73,6 @@ export function ReturnItem() {
 
     const handleOpenModal = (id, modalType) => {
         setSelectedReceipt(id); // เก็บค่า id
-        console.log('Selected Receipt:', id); // log ค่า
 
         // เปิด modal ตามประเภท
         if (modalType === 'green') {
@@ -101,7 +98,6 @@ export function ReturnItem() {
                     setDataGreen(res.data.data)
                     setDataRed(res.data.data)
                     setDataYellow(res.data.data)
-                    // console.log(res.data.data); 
                 }
             })
             .catch((error) => {

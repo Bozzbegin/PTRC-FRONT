@@ -29,7 +29,7 @@ function EditModal({ isModalOpen, handleClose, id }) {
 
       if (response.data.code === 200) {
         setProductDetails(response.data.data);
-        console.log(response.data.data);
+        
       } else {
         throw new Error(response.data.message || "Error fetching product details");
       }
