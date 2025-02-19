@@ -181,7 +181,6 @@ export function Outbound() {
         (acc, item) => {
           // const storedItem = storedItems.confirmitem.find(i => i.id === item.id) || {};
           // const storedItemPrice = storedItem.price || (day_length >= 30 ? item.price30D : (day_length < 30 ? item.price3D : item.price));
-
           if (item.isAssemble) {
             acc.assemble.push(String(item.id_asm));
             acc.assemble_quantity.push(String(item.amountASM));
@@ -2300,6 +2299,8 @@ export function Outbound() {
 
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Outbound Data');
+    const retrievedDataASM = localStorage.getItem("confirmitemASM");
+    const outboundDataASM = JSON.parse(retrievedDataASM);
 
     worksheet.pageSetup = {
       orientation: 'portrait',
@@ -2564,9 +2565,9 @@ export function Outbound() {
 
     });
 
-    if (ListASMs) {
+    if (outboundDataASM) {
 
-      ListASMs.forEach((asm, asmIndex) => {
+      outboundDataASM.forEach((asm, asmIndex) => {
 
         worksheet.mergeCells(`B${rowNumber}:C${rowNumber}`);
         const asmNameCell = worksheet.getCell(`B${rowNumber}`);
