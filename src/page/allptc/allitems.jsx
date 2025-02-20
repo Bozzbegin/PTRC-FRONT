@@ -5,7 +5,7 @@ export function TableItem({
   selectedBranch,
   onSelectAction, // เปลี่ยนชื่อให้เหมาะสม
 }) {
-  
+
   const [listAction, setListAction] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -162,7 +162,7 @@ export function TableItem({
                 <tr key={`${action.id}-${index}`}>
                   <td className="border p-2 text-center">{index + 1}</td>
                   <td className="border p-2">{action.branch_name}</td>
-                  <td className="border p-2">{action.action === 'return' ? 'ส่งคืนสินค้า' : action.action === 'update' ? 'อัพเดทสินค้า' : "-"}</td>
+                  <td className="border p-2">{action.action === 'return' ? 'ส่งคืนสินค้า' : action.action === 'update' ? 'อัพเดทสินค้า' : action.action === 'reserve' ? "จองสินค้า" : action.action === 'outbound' ? "ส่งออกสินค้า" : action.action === 'cancel' ? "ยกเลิกใบจองสินค้า" : "-"}</td>
                   <td className="border p-2">{action.date_action || "-"}</td>
                   <td className="border p-2">{action.description || "-"}</td>
                   <td className="border p-2 text-center">{action.first_name || "-"}</td>
