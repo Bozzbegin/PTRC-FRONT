@@ -565,7 +565,7 @@ export default function Quotation() {
       const rowNumber = 28 + index;
       worksheet.mergeCells(`L${rowNumber}`);
       const productCell = worksheet.getCell(`L${rowNumber}`);
-      productCell.value = `${product.price ? formatNumber(product.price) : "-"} `;
+      productCell.value = `${product.price_damage ? formatNumber(product.price_damage) : "-"} `;
       productCell.font = { size: 14, name: 'Angsana New' };
       productCell.alignment = { vertical: 'middle', horizontal: 'right' };
     });
