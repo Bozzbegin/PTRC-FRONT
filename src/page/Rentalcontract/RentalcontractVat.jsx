@@ -206,7 +206,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('K6:M6');
     const branch = worksheet.getCell('K6');
-    branch.value = `สาขา : ${data.branch_name === 'สมุทรสาคร ( โคกขาม )' ? 'โคกขาม' : data.branch_name === 'ชลบุรี ( บ้านเก่า )' ? 'ชลบุรี' : data.branch_name === 'ปทุมธานี ( นพวงศ์ )' ? 'เเยกนพวงศ์' : data.branch_name}`;
+    branch.value = `สาขา : ${data.branch_name === 'สมุทรสาคร (โคกขาม)' ? 'โคกขาม' : data.branch_name === 'ชลบุรี (บ้านเก่า)' ? 'ชลบุรี' : data.branch_name === 'ปทุมธานี (นพวงศ์)' ? 'เเยกนพวงศ์' : data.branch_name}`;
     branch.font = { size: 18, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true };
     branch.alignment = { vertical: 'middle', horizontal: 'center' };
 
