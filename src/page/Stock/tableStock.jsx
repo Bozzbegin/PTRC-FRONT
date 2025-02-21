@@ -113,8 +113,10 @@ export function TableItem({
               <th className="border p-2 text-center">รหัสสินค้า</th>
               <th className="border p-2 text-center">ชื่อสินค้า</th>
               <th className="border p-2 text-center">ขนาด</th>
-              <th className="border p-2 text-center">จำนวนทั้งหมด</th>
+              <th className="border p-2 text-center">จำนวนตั้งต้น</th>
               <th className="border p-2 text-center">จำนวนยอดจอง</th>
+              <th className="border p-2 text-center">จำนวนที่ส่งออก</th>
+              <th className="border p-2 text-center">จำนวนคงเหลือ</th>
               <th className="border p-2 text-center">เปรียบเทียบสินค้า</th>
               <th className="border p-2 text-center rounded-tr-lg rounded-br-sm">เพิ่มสินค้า</th>
             </tr>
@@ -138,6 +140,8 @@ export function TableItem({
                   <td className="border p-2 text-center text-red-700">
                     {product.total_reserved_quantity !== null ? product.total_reserved_quantity : 0}
                   </td>
+                  <td className="border p-2 text-center">{0}</td>
+                  <td className="border p-2 text-center">{product.product_quantity || 0}</td>
                   <td className="border p-2 text-center">
                     <button
                       className="bg-green-500 text-white px-2 py-1 rounded-md hover:bg-green-600"

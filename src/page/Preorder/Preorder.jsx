@@ -558,7 +558,7 @@ export default function Quotation() {
 
     const priceDamage = worksheet.getCell('L27');
     priceDamage.value = 'ค่าปรับสินค้า / ชิ้น';
-    priceDamage.font = { size: 14, bold: true, name: 'Angsana New' };
+    priceDamage.font = { size: 14, bold: true, name: 'Angsana New' }; 
     priceDamage.alignment = { vertical: 'middle', horizontal: 'center' };
 
     products.forEach((product, index) => {

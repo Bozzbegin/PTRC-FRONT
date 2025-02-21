@@ -180,7 +180,7 @@ export default function Quotation() {
 
     worksheet.mergeCells('K8:M8');
     const branch = worksheet.getCell('K8');
-    branch.value = `สาขา : ${data.branch_name === 'สมุทรสาคร ( โคกขาม )' ? 'โคกขาม' : data.branch_name === 'ชลบุรี ( บ้านเก่า )' ? 'ชลบุรี' : data.branch_name === 'ปทุมธานี ( นพวงศ์ )' ? 'เเยกนพวงศ์' : data.branch_name}`;
+    branch.value = `สาขา : ${data.branch_name === 'สมุทรสาคร (โคกขาม)' ? 'โคกขาม' : data.branch_name === 'ชลบุรี (บ้านเก่า)' ? 'ชลบุรี' : data.branch_name === 'ปทุมธานี (นพวงศ์)' ? 'เเยกนพวงศ์' : data.branch_name}`;
     branch.font = { size: 16, bold: true, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true };
     branch.alignment = { vertical: 'middle', horizontal: 'center' };
 
@@ -255,9 +255,9 @@ export default function Quotation() {
 
     worksheet.mergeCells('M10:M13');
     const taxNumberValue = worksheet.getCell('M10');
-    taxNumberValue.value = `${data.branch_name === 'สมุทรสาคร ( โคกขาม )' ? 'K' + data.export_number :
-      data.branch_name === 'ชลบุรี ( บ้านเก่า )' ? 'C' + data.export_number :
-        data.branch_name === 'ปทุมธานี ( นพวงศ์ )' ? 'N' + data.export_number :
+    taxNumberValue.value = `${data.branch_name === 'สมุทรสาคร (โคกขาม)' ? 'K' + data.export_number :
+      data.branch_name === 'ชลบุรี (บ้านเก่า)' ? 'C' + data.export_number :
+        data.branch_name === 'ปทุมธานี (นพวงศ์)' ? 'N' + data.export_number :
           data.branch_name}`;
     taxNumberValue.font = { size: 14, name: 'Angsana New' };
     taxNumberValue.alignment = { vertical: 'middle', horizontal: 'left' };
