@@ -20,16 +20,16 @@ export function TableItem({
   const fetchProductDetails = async (branchId) => {
     setIsLoading(true);
     setError(null);
-  
+
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Token not found");
-  
+
       let url = "http://192.168.195.75:5000/v1/product/stock/all";
       if (branchId && branchId !== "") {
         url = `http://192.168.195.75:5000/v1/product/stock/product-bybranch/${branchId}`;
       }
-  
+
       const response = await axios.get(url, {
         headers: {
           Authorization: token,
@@ -37,35 +37,35 @@ export function TableItem({
           "x-api-key": "1234567890abcdef",
         },
       });
-  
+
       if (!response.data || !response.data.data) {
         throw new Error("Invalid API response");
       }
-  
+
       const responseData = response.data.data;
-  
+
       let allProductDetails = [];
-  
+
       if (Array.isArray(responseData)) {
         // 🔹 Case: `product-bybranch` returns an array
         allProductDetails = responseData.map((item) => ({
           ...item,
           branch_name: branchId === "1" ? "สมุทรสาคร (โคกขาม)"
             : branchId === "2" ? "ชลบุรี (บ้านเก่า)"
-            : branchId === "3" ? "ปทุมธานี (นพวงศ์)"
-            : "ไม่ทราบสาขา",
+              : branchId === "3" ? "ปทุมธานี (นพวงศ์)"
+                : "ไม่ทราบสาขา",
         }));
       } else {
         // 🔹 Case: `all-product` returns an object with branch keys
         const { product_samutsakhon, product_chonburi, product_pathumthani } = responseData;
-        
+
         allProductDetails = [
           ...(product_samutsakhon || []).map((item) => ({ ...item, branch_name: "สมุทรสาคร (โคกขาม)" })),
           ...(product_chonburi || []).map((item) => ({ ...item, branch_name: "ชลบุรี (บ้านเก่า)" })),
           ...(product_pathumthani || []).map((item) => ({ ...item, branch_name: "ปทุมธานี (นพวงศ์)" })),
         ];
       }
-  
+
       setProductDetails(allProductDetails);
     } catch (error) {
       setError(error.message);
@@ -73,7 +73,7 @@ export function TableItem({
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchProductDetails(selectedBranch);
   }, [selectedBranch]);
@@ -136,11 +136,11 @@ export function TableItem({
                   <td className="border p-2 text-center">{product.product_code || "-"}</td>
                   <td className="border p-2 text-center">{product.product_name || "-"}</td>
                   <td className="border p-2 text-center">{product.product_size || "-"}</td>
-                  <td className="border p-2 text-center">{product.product_quantity || 0}</td>
+                  <td className="border p-2 text-center">{product.product_quantity_all || 0}</td>
                   <td className="border p-2 text-center text-red-700">
                     {product.total_reserved_quantity !== null ? product.total_reserved_quantity : 0}
                   </td>
-                  <td className="border p-2 text-center">{0}</td>
+                  <td className="border p-2 text-center">{product.outbound_quantity ? product.outbound_quantity : product.outbound_quantity_chonburi ? product.outbound_quantity_chonburi : product.outbound_quantity_phathumthani}</td>
                   <td className="border p-2 text-center">{product.product_quantity || 0}</td>
                   <td className="border p-2 text-center">
                     <button
