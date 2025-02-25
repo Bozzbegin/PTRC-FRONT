@@ -43,7 +43,8 @@ const Login = () => {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': 'p@tt@r@ch@i2k24',
+                    "x-api-key": import.meta.env.VITE_X_API_KEY,
+
                 }
             });
 

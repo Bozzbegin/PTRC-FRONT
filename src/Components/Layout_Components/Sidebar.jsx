@@ -6,6 +6,7 @@ import React from "react";
 import { useEffect } from 'react';
 import axios from 'axios';
 
+
 export default function Sidebar() {
   const [f_name, setF_name] = useState('')
   const [position, setPosition] = useState('')
@@ -35,7 +36,8 @@ export default function Sidebar() {
       headers: {
         "Authorization": token,
         "Content-Type": "application/json",
-        "x-api-key": "p@tt@r@ch@i2k24",
+        "x-api-key": import.meta.env.VITE_X_API_KEY,
+
       },
     }).then((res) => {
       if (res.status === 200) {

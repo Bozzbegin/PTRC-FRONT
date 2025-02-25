@@ -27,7 +27,8 @@ export function CreateASM({ close }) {
                     headers: {
                         Authorization: token,
                         "Content-Type": "application/json",
-                        "x-api-key": "p@tt@r@ch@i2k24",
+                        "x-api-key": import.meta.env.VITE_X_API_KEY,
+
                     },
                 });
 
@@ -57,7 +58,8 @@ export function CreateASM({ close }) {
                     headers: {
                         Authorization: token,
                         "Content-Type": "application/json",
-                        "x-api-key": "p@tt@r@ch@i2k24",
+                       "x-api-key": import.meta.env.VITE_X_API_KEY,
+
                     },
                 })
                 .then((res) => {
@@ -149,7 +151,8 @@ export function CreateASM({ close }) {
                 headers: {
                     Authorization: token,
                     "Content-Type": "application/json",
-                    "x-api-key": "p@tt@r@ch@i2k24",
+                    "x-api-key": import.meta.env.VITE_X_API_KEY,
+
                 },
             })
             .then(() => {

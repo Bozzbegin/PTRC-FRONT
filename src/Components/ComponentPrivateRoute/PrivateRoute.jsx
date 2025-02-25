@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate,Outlet } from 'react-router-dom';
 import {useEffect} from 'react';
 import axios from 'axios'
+import dotenv from 'dotenv';
 
 const PrivateRoute = () => {
   const token = localStorage.getItem('token'); 
@@ -12,7 +13,7 @@ const PrivateRoute = () => {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": "p@tt@r@ch@i2k24",
+          "x-api-key": import.meta.env.VITE_X_API_KEY,
         },
       })
       .catch((err) => {

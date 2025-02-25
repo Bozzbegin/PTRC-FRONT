@@ -8,7 +8,7 @@ import axios from "axios";
 function Inventory() {
   const [selectedBranch, setSelectedBranch] = useState("all");
   const [products, setProducts] = useState([]);
-  
+
   const [editingProductId, setEditingProductId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showEditIcons, setShowEditIcons] = useState(false); // This state is needed for toggle visibility
@@ -24,7 +24,7 @@ function Inventory() {
             headers: {
               "Authorization": token, // Send the token directly (no 'Bearer' prefix)
               "Content-Type": "application/json", // Set Content-Type header
-              "x-api-key": "p@tt@r@ch@i2k24", // Your API key
+              "x-api-key": import.meta.env.VITE_X_API_KEY,
             },
           });
 
@@ -55,7 +55,7 @@ function Inventory() {
                   branchName: "ชลบุรี", // เพิ่มชื่อสาขา
                 })),
                 ...data.product_samutsakhon.map(item => ({
-                  ...item, 
+                  ...item,
                   branchName: "นพวงศ์", // เพิ่มชื่อสาขา
                 })),
               ];
