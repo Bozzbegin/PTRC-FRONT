@@ -563,7 +563,7 @@ export function Outbound() {
 
   useEffect(() => {
 
-    if (confirmitem.length > 0 || confirmitemASM.length > 0) {
+    if (selectedCustomer.length > 0 || selectedCompany.length > 0 || confirmitem.length > 0 || confirmitemASM.length > 0) {
       saveToLocalStorage();
     }
 
