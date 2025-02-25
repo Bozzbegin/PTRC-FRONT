@@ -91,8 +91,7 @@ export function Outbound() {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": import.meta.env.VITE_X_API_KEY,
-
+          "x-api-key": import.meta.env.VITE_X_API_KEY
         }
       });
 
