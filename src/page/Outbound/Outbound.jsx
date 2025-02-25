@@ -97,7 +97,6 @@ export function Outbound() {
       });
 
       if (response.data.code === 200) {
-        console.log(response.data.data);
 
         if (apiEndpoint === "http://192.168.195.75:5000/v1/product/outbound/name-customer") {
           setNameData((prevData) => ({
@@ -725,7 +724,7 @@ export function Outbound() {
       // setAddress(parsedData.address || "");
       setSelectedAddress(parsedData.selectedAddress || "");
       // setcustomer_tel(parsedData.customer_tel || "");
-      setSelectedPhone(parsedData.customer_tel || "");
+      setSelectedPhone(parsedData.selectedPhone || "");
       setCustomer_sell(parsedData.customer_sell || "");
       // setWorkside(parsedData.place_name || "");
       setSelectedPlaceName(parsedData.place_name || "");
