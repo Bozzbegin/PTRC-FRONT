@@ -4025,6 +4025,16 @@ export function Outbound() {
                 options={customerOptions}
                 isClearable
                 className="col-span-3 w-[80%] h-10 rounded-lg"
+                styles={{
+                  control: (base, state) => ({
+                    ...base,
+                    borderWidth: "1px",
+                    borderRadius: "8px",
+                    borderColor: state.isFocused ? "black" : "black",
+                    boxShadow: state.isFocused ? "0 0 0 1px black" : "none",
+                    "&:hover": { borderWidth: "1px", borderColor: "black" }
+                  })
+                }}
               />
             </div>
 
@@ -4045,6 +4055,16 @@ export function Outbound() {
                 options={companyOptions}
                 isClearable
                 className="col-span-3 w-[80%] h-10 rounded-lg"
+                styles={{
+                  control: (base, state) => ({
+                    ...base,
+                    borderWidth: "1px",
+                    borderRadius: "8px",
+                    borderColor: state.isFocused ? "black" : "black",
+                    boxShadow: state.isFocused ? "0 0 0 1px black" : "none",
+                    "&:hover": { borderWidth: "1px", borderColor: "black" }
+                  })
+                }}
               />
             </div>
 
@@ -4065,6 +4085,16 @@ export function Outbound() {
                 options={addressOptions}
                 isClearable
                 className="col-span-3 w-[80%] h-10 rounded-lg"
+                styles={{
+                  control: (base, state) => ({
+                    ...base,
+                    borderWidth: "1px",
+                    borderRadius: "8px",
+                    borderColor: state.isFocused ? "black" : "black",
+                    boxShadow: state.isFocused ? "0 0 0 1px black" : "none",
+                    "&:hover": { borderWidth: "1px", borderColor: "black" }
+                  })
+                }}
               />
             </div>
 
@@ -4085,6 +4115,16 @@ export function Outbound() {
                 options={placeNameOptions}
                 isClearable
                 className="col-span-3 w-[80%] h-10 rounded-lg"
+                styles={{
+                  control: (base, state) => ({
+                    ...base,
+                    borderWidth: "1px",
+                    borderRadius: "8px",
+                    borderColor: state.isFocused ? "black" : "black",
+                    boxShadow: state.isFocused ? "0 0 0 1px black" : "none",
+                    "&:hover": { borderWidth: "1px", borderColor: "black" }
+                  })
+                }}
               />
             </div>
 
@@ -4105,6 +4145,16 @@ export function Outbound() {
                 options={phoneOptions}
                 isClearable
                 className="col-span-3 w-[80%] h-10 rounded-lg"
+                styles={{
+                  control: (base, state) => ({
+                    ...base,
+                    borderWidth: "1px",
+                    borderRadius: "8px",
+                    borderColor: state.isFocused ? "black" : "black",
+                    boxShadow: state.isFocused ? "0 0 0 1px black" : "none",
+                    "&:hover": { borderWidth: "1px", borderColor: "black" }
+                  })
+                }}
               />
             </div>
 
