@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate,Outlet } from 'react-router-dom';
 import {useEffect} from 'react';
 import axios from 'axios'
+import dotenv from 'dotenv';
 
 const PrivateRoute = () => {
   const token = localStorage.getItem('token'); 
