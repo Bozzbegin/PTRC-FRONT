@@ -50,15 +50,15 @@ export function Outbound() {
 
   const [isCustomerNameFocused, setIsCustomerNameFocused] = useState(false);
   const [isCompanyNameFocused, setIsCompanyNameFocused] = useState(false);
-
   const [isAddressFocused, setIsAddressFocused] = useState(false);
   const [isPlaceNameFocused, setIsPlaceNameFocused] = useState(false);
+  const [isPhoneFocused, setIsPhoneFocused] = useState(false);
 
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
-
   const [selectedAddress, setSelectedAddress] = useState("");
   const [selectedPlaceName, setSelectedPlaceName] = useState("");
+  const [selectedPhone, setSelectedPhone] = useState("");
 
   const inputRefs = useRef([]);
 
@@ -80,7 +80,7 @@ export function Outbound() {
     { title: "ที่อยู่ลูกค้า :", type: "text", api: "http://192.168.195.75:5000/v1/product/outbound/address" },
     { title: "ชื่อไซต์งาน :", type: "text", api: "http://192.168.195.75:5000/v1/product/outbound/place-name" },
     { title: "วันที่เสนอ :", type: "date" },
-    { title: "เบอร์โทรศัพท์ :", type: "text" },
+    { title: "เบอร์โทรศัพท์ :", type: "text", api: "http://192.168.195.75:5000/v1/product/outbound/phone" }
   ];
 
   const fetchData = async (apiEndpoint) => {
@@ -121,6 +121,12 @@ export function Outbound() {
             placeNames: response.data.data.map(item => item.place_name || "")
           }));
         }
+        if (apiEndpoint === "http://192.168.195.75:5000/v1/product/outbound/phone") {
+          setNameData((prevData) => ({
+            ...prevData,
+            phones: response.data.data.map(item => item.phone || "")
+          }));
+        }
       }
 
     } catch (error) {
@@ -145,6 +151,10 @@ export function Outbound() {
       setIsPlaceNameFocused(true);
       fetchData(menu[3].api);
     }
+    if (title === "เบอร์โทรศัพท์ :") {
+      setIsPhoneFocused(true);
+      fetchData(menu[5].api);
+    }
   }
 
   const handleBlur = (title) => {
@@ -160,12 +170,16 @@ export function Outbound() {
     if (title === "ชื่อไซต์งาน :") {
       setIsPlaceNameFocused(false);
     }
+    if (title === "เบอร์โทรศัพท์ :") {
+      setIsPhoneFocused(false);
+    }
   }
 
   const customerOptions = NameData.customer.map(name => ({ value: name, label: name }));
   const companyOptions = NameData.companyNames.map(name => ({ value: name, label: name }));
   const addressOptions = NameData.addresses.map(name => ({ value: name, label: name }));
   const placeNameOptions = NameData.placeNames.map(name => ({ value: name, label: name }));
+  const phoneOptions = NameData.phones.map(name => ({ value: name, label: name }));
 
   const handleVatChange = (e) => {
     setHasVat(e.target.value === "true");
@@ -4071,8 +4085,28 @@ export function Outbound() {
               />
             </div>
 
+            <div className="grid justify-end items-center grid-cols-4 pt-10">
+              <span className="col-span-1 grid justify-end pr-2">ชื่อไซต์งาน :</span>
+              <CreatableSelect
+                value={selectedPhone ? { value: selectedPhone, label: selectedPhone } : null}
+                onFocus={() => handleFocus("เบอร์โทรศัพท์ :")}
+                onBlur={() => handleBlur("เบอร์โทรศัพท์ :")}
+                onChange={(selectedOption) => setSelectedPhone(selectedOption ? selectedOption.value : "")}
+                onCreateOption={(inputValue) => {
+                  setNameData((prevData) => ({
+                    ...prevData,
+                    phones: [...prevData.phones, inputValue]
+                  }));
+                  setSelectedPhone(inputValue);
+                }}
+                options={phoneOptions}
+                isClearable
+                className="col-span-3 w-[80%] h-10 rounded-lg"
+              />
+            </div>
+
             {/* แสดงรายการอื่นๆ ของ menu */}
-            {menu.filter(item => item.title !== "ชื่อผู้มาติดต่อ :" && item.title !== "ชื่อบริษัท :" && item.title !== "ชื่อไซต์งาน :" && item.title !== "ที่อยู่ลูกค้า :").map((item, index) => (
+            {menu.filter(item => item.title !== "ชื่อผู้มาติดต่อ :" && item.title !== "ชื่อบริษัท :" && item.title !== "ชื่อไซต์งาน :" && item.title !== "ที่อยู่ลูกค้า :" && item.title !== "เบอร์โทรศัพท์ :").map((item, index) => (
               <div key={index} className="grid justify-end items-center grid-cols-4 pt-10 ">
                 <span className="col-span-1 grid justify-end pr-2">
                   {item.title}
@@ -4084,15 +4118,15 @@ export function Outbound() {
                     item.title === "วันที่เสนอ :" ? (e) => handleDateChange(e.target.value)
                       // : item.title === "ชื่อไซต์งาน :" ? (e) => setWorkside(e.target.value)
                       //   : item.title === "ที่อยู่ลูกค้า :" ? (e) => setAddress(e.target.value)
-                      : item.title === "เบอร์โทรศัพท์ :" ? (e) => setcustomer_tel(e.target.value)
-                        : null
+                      // : item.title === "เบอร์โทรศัพท์ :" ? (e) => setcustomer_tel(e.target.value)
+                      : null
                   }
                   value={
                     item.title === "วันที่เสนอ :" ? rawSellDate
                       // : item.title === "ชื่อไซต์งาน :" ? workside
                       //   : item.title === "ที่อยู่ลูกค้า :" ? address
-                      : item.title === "เบอร์โทรศัพท์ :" ? customer_tel
-                        : ""
+                      // : item.title === "เบอร์โทรศัพท์ :" ? customer_tel
+                      : ""
                   }
                   className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
                   onKeyDown={(e) => {
