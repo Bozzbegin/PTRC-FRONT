@@ -23,7 +23,7 @@ export function Modal_Create_Products({ close, datadefault, createitem }) {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         });
         if (res.status === 200) {
@@ -146,7 +146,7 @@ export function Modal_Create_Products({ close, datadefault, createitem }) {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef",
+          "x-api-key": "p@tt@r@ch@i2k24",
         },
       }
     ).then((res) => {

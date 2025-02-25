@@ -24,7 +24,7 @@ function Inventory() {
             headers: {
               "Authorization": token, // Send the token directly (no 'Bearer' prefix)
               "Content-Type": "application/json", // Set Content-Type header
-              "x-api-key": "1234567890abcdef", // Your API key
+              "x-api-key": "p@tt@r@ch@i2k24", // Your API key
             },
           });
 
