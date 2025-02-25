@@ -46,7 +46,7 @@ export function Outbound() {
   const [rawSellDate, setRawSellDate] = useState("");
   const [customer_sell, setCustomer_sell] = useState([]);
 
-  const [NameData, setNameData] = useState({ customer: [], companyNames: [], addresses: [], placeNames: [] });
+  const [NameData, setNameData] = useState({ customer: [], companyNames: [], addresses: [], placeNames: [], phones: [] });
 
   const [isCustomerNameFocused, setIsCustomerNameFocused] = useState(false);
   const [isCompanyNameFocused, setIsCompanyNameFocused] = useState(false);
@@ -97,6 +97,8 @@ export function Outbound() {
       });
 
       if (response.data.code === 200) {
+        console.log(response.data.data);
+
         if (apiEndpoint === "http://192.168.195.75:5000/v1/product/outbound/name-customer") {
           setNameData((prevData) => ({
             ...prevData,
