@@ -83,7 +83,7 @@ export function Outbound() {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef",
+          "x-api-key": "p@tt@r@ch@i2k24",
         }
       });
 
@@ -305,7 +305,7 @@ export function Outbound() {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         }
       );
@@ -343,7 +343,7 @@ export function Outbound() {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef",
+          "x-api-key": "p@tt@r@ch@i2k24",
         },
       })
       .then((res) => {
@@ -743,7 +743,7 @@ export function Outbound() {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef",
+          "x-api-key": "p@tt@r@ch@i2k24",
         },
       })
       .then((res) => {
@@ -2323,7 +2323,7 @@ export function Outbound() {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef",
+          "x-api-key": "p@tt@r@ch@i2k24",
         },
       })
       .then((res) => {

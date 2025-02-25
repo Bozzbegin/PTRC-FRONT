@@ -82,7 +82,7 @@ const StatusProduct = () => {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         }
       );
@@ -162,7 +162,7 @@ const StatusProduct = () => {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         }
       );
@@ -211,7 +211,7 @@ const StatusProduct = () => {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         });
 
@@ -250,7 +250,7 @@ const StatusProduct = () => {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         });
 
@@ -282,7 +282,7 @@ const StatusProduct = () => {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         });
 
@@ -386,28 +386,28 @@ const StatusProduct = () => {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         }),
         axios.get(url_k, {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         }),
         axios.get(url_n, {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         }),
         axios.get(url_c, {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         }),
       ]);
@@ -788,7 +788,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
             headers: {
               Authorization: token,
               "Content-Type": "application/json",
-              "x-api-key": "1234567890abcdef",
+              "x-api-key": "p@tt@r@ch@i2k24",
             },
           });
 
@@ -835,7 +835,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef",
+          "x-api-key": "p@tt@r@ch@i2k24",
         },
       });
 
@@ -876,7 +876,7 @@ const Modal = ({ isModalOpen, onClose, itemId, status, reserveId }) => {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "1234567890abcdef",
+            "x-api-key": "p@tt@r@ch@i2k24",
           },
         });
 
