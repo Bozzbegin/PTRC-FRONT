@@ -97,7 +97,6 @@ export function Outbound() {
       });
 
       if (response.data.code === 200) {
-        console.log(response.data.data);
 
         if (apiEndpoint === "http://192.168.195.75:5000/v1/product/outbound/name-customer") {
           setNameData((prevData) => ({
