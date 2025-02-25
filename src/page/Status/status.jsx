@@ -658,14 +658,18 @@ const StatusProduct = () => {
                       </button>
                     </td>
                     {selectMode && ( // แสดง Checkbox เมื่อกดปุ่ม "เลือกหลายรายการ"
-                      <td className="text-center px-4 py-2 border-l-2">
-                        <input
-                          type="checkbox"
-                          checked={Id_status.some((s) => s.id === item.id)}
-                          onChange={() => handleSelectStatus(item.id)}
-                          className="w-5 h-5"
-                        />
-                      </td>
+                       <td className="text-center px-4 py-2 border-l-2">
+                       {item.status !== 'hire' ? ( // ✅ เช็คก่อนว่า item.status ไม่ใช่ "hire"
+                           <input
+                               type="checkbox"
+                               checked={Id_status.some((s) => s.id === item.id)}
+                               onChange={() => handleSelectStatus(item.id)}
+                               className="w-5 h-5"
+                           />
+                       ) : (
+                           <span className="text-gray-500">🚫</span> // ❌ แสดงสัญลักษณ์ว่าเลือกไม่ได้
+                       )}
+                   </td>
                     )}
                   </tr>
                 ))}
