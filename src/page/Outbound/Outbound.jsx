@@ -724,7 +724,7 @@ export function Outbound() {
       // setAddress(parsedData.address || "");
       setSelectedAddress(parsedData.selectedAddress || "");
       // setcustomer_tel(parsedData.customer_tel || "");
-      setSelectedPhone(parsedData.customer_tel || "");
+      setSelectedPhone(parsedData.selectedPhone || "");
       setCustomer_sell(parsedData.customer_sell || "");
       // setWorkside(parsedData.place_name || "");
       setSelectedPlaceName(parsedData.place_name || "");
