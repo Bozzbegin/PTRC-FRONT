@@ -613,6 +613,8 @@ export function Outbound() {
     setProducts([]);
     setName("");
     setComName("");
+    setSelectedCompany("")
+    setSelectedCustomer("")
     setCustomer_sell("");
     setAddress("");
     setcustomer_tel("");
