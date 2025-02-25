@@ -337,7 +337,7 @@ export function Outbound() {
       customer_name: selectedCustomer,
       company_name: selectedCompany,
       place_name: selectedPlaceName,
-      selectedAddress,
+      address: selectedAddress,
       date: day_length,
       date_sell: sell_date,
       customer_tel: selectedPhone,
