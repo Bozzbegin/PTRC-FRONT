@@ -9,6 +9,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import thaiBahtText from 'thai-baht-text';
 import ExcelJS from 'exceljs';
+import CreatableSelect from 'react-select/creatable';
+import { set } from "lodash";
+
 
 export function Outbound() {
 
@@ -43,6 +46,12 @@ export function Outbound() {
   const [receiptNumber, setReceiptNumber] = useState('');
   const [rawSellDate, setRawSellDate] = useState("");
   const [customer_sell, setCustomer_sell] = useState([]);
+
+  const [NameData, setNameData] = useState({ customer: [], companyNames: [] });
+  const [isCustomerNameFocused, setIsCustomerNameFocused] = useState(false);
+  const [isCompanyNameFocused, setIsCompanyNameFocused] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState("");
   const inputRefs = useRef([]);
 
   const combinedItems = [
@@ -58,13 +67,66 @@ export function Outbound() {
   ];
 
   const menu = [
-    { title: "ชื่อผู้มาติดต่อ :", type: "text" },
-    { title: "ชื่อบริษัท :", type: "text" },
+    { title: "ชื่อผู้มาติดต่อ :", type: "text", api: "http://192.168.195.75:5000/v1/product/outbound/name-customer" },
+    { title: "ชื่อบริษัท :", type: "text", api: "http://192.168.195.75:5000/v1/product/outbound/name-company" },
     { title: "ที่อยู่ลูกค้า :", type: "text" },
     { title: "ชื่อไซต์งาน :", type: "text" },
     { title: "วันที่เสนอ :", type: "date" },
     { title: "เบอร์โทรศัพท์ :", type: "text" },
   ];
+
+  const fetchData = async (apiEndpoint) => {
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(apiEndpoint, {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+          "x-api-key": "1234567890abcdef",
+        }
+      });
+
+      if (response.data.code === 200) {
+        if (apiEndpoint === "http://192.168.195.75:5000/v1/product/outbound/name-customer") {
+          setNameData((prevData) => ({
+            ...prevData,
+            customer: response.data.data.map(item => item.customer_name || "")
+          }));
+        } else if (apiEndpoint === "http://192.168.195.75:5000/v1/product/outbound/name-company") {
+          setNameData((prevData) => ({
+            ...prevData,
+            companyNames: response.data.data.map(item => item.company_name || "")
+          }));
+        }
+      }
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const handleFocus = (title) => {
+    if (title === "ชื่อผู้มาติดต่อ :") {
+      setIsCustomerNameFocused(true);
+      fetchData(menu[0].api);
+
+    } else if (title === "ชื่อบริษัท :") {
+      setIsCompanyNameFocused(true);
+      fetchData(menu[1].api);
+    }
+  }
+
+  const handleBlur = (title) => {
+    if (title === "ชื่อผู้มาติดต่อ :") {
+      setIsCustomerNameFocused(false);
+    } else if (title === "ชื่อบริษัท :") {
+      setIsCompanyNameFocused(false);
+    }
+  }
+
+  const customerOptions = NameData.customer.map(name => ({ value: name, label: name }));
+  const companyOptions = NameData.companyNames.map(name => ({ value: name, label: name }));
 
   const handleVatChange = (e) => {
     setHasVat(e.target.value === "true");
@@ -218,8 +280,8 @@ export function Outbound() {
     ];
 
     const newOrder = {
-      customer_name: name,
-      company_name: comName,
+      customer_name: selectedCustomer,
+      company_name: selectedCompany,
       place_name: workside,
       address,
       date: day_length,
@@ -469,7 +531,7 @@ export function Outbound() {
     const FinalPrice = netPrice * rentalDays;
 
     const outboundData = {
-      customer_name: name,
+      customer_name: selectedCustomer,
       place_name: workside,
       branch: branch,
       address,
@@ -483,7 +545,7 @@ export function Outbound() {
       remark1: formData.remark1,
       remark2: formData.remark2,
       remark3: formData.remark3,
-      company_name: comName,
+      company_name: selectedCompany,
       customer_tel,
       customer_sell,
       sell_date: sell_date,
@@ -508,8 +570,8 @@ export function Outbound() {
   }, [
     branch,
     products,
-    name,
-    comName,
+    selectedCustomer,
+    selectedCompany,
     address,
     workside,
     sell_date,
@@ -594,8 +656,10 @@ export function Outbound() {
       const parsedData = JSON.parse(savedFormData);
 
       setProducts(parsedData.products || []);
-      setName(parsedData.customer_name || "");
-      setComName(parsedData.company_name || "");
+      // setName(parsedData.customer_name || "");
+      setSelectedCustomer(parsedData.customer_name || "");
+      setSelectedCompany(parsedData.company_name || "");
+      // setComName(parsedData.company_name || "");
       setAddress(parsedData.address || "");
       setcustomer_tel(parsedData.customer_tel || "");
       setCustomer_sell(parsedData.customer_sell || "");
@@ -833,7 +897,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C8:F10');
     const customer_nameValue = worksheet.getCell('C8');
-    customer_nameValue.value = name;
+    customer_nameValue.value = selectedCustomer;
     customer_nameValue.font = { size: 13, name: 'Angsana New' };
     customer_nameValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -845,7 +909,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C11:J13');
     const company_nameValue = worksheet.getCell('C11');
-    company_nameValue.value = comName;
+    company_nameValue.value = selectedCompany;
     company_nameValue.font = { size: 13, name: 'Angsana New' };
     company_nameValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -2424,7 +2488,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C11:F13');
     const customer_nameValue = worksheet.getCell('C11');
-    customer_nameValue.value = name ? name : "-";
+    customer_nameValue.value = selectedCustomer ? selectedCustomer : "-";
     customer_nameValue.font = { size: 13, name: 'Angsana New' };
     customer_nameValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -2436,7 +2500,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C14:J16');
     const company_nameValue = worksheet.getCell('C14');
-    company_nameValue.value = comName ? comName : "-";
+    company_nameValue.value = selectedCompany ? selectedCompany : "-";
     company_nameValue.font = { size: 13, name: 'Angsana New' };
     company_nameValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -3813,7 +3877,7 @@ export function Outbound() {
               />
             </div>
 
-            {menu.map((item, index) => (
+            {/* {menu.map((item, index) => (
               <div
                 key={index}
                 className="grid justify-end items-center grid-cols-4 pt-10 "
@@ -3841,6 +3905,106 @@ export function Outbound() {
                             : item.title === "วันที่เสนอ :" ? rawSellDate
                               : item.title === "เบอร์โทรศัพท์ :" ? customer_tel
                                 : ""
+                  }
+                  className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      if (inputRefs.current[index + 1]) {
+                        inputRefs.current[index + 1].focus();
+                      }
+                    }
+                  }}
+                />
+              </div>
+            ))} */}
+
+            {/* <div className="grid justify-end items-center grid-cols-4 pt-10 ">
+              <span className="col-span-1 grid justify-end pr-2">
+                ชื่อผู้ติดต่อ :
+              </span>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
+              />
+            </div>
+
+            <div className="grid justify-end items-center grid-cols-4 pt-10 ">
+              <span className="col-span-1 grid justify-end pr-2">
+                ชื่อบริษัท :
+              </span>
+              <input
+                type="text"
+                value={comName}
+                onChange={(e) => setComName(e.target.value)}
+                className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
+              />
+            </div> */}
+
+            <div className="grid justify-end items-center grid-cols-4 pt-10">
+              <span className="col-span-1 grid justify-end pr-2">ชื่อผู้ติดต่อ :</span>
+              <CreatableSelect
+                value={selectedCustomer ? { value: selectedCustomer, label: selectedCustomer } : null}
+                onFocus={() => handleFocus("ชื่อผู้มาติดต่อ :")}
+                onBlur={() => handleBlur("ชื่อผู้มาติดต่อ :")}
+                onChange={(selectedOption) => setSelectedCustomer(selectedOption ? selectedOption.value : "")}
+                onCreateOption={(inputValue) => {
+                  setNameData((prevData) => ({
+                    ...prevData,
+                    customer: [...prevData.customer, inputValue]
+                  }));
+                  setSelectedCustomer(inputValue);
+                }}
+                options={customerOptions}
+                isClearable
+                className="col-span-3 w-[80%] h-10 rounded-lg"
+              />
+            </div>
+
+            <div className="grid justify-end items-center grid-cols-4 pt-10">
+              <span className="col-span-1 grid justify-end pr-2">ชื่อบริษัท :</span>
+              <CreatableSelect
+                value={selectedCompany ? { value: selectedCompany, label: selectedCompany } : null}
+                onFocus={() => handleFocus("ชื่อบริษัท :")}
+                onBlur={() => handleBlur("ชื่อบริษัท :")}
+                onChange={(selectedOption) => setSelectedCompany(selectedOption ? selectedOption.value : "")}
+                onCreateOption={(inputValue) => {
+                  setNameData((prevData) => ({
+                    ...prevData,
+                    companyNames: [...prevData.companyNames, inputValue]
+                  }));
+                  setSelectedCompany(inputValue);
+                }}
+                options={companyOptions}
+                isClearable
+                className="col-span-3 w-[80%] h-10 rounded-lg"
+              />
+            </div>
+
+            {/* แสดงรายการอื่นๆ ของ menu */}
+            {menu.filter(item => item.title !== "ชื่อผู้มาติดต่อ :" && item.title !== "ชื่อบริษัท :").map((item, index) => (
+              <div key={index} className="grid justify-end items-center grid-cols-4 pt-10 ">
+                <span className="col-span-1 grid justify-end pr-2">
+                  {item.title}
+                </span>
+                <input
+                  type={item.type}
+                  ref={(el) => (inputRefs.current[index] = el)}
+                  onChange={
+                    item.title === "วันที่เสนอ :" ? (e) => handleDateChange(e.target.value)
+                      : item.title === "ชื่อไซต์งาน :" ? (e) => setWorkside(e.target.value)
+                        : item.title === "ที่อยู่ลูกค้า :" ? (e) => setAddress(e.target.value)
+                          : item.title === "เบอร์โทรศัพท์ :" ? (e) => setcustomer_tel(e.target.value)
+                            : null
+                  }
+                  value={
+                    item.title === "วันที่เสนอ :" ? rawSellDate
+                      : item.title === "ชื่อไซต์งาน :" ? workside
+                        : item.title === "ที่อยู่ลูกค้า :" ? address
+                          : item.title === "เบอร์โทรศัพท์ :" ? customer_tel
+                            : ""
                   }
                   className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
                   onKeyDown={(e) => {
