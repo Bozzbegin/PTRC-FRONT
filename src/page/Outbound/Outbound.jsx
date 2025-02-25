@@ -12,7 +12,6 @@ import ExcelJS from 'exceljs';
 import CreatableSelect from 'react-select/creatable';
 import { set } from "lodash";
 
-
 export function Outbound() {
 
   const [branch, setBranch] = useState("");
@@ -47,11 +46,20 @@ export function Outbound() {
   const [rawSellDate, setRawSellDate] = useState("");
   const [customer_sell, setCustomer_sell] = useState([]);
 
-  const [NameData, setNameData] = useState({ customer: [], companyNames: [] });
+  const [NameData, setNameData] = useState({ customer: [], companyNames: [], addresses: [], placeNames: [] });
+
   const [isCustomerNameFocused, setIsCustomerNameFocused] = useState(false);
   const [isCompanyNameFocused, setIsCompanyNameFocused] = useState(false);
+
+  const [isAddressFocused, setIsAddressFocused] = useState(false);
+  const [isPlaceNameFocused, setIsPlaceNameFocused] = useState(false);
+
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
+
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [selectedPlaceName, setSelectedPlaceName] = useState("");
+
   const inputRefs = useRef([]);
 
   const combinedItems = [
@@ -69,8 +77,8 @@ export function Outbound() {
   const menu = [
     { title: "ชื่อผู้มาติดต่อ :", type: "text", api: "http://192.168.195.75:5000/v1/product/outbound/name-customer" },
     { title: "ชื่อบริษัท :", type: "text", api: "http://192.168.195.75:5000/v1/product/outbound/name-company" },
-    { title: "ที่อยู่ลูกค้า :", type: "text" },
-    { title: "ชื่อไซต์งาน :", type: "text" },
+    { title: "ที่อยู่ลูกค้า :", type: "text", api: "http://192.168.195.75:5000/v1/product/outbound/address" },
+    { title: "ชื่อไซต์งาน :", type: "text", api: "http://192.168.195.75:5000/v1/product/outbound/place-name" },
     { title: "วันที่เสนอ :", type: "date" },
     { title: "เบอร์โทรศัพท์ :", type: "text" },
   ];
@@ -94,10 +102,23 @@ export function Outbound() {
             ...prevData,
             customer: response.data.data.map(item => item.customer_name || "")
           }));
-        } else if (apiEndpoint === "http://192.168.195.75:5000/v1/product/outbound/name-company") {
+        }
+        if (apiEndpoint === "http://192.168.195.75:5000/v1/product/outbound/name-company") {
           setNameData((prevData) => ({
             ...prevData,
             companyNames: response.data.data.map(item => item.company_name || "")
+          }));
+        }
+        if (apiEndpoint === "http://192.168.195.75:5000/v1/product/outbound/address") {
+          setNameData((prevData) => ({
+            ...prevData,
+            addresses: response.data.data.map(item => item.address || "")
+          }));
+        }
+        if (apiEndpoint === "http://192.168.195.75:5000/v1/product/outbound/place-name") {
+          setNameData((prevData) => ({
+            ...prevData,
+            placeNames: response.data.data.map(item => item.place_name || "")
           }));
         }
       }
@@ -111,23 +132,40 @@ export function Outbound() {
     if (title === "ชื่อผู้มาติดต่อ :") {
       setIsCustomerNameFocused(true);
       fetchData(menu[0].api);
-
-    } else if (title === "ชื่อบริษัท :") {
+    }
+    if (title === "ชื่อบริษัท :") {
       setIsCompanyNameFocused(true);
       fetchData(menu[1].api);
+    }
+    if (title === "ที่อยู่ลูกค้า :") {
+      setIsAddressFocused(true);
+      fetchData(menu[2].api);
+    }
+    if (title === "ชื่อไซต์งาน :") {
+      setIsPlaceNameFocused(true);
+      fetchData(menu[3].api);
     }
   }
 
   const handleBlur = (title) => {
     if (title === "ชื่อผู้มาติดต่อ :") {
       setIsCustomerNameFocused(false);
-    } else if (title === "ชื่อบริษัท :") {
+    }
+    if (title === "ชื่อบริษัท :") {
       setIsCompanyNameFocused(false);
+    }
+    if (title === "ที่อยู่ลูกค้า :") {
+      setIsAddressFocused(false);
+    }
+    if (title === "ชื่อไซต์งาน :") {
+      setIsPlaceNameFocused(false);
     }
   }
 
   const customerOptions = NameData.customer.map(name => ({ value: name, label: name }));
   const companyOptions = NameData.companyNames.map(name => ({ value: name, label: name }));
+  const addressOptions = NameData.addresses.map(name => ({ value: name, label: name }));
+  const placeNameOptions = NameData.placeNames.map(name => ({ value: name, label: name }));
 
   const handleVatChange = (e) => {
     setHasVat(e.target.value === "true");
@@ -283,8 +321,8 @@ export function Outbound() {
     const newOrder = {
       customer_name: selectedCustomer,
       company_name: selectedCompany,
-      place_name: workside,
-      address,
+      place_name: selectedPlaceName,
+      selectedAddress,
       date: day_length,
       date_sell: sell_date,
       customer_tel: customer_tel,
@@ -306,7 +344,7 @@ export function Outbound() {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-           "x-api-key": import.meta.env.VITE_X_API_KEY,
+            "x-api-key": import.meta.env.VITE_X_API_KEY,
 
           },
         }
@@ -345,7 +383,7 @@ export function Outbound() {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-        "x-api-key": import.meta.env.VITE_X_API_KEY,
+          "x-api-key": import.meta.env.VITE_X_API_KEY,
 
         },
       })
@@ -535,9 +573,9 @@ export function Outbound() {
 
     const outboundData = {
       customer_name: selectedCustomer,
-      place_name: workside,
+      place_name: selectedPlaceName,
       branch: branch,
-      address,
+      selectedAddress,
       date: day_length,
       vat: hasVat ? "vat" : "nvat",
       shipping_cost: formData.shipping_cost,
@@ -575,8 +613,8 @@ export function Outbound() {
     products,
     selectedCustomer,
     selectedCompany,
-    address,
-    workside,
+    selectedAddress,
+    selectedPlaceName,
     sell_date,
     day_length,
     customer_tel,
@@ -618,6 +656,8 @@ export function Outbound() {
     setComName("");
     setSelectedCompany("")
     setSelectedCustomer("")
+    setSelectedAddress("")
+    setSelectedPlaceName("")
     setCustomer_sell("");
     setAddress("");
     setcustomer_tel("");
@@ -665,10 +705,12 @@ export function Outbound() {
       setSelectedCustomer(parsedData.customer_name || "");
       setSelectedCompany(parsedData.company_name || "");
       // setComName(parsedData.company_name || "");
-      setAddress(parsedData.address || "");
+      // setAddress(parsedData.address || "");
+      setSelectedAddress(parsedData.selectedAddress || "");
       setcustomer_tel(parsedData.customer_tel || "");
       setCustomer_sell(parsedData.customer_sell || "");
-      setWorkside(parsedData.place_name || "");
+      // setWorkside(parsedData.place_name || "");
+      setSelectedPlaceName(parsedData.place_name || "");
       setSell_date(parsedData.sell_date || "");
       setDay_Length(parsedData.date || "");
       setNetPrice(parsedData.net_price || 0);
@@ -927,7 +969,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C14:J16');
     const addressValue = worksheet.getCell('C14');
-    addressValue.value = address;
+    addressValue.value = selectedAddress;
     addressValue.font = { size: 13, name: 'Angsana New' };
     addressValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -936,7 +978,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C17:J19');
     const placeValue = worksheet.getCell('C17');
-    placeValue.value = "หน้างาน - " + workside;
+    placeValue.value = "หน้างาน - " + selectedPlaceName;
     placeValue.font = { size: 13, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true };
     placeValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -2518,7 +2560,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C17:J19');
     const addressValue = worksheet.getCell('C17');
-    addressValue.value = outboundData.address ? outboundData.address : "-";
+    addressValue.value = selectedAddress ? selectedAddress : "-";
     addressValue.font = { size: 13, name: 'Angsana New' };
     addressValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -2527,7 +2569,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C20:J22');
     const placeValue = worksheet.getCell('C20');
-    placeValue.value = "หน้างาน - " + (workside ? workside : "-");
+    placeValue.value = "หน้างาน - " + (selectedPlaceName ? selectedPlaceName : "-");
     placeValue.font = { size: 13, name: 'Angsana New', color: { argb: 'FFFF0000' }, underline: true };
     placeValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -3989,8 +4031,48 @@ export function Outbound() {
               />
             </div>
 
+            <div className="grid justify-end items-center grid-cols-4 pt-10">
+              <span className="col-span-1 grid justify-end pr-2">ที่อยู่ลูกค้า :</span>
+              <CreatableSelect
+                value={selectedAddress ? { value: selectedAddress, label: selectedAddress } : null}
+                onFocus={() => handleFocus("ที่อยู่ลูกค้า :")}
+                onBlur={() => handleBlur("ที่อยู่ลูกค้า :")}
+                onChange={(selectedOption) => setSelectedAddress(selectedOption ? selectedOption.value : "")}
+                onCreateOption={(inputValue) => {
+                  setNameData((prevData) => ({
+                    ...prevData,
+                    addresses: [...prevData.addresses, inputValue]
+                  }));
+                  setSelectedAddress(inputValue);
+                }}
+                options={addressOptions}
+                isClearable
+                className="col-span-3 w-[80%] h-10 rounded-lg"
+              />
+            </div>
+
+            <div className="grid justify-end items-center grid-cols-4 pt-10">
+              <span className="col-span-1 grid justify-end pr-2">ชื่อไซต์งาน :</span>
+              <CreatableSelect
+                value={selectedPlaceName ? { value: selectedPlaceName, label: selectedPlaceName } : null}
+                onFocus={() => handleFocus("ชื่อไซต์งาน :")}
+                onBlur={() => handleBlur("ชื่อไซต์งาน :")}
+                onChange={(selectedOption) => setSelectedPlaceName(selectedOption ? selectedOption.value : "")}
+                onCreateOption={(inputValue) => {
+                  setNameData((prevData) => ({
+                    ...prevData,
+                    placeNames: [...prevData.placeNames, inputValue]
+                  }));
+                  setSelectedPlaceName(inputValue);
+                }}
+                options={placeNameOptions}
+                isClearable
+                className="col-span-3 w-[80%] h-10 rounded-lg"
+              />
+            </div>
+
             {/* แสดงรายการอื่นๆ ของ menu */}
-            {menu.filter(item => item.title !== "ชื่อผู้มาติดต่อ :" && item.title !== "ชื่อบริษัท :").map((item, index) => (
+            {menu.filter(item => item.title !== "ชื่อผู้มาติดต่อ :" && item.title !== "ชื่อบริษัท :" && item.title !== "ชื่อไซต์งาน :" && item.title !== "ที่อยู่ลูกค้า :").map((item, index) => (
               <div key={index} className="grid justify-end items-center grid-cols-4 pt-10 ">
                 <span className="col-span-1 grid justify-end pr-2">
                   {item.title}
@@ -4000,17 +4082,17 @@ export function Outbound() {
                   ref={(el) => (inputRefs.current[index] = el)}
                   onChange={
                     item.title === "วันที่เสนอ :" ? (e) => handleDateChange(e.target.value)
-                      : item.title === "ชื่อไซต์งาน :" ? (e) => setWorkside(e.target.value)
-                        : item.title === "ที่อยู่ลูกค้า :" ? (e) => setAddress(e.target.value)
-                          : item.title === "เบอร์โทรศัพท์ :" ? (e) => setcustomer_tel(e.target.value)
-                            : null
+                      // : item.title === "ชื่อไซต์งาน :" ? (e) => setWorkside(e.target.value)
+                      //   : item.title === "ที่อยู่ลูกค้า :" ? (e) => setAddress(e.target.value)
+                      : item.title === "เบอร์โทรศัพท์ :" ? (e) => setcustomer_tel(e.target.value)
+                        : null
                   }
                   value={
                     item.title === "วันที่เสนอ :" ? rawSellDate
-                      : item.title === "ชื่อไซต์งาน :" ? workside
-                        : item.title === "ที่อยู่ลูกค้า :" ? address
-                          : item.title === "เบอร์โทรศัพท์ :" ? customer_tel
-                            : ""
+                      // : item.title === "ชื่อไซต์งาน :" ? workside
+                      //   : item.title === "ที่อยู่ลูกค้า :" ? address
+                      : item.title === "เบอร์โทรศัพท์ :" ? customer_tel
+                        : ""
                   }
                   className="col-span-3 w-[80%] h-10 rounded-lg border border-gray-500 p-2"
                   onKeyDown={(e) => {
