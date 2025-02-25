@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
 export function ModalDiscount({ close, confirm }) {
@@ -55,12 +55,12 @@ export function ModalDiscount({ close, confirm }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-40 z-50">
-      <div className="bg-white w-[700px] h-[830px] rounded-lg shadow-2xl overflow-hidden flex flex-col">
+      <div className="bg-white w-[700px] h-[730px] rounded-lg shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex justify-between items-center px-6 py-3 bg-blue-400 text-white ">
-          <h2 className="text-xl font-bold ">กรอกข้อมูลส่วนลดเพิ่มเติม</h2>
+        <div className="flex justify-between items-center px-6 py-3 text-white">
+          <h2 className="text-2xl font-bold text-black">กรอกข้อมูลส่วนลดเพิ่มเติม</h2>
           <button
-            className="text-lg hover:text-red-300 transition"
+            className="text-lg text-black hover:text-red-300 transition"
             onClick={close}
           >
             X
@@ -68,8 +68,8 @@ export function ModalDiscount({ close, confirm }) {
         </div>
 
         {/* Form Section */}
-        <div className="p-8 overflow-y-auto flex-grow">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+        <div className="p-8 overflow-y-auto flex-grow ">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-2 ">
             {/* ฟิลด์ตัวเลข */}
             {[
               { label: "ค่าขนส่งไป-กลับ", name: "shipping_cost" },
@@ -78,7 +78,7 @@ export function ModalDiscount({ close, confirm }) {
               { label: "ค่าประกันสินค้า", name: "guarantee_price" },
             ].map((field, index) => (
               <div key={index} className="flex flex-col">
-                <label className="text-lg text-gray-600 mb-2 font-bold">
+                <label className="text-lg text-black mb-2">
                   {field.label} :
                 </label>
                 <input
@@ -86,7 +86,7 @@ export function ModalDiscount({ close, confirm }) {
                   name={field.name}
                   value={formData[field.name]}
                   onChange={handleChange}
-                  className="w-full h-12 px-4 border-2 border-gray-400 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full h-10 px-2 border border-black rounded-md text-lg focus:outline-none focus:ring-1 focus:ring-black"
                 />
               </div>
             ))}
@@ -96,7 +96,7 @@ export function ModalDiscount({ close, confirm }) {
               { label: "เลขประจำตัวผู้เสียภาษีอากร", name: "taxid" },
             ].map((field, index) => (
               <div key={index} className="flex flex-col col-span-2">
-                <label className="text-lg text-gray-600 mb-2 font-bold">
+                <label className="text-lg text-black mb-2">
                   {field.label} :
                 </label>
                 <input
@@ -104,7 +104,7 @@ export function ModalDiscount({ close, confirm }) {
                   name={field.name}
                   value={formData[field.name] ? formData[field.name] : ""}
                   onChange={handleChange}
-                  className="w-full h-12 px-4 border-2 border-gray-400 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full h-10 px-4 border border-black rounded-md text-lg focus:outline-none focus:ring-1 focus:ring-black"
                 />
               </div>
             ))}
@@ -116,7 +116,7 @@ export function ModalDiscount({ close, confirm }) {
               { label: "หมายเหตุ 3", name: "remark3" },
             ].map((field, index) => (
               <div key={index} className="flex flex-col col-span-2">
-                <label className="text-lg text-gray-600 mb-2 font-bold">
+                <label className="text-lg text-black mb-2">
                   {field.label} :
                 </label>
                 <input
@@ -124,24 +124,22 @@ export function ModalDiscount({ close, confirm }) {
                   name={field.name}
                   value={formData[field.name]}
                   onChange={handleChange}
-                  className="w-full h-12 px-4 border-2 border-gray-400 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full h-10 px-4 border border-black rounded-md text-lg focus:outline-none focus:ring-1 focus:ring-black"
                 />
               </div>
             ))}
           </div>
         </div>
 
+        <div className="p-4 flex justify-center py-8">
+            <button
+              className={` text-white rounded-md text-lg font-medium transition w-1/5  h-10 bg-[#31AB31] hover:bg-green-600 active:bg-green-700`}
+              onClick={confirm_item}
+            >
+              ยืนยัน
+            </button>
+          </div>
 
-        {/* Footer */}
-        <div className="p-4 bg-gray-100 flex justify-center border-t">
-          <button
-            className={` text-white rounded-md text-lg font-medium transition w-1/5  h-10 bg-[#31AB31] hover:bg-green-600 active:bg-green-700`}
-            onClick={confirm_item}
-          >
-            ยืนยัน
-          </button>
-
-        </div>
       </div>
     </div>
   );
