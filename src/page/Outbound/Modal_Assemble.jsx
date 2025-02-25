@@ -34,7 +34,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": "p@tt@r@ch@i2k24",
+          "x-api-key": "1234567890abcdef",
         },
       })
       .then((res) => {
@@ -76,7 +76,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
             headers: {
               Authorization: token,
               "Content-Type": "application/json",
-              "x-api-key": "p@tt@r@ch@i2k24",
+              "x-api-key": "1234567890abcdef",
             },
           }
         );
@@ -121,7 +121,7 @@ export function Modal_Assemble({ close, confirm, ititialDataASM }) {
           headers: {
             Authorization: token,
             "Content-Type": "application/json",
-            "x-api-key": "p@tt@r@ch@i2k24",
+            "x-api-key": "1234567890abcdef",
           },
         })
         .then((res) => {
