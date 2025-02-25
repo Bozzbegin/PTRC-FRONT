@@ -35,7 +35,7 @@ export function TableItem({
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": "1234567890abcdef",
+         "x-api-key": import.meta.env.VITE_X_API_KEY,
         },
       });
 
