@@ -339,7 +339,7 @@ export function Outbound() {
       selectedAddress,
       date: day_length,
       date_sell: sell_date,
-      customer_tel: customer_tel,
+      customer_tel: selectedPhone,
       customer_sell: customer_sell,
       reserve: reserve,
       assemble_status: confirmitem_create.assemble_status || false,
@@ -601,7 +601,7 @@ export function Outbound() {
       remark2: formData.remark2,
       remark3: formData.remark3,
       company_name: selectedCompany,
-      customer_tel,
+      selectedPhone,
       customer_sell,
       sell_date: sell_date,
       total_price: totalPrice,
@@ -631,7 +631,7 @@ export function Outbound() {
     selectedPlaceName,
     sell_date,
     day_length,
-    customer_tel,
+    selectedPhone,
     customer_sell,
     items,
     netPrice,
@@ -675,6 +675,7 @@ export function Outbound() {
     setCustomer_sell("");
     setAddress("");
     setcustomer_tel("");
+    setSelectedPhone("");
     setWorkside("");
     setSell_date("");
     setDay_Length(0);
@@ -721,7 +722,8 @@ export function Outbound() {
       // setComName(parsedData.company_name || "");
       // setAddress(parsedData.address || "");
       setSelectedAddress(parsedData.selectedAddress || "");
-      setcustomer_tel(parsedData.customer_tel || "");
+      // setcustomer_tel(parsedData.customer_tel || "");
+      setSelectedPhone(parsedData.customer_tel || "");
       setCustomer_sell(parsedData.customer_sell || "");
       // setWorkside(parsedData.place_name || "");
       setSelectedPlaceName(parsedData.place_name || "");
@@ -1004,7 +1006,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C20:I22');
     const phoneValue = worksheet.getCell('C20:E22');
-    phoneValue.value = customer_tel;
+    phoneValue.value = selectedPhone;
     phoneValue.font = { size: 13, name: 'Angsana New' };
     phoneValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -2595,7 +2597,7 @@ export function Outbound() {
 
     worksheet.mergeCells('C23:I25');
     const phoneValue = worksheet.getCell('C23:E25');
-    phoneValue.value = `${customer_tel ? customer_tel : "-"}`;
+    phoneValue.value = `${selectedPhone ? selectedPhone : "-"}`;
     phoneValue.font = { size: 13, name: 'Angsana New' };
     phoneValue.alignment = { vertical: 'middle', horizontal: 'left' };
 
@@ -4086,7 +4088,7 @@ export function Outbound() {
             </div>
 
             <div className="grid justify-end items-center grid-cols-4 pt-10">
-              <span className="col-span-1 grid justify-end pr-2">ชื่อไซต์งาน :</span>
+              <span className="col-span-1 grid justify-end pr-2">เบอร์โทรศัพท์ :</span>
               <CreatableSelect
                 value={selectedPhone ? { value: selectedPhone, label: selectedPhone } : null}
                 onFocus={() => handleFocus("เบอร์โทรศัพท์ :")}
