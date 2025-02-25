@@ -61,7 +61,7 @@ function EditModal({ isModalOpen, handleClose, id, branch_id }) {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": "p@tt@r@ch@i2k24",
+          "x-api-key": "1234567890abcdef",
         },
       });
 
@@ -143,7 +143,7 @@ function EditModal({ isModalOpen, handleClose, id, branch_id }) {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": "p@tt@r@ch@i2k24",
+          "x-api-key": "1234567890abcdef",
         },
       });
 

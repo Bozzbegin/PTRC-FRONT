@@ -13,7 +13,7 @@ const PrivateRoute = () => {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
-          "x-api-key": import.meta.env.VITE_X_API_KEY,
+          "x-api-key": "1234567890abcdef",
         },
       })
       .catch((err) => {
