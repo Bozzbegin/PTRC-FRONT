@@ -545,7 +545,7 @@ const StatusProduct = () => {
           <p className="text-center text-2xl mt-10">ไม่พบรายการสินค้า</p>
         ) : (
 
-          <div className="row-span-11 overflow-auto no-scrollbar">
+          <div className="row-span-11 overflow-auto">
             <div className="flex justify-end mb-2">
               <button
                 onClick={() => setSelectMode(!selectMode)}

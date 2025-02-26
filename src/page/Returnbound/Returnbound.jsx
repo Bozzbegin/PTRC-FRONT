@@ -161,7 +161,7 @@ export function ReturnItem() {
             {filteredData.length === 0 ? (
                 <p className="text-center text-2xl mt-4">ไม่พบรายการสินค้า</p>
             ) : (
-                <div className='row-span-11 overflow-auto no-scrollbar '>
+                <div className='row-span-11 overflow-auto '>
 
                     <table className="table-auto w-full border-collapse ">
                         <thead className='bg-blue-200 border-l-2  h-14 text-sky-800 text-lg sticky top-0 rounded-lg '>
